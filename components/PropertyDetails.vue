@@ -1,6 +1,6 @@
 <template>
   <div class="py-6 space-y-6">
-    <!-- Furnished Question -->
+
     <div class="flex items-center justify-between space-x-4">
       <label class="text-lg text-[#1D2739]">Is the common area furnished?</label>
       <div class="flex space-x-2">
@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <!-- Interior Area Section -->
+
     <div>
       <h3 class="text-lg text-[#1D2739] mb-4">Interior area</h3>
       <div class="grid grid-cols-3 gap-4">
@@ -37,7 +37,7 @@
         </button>
       </div>
 
-      <!-- Add Manually Section -->
+   
       <div class="mt-4">
         <button class="text-sm text-[#5B8469]" @click="showInteriorInput = !showInteriorInput">
           + Add manually
@@ -55,7 +55,7 @@
       </div>
     </div>
 
-    <!-- Exterior Area Section -->
+
     <div>
       <h3 class="text-lg text-[#1D2739] mb-4">Exterior area</h3>
       <div class="grid grid-cols-3 gap-4">
@@ -83,7 +83,7 @@
         </button>
       </div>
 
-      <!-- Add Manually Section -->
+
       <div class="mt-4">
         <button class="text-sm text-[#5B8469]" @click="showExteriorInput = !showExteriorInput">
           + Add manually
