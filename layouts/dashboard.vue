@@ -477,40 +477,37 @@
 <script setup lang="ts">
 import { dynamicIcons } from "@/utils/assets";
 const router = useRouter();
-definePageMeta({
-  middleware: "auth",
-});
 
 const sidebarItems = ref([
   {
     name: "Dashboard",
     icon: "dashboard-home",
-    url: "",
+    url: "/dashboard",
   },
   {
     name: "Property Management",
     icon: "property-mgt",
-    url: "",
+    url: "/dashboard/property-mgt",
   },
   {
     name: "Tenants Management",
     icon: "tenants-mgt",
-    url: "",
+    url: "/dashboard/tenant-mgt",
   },
   {
     name: "Messages",
     icon: "messages",
-    url: "",
+    url: "/dashboard/messages",
   },
   {
     name: "Finance Management",
     icon: "finance-mgt",
-    url: "",
+    url: "/dashboard/finance-mgt",
   },
   {
     name: "Members",
     icon: "members",
-    url: "",
+    url: "/dashboard/members",
   },
 ]);
 
@@ -518,8 +515,8 @@ const checkOnlineStatus = () => {
   if (navigator.onLine) {
     router.push(router?.options?.history?.state?.current);
   } else {
-    router.push("/login");
-    useNuxtApp().$toast.success("You are currently offline.", {
+    // router.push("/login");
+    useNuxtApp().$toast.error("You are currently offline.", {
       autoClose: 5000,
       dangerouslyHTMLString: true,
     });

@@ -20,9 +20,11 @@
   "dependencies": {
     "@heroicons/vue": "v1",
     "@nuxtjs/tailwindcss": "^6.12.1",
+    "@vuepic/vue-datepicker": "^9.0.2",
     "apexcharts": "^3.49.0",
     "chart.js": "^4.4.4",
     "chartjs-plugin-datalabels": "^2.2.0",
+    "leaflet": "^1.9.4",
     "vue3-apexcharts": "^1.5.2",
     "vue3-toastify": "^0.2.1"
   }

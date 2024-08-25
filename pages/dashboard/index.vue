@@ -4,8 +4,8 @@
     <section class="flex gap-x-6">
       <div class="w-full lg:max-w-6xl space-y-6">
         <CategoryTabs :activeTab="activeTab" @setTab="setTab" />
-        <CardRecentApplications v-if="activeTab === 'recent_applications'" />
-        <CardMaintanceRequests v-if="activeTab === 'maintenance_requests'" />
+        <CardsRecentApplications v-if="activeTab === 'recent_applications'" />
+        <CardsMaintanceRequests v-if="activeTab === 'maintenance_requests'" />
         <UpcomingPayment v-if="activeTab === 'overdue'" :upcomingPayments="upcomingPayments" />
 
         <div class="space-y-5">
@@ -22,8 +22,9 @@
 
 <script setup lang="ts">
 definePageMeta({
-  layout: "dashboard",
-});
+     layout: 'dashboard'
+})
+
 const router = useRouter();
 
 const activeTab = ref("upcoming_events");
@@ -32,9 +33,9 @@ const setTab = (item: string) => {
   activeTab.value = item;
 };
 
-onMounted(() => {
-  router.push("/login");
-});
+// onMounted(() => {
+//   router.push("/login");
+// });
 
 const membersActivities = ref([
   {

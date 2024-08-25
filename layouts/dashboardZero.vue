@@ -388,9 +388,9 @@
   <script setup lang="ts">
 import { dynamicIcons } from "@/utils/assets";
 const router = useRouter();
-definePageMeta({
-  middleware: "auth",
-});
+// definePageMeta({
+//   middleware: "auth",
+// });
 
 const sidebarItems = ref([
   {
@@ -429,8 +429,8 @@ const checkOnlineStatus = () => {
   if (navigator.onLine) {
     router.push(router?.options?.history?.state?.current);
   } else {
-    router.push("/login");
-    useNuxtApp().$toast.success("You are currently offline.", {
+    // router.push("/login");
+    useNuxtApp().$toast.error("You are currently offline.", {
       autoClose: 5000,
       dangerouslyHTMLString: true,
     });
