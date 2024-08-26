@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="relative z-50 lg:hidden" role="dialog" aria-modal="true">
+    <div v-if="isOpen" class="relative z-50 lg:hidden" role="dialog" aria-modal="true">
       <!--
         Off-canvas menu backdrop, show/hide based on off-canvas menu state.
   
@@ -36,7 +36,7 @@
               To: "opacity-0"
           -->
           <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
-            <button type="button" class="-m-2.5 p-2.5">
+            <button @click="isOpen = false" type="button" class="-m-2.5 p-2.5">
               <span class="sr-only">Close sidebar</span>
               <svg
                 class="h-6 w-6 text-white"
@@ -70,30 +70,25 @@
               <ul role="list" class="flex flex-1 flex-col gap-y-7">
                 <li>
                   <ul role="list" class="-mx-2 space-y-1">
-                    <li>
+                    <li v-for="(item, idx) in sidebarItems" :key="idx">
                       <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
-                      <a
-                        href="#"
+                      <NuxtLink
+                        @click.native="isOpen = false"
+                        :to="item.url"
                         class="group flex gap-x-3 rounded-md bg-gray-800 p-2 text-sm font-semibold leading-6 text-white"
                       >
-                        <svg
-                          class="h-6 w-6 shrink-0"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          aria-hidden="true"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
-                          />
-                        </svg>
-                        Dashboard
-                      </a>
+                      <img
+                      :src="dynamicIcons(item.icon)"
+                        :alt="item.name"
+                        class="h-6 w-6"
+                      />
+                        <span class="flex justify-between items w-full">
+                          {{ item.name }}
+                          <span v-if="item.name === 'Messages'" class="bg-[#BA110B] text-white rounded-full h-3 w-3 p-3 flex justify-center items-center">1</span>
+                         </span>
+                      </NuxtLink>
                     </li>
-                    <li>
+                    <!-- <li>
                       <a
                         href="#"
                         class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
@@ -207,53 +202,10 @@
                         </svg>
                         Reports
                       </a>
-                    </li>
+                    </li> -->
                   </ul>
                 </li>
-                <li>
-                  <div class="text-xs font-semibold leading-6 text-gray-400">
-                    Your teams
-                  </div>
-                  <ul role="list" class="-mx-2 mt-2 space-y-1">
-                    <li>
-                      <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
-                      <a
-                        href="#"
-                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
-                      >
-                        <span
-                          class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white"
-                          >H</span
-                        >
-                        <span class="truncate">Heroicons</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="#"
-                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
-                      >
-                        <span
-                          class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white"
-                          >T</span
-                        >
-                        <span class="truncate">Tailwind Labs</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="#"
-                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
-                      >
-                        <span
-                          class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white"
-                          >W</span
-                        >
-                        <span class="truncate">Workcation</span>
-                      </a>
-                    </li>
-                  </ul>
-                </li>
+         
                 <li class="mt-auto">
                   <a
                     href="#"
@@ -309,7 +261,7 @@
               <ul role="list" class="-mx-2 space-y-1">
                 <li v-for="(item, idx) in sidebarItems" :key="idx">
                   <NuxtLink
-                    to="/"
+                    :to="item.url"
                     class="group flex gap-x-3 rounded-md p-2 text-sm font-medium leading-6 text-white hover:text-white hover:bg-gray-800"
                   >
                     <img
@@ -358,7 +310,7 @@
       <div
         class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8"
       >
-        <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden">
+        <button @click="isOpen = true" type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden">
           <span class="sr-only">Open sidebar</span>
           <svg
             class="h-6 w-6"
@@ -478,6 +430,8 @@
 import { dynamicIcons } from "@/utils/assets";
 const router = useRouter();
 
+const isOpen = ref(false)
+
 const sidebarItems = ref([
   {
     name: "Dashboard",
@@ -487,7 +441,7 @@ const sidebarItems = ref([
   {
     name: "Property Management",
     icon: "property-mgt",
-    url: "/dashboard/property-mgt",
+    url: "/dashboard/property",
   },
   {
     name: "Tenants Management",

@@ -11,6 +11,11 @@ const features: string[] = ["Vite", "Vue 3", "TypeScript", "PostCSS", "TailwindC
 const message = computed(
   () => `This is a ${productName} with ${features.slice(0, -1).join(", ")} and ${features.slice(-1)}!`
 );
+const router = useRouter()
+
+onMounted(() => {
+  router.push('/login')
+})
 
 definePageMeta({
   layout: false,

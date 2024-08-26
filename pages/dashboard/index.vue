@@ -1,7 +1,7 @@
 <template>
   <main class="space-y-6">
     <DashboardStats />
-    <section class="flex gap-x-6">
+    <section class="lg:flex gap-x-6">
       <div class="w-full lg:max-w-6xl space-y-6">
         <CategoryTabs :activeTab="activeTab" @setTab="setTab" />
         <CardsRecentApplications v-if="activeTab === 'recent_applications'" />

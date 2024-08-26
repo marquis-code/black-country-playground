@@ -31,12 +31,14 @@
     <!-- Sidebar for Neighborhood Amenities -->
     <div v-if="showDropdown" class="absolute top-14 left-0 right-0 m-5 bg-white border opacity-95 shadow-md rounded-lg p-4 z-20">
       <h2 class="text-lg font-medium text-[#1D2739] mb-4">Neighborhood Amenities</h2>
-      <div class="flex space-x-4 mb-4">
-        <button v-for="filter in filters" :key="filter" @click="activeFilter = filter"
-                :class="{'text-white bg-[#5B8469]': activeFilter === filter, 'bg-[#E4E7EC] text-[#292929]': activeFilter !== filter}"
-                class="px-4 py-2 rounded-md text-sm border">
-          {{ filter }}
-        </button>
+      <div class="overflow-x-auto scrollbar-hide">
+        <div class="flex space-x-4 mb-4">
+          <button v-for="filter in filters" :key="filter" @click="activeFilter = filter"
+                  :class="{'text-white bg-[#5B8469]': activeFilter === filter, 'bg-[#E4E7EC] text-[#292929]': activeFilter !== filter}"
+                  class="px-4 py-2 rounded-md text-sm border whitespace-nowrap">
+            {{ filter }}
+          </button>
+        </div>
       </div>
       <div class="space-y-4 z-50">
         <div v-for="(item, index) in items" :key="index" class="bg-white border opacity-100 border-gray-50 shadow cursor-pointer z-50 p-4 rounded-lg flex justify-between items-center">
@@ -66,7 +68,7 @@
       style="border:0;"
       allowfullscreen=""
       loading="lazy"
-      class="absolute top-0 left-0 w-full"
+      class="absolute top-0 left-0 w-full rounded-md"
       referrerpolicy="no-referrer-when-downgrade"
     ></iframe>
   </div>
@@ -121,4 +123,13 @@ onMounted(() => {
 .icon-menu::before {
   content: url('path_to_menu_icon.svg'); /* Replace with the actual path to your menu icon */
 }
+
+.scrollbar-hide {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
 </style>

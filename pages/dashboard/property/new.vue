@@ -2,7 +2,7 @@
   <main>
     <header class="bg-white p-4 flex items-center justify-between container mx-auto">
       <!-- Logo and Title Section -->
-      <div class="flex items-center space-x-2">
+      <div @click="router.push('/dashboard')" class="flex items-center space-x-2">
         <img src="@/assets/icons/logo.svg" alt="Logo" class="h-8 w-auto" />
         <!-- Replace with your logo path -->
         <span class="text-lg font-semibold">BlackCountry</span>
@@ -10,22 +10,22 @@
 
       <!-- Action Buttons -->
       <div class="flex space-x-4 items-center">
-        <button class="text-[#326543] hover:text-[#326543]">Preview</button>
-        <button
-          class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100"
+        <button class="text-[#326543] text-sm lg:text-base hover:text-[#326543]">Preview</button>
+        <button @click="router.push('/dashboard/property/create-steps')"
+          class="bg-white border text-sm lg:text-base border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100"
         >
           Cancel
         </button>
         <button
-          class="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-800"
+          class="bg-gray-900 text-sm lg:text-base text-white px-4 py-2 rounded-md hover:bg-gray-800"
         >
           Save & exit
         </button>
       </div>
     </header>
-    <div class="flex max-w-7xl mx-auto py-10">
+    <div class="lg:flex space-y-10 lg:space-y-0 lg:max-w-6xl w-full mx-auto py-10">
       <!-- Steps Sidebar -->
-      <aside class="w-1/4 space-y-4">
+      <aside class="space-y-4 lg:max-w-xs w-full px-5 lg:px-0">
         <div
           v-for="step in steps"
           :key="step.id"
@@ -78,7 +78,7 @@
       </aside>
 
       <!-- Form Section -->
-      <div class="w-3/4 pl-10">
+      <div class="lg:pl-10 p-4 lg:max-w-screen-7xl w-full">
       <div class="flex justify-between items-center">
         <h2 class="text-xl font-semibold mb-4">Let's start with the basics</h2>
         <p class="text-gray-600 mb-6">1/2 (sub step)</p>
@@ -200,11 +200,11 @@
         <PropertyDetails v-if="informationStep === 3" />
       </div>
     </div>
-    <div class="flex justify-between mt-8 container mx-auto">
-        <button class="text-[#292929] bg-[#EBE5E0] px-4 py-2 rounded-lg" disabled>
+    <div class="flex justify-between mt-8 container mx-auto px-6 lg:px-0 pb-6">
+        <button @click="informationStep--" class="text-[#292929] bg-[#EBE5E0] px-4 py-2 rounded-lg">
           Previous
         </button>
-        <button class="bg-[#292929] text-white px-4 py-2 rounded-lg">
+        <button @click="informationStep++" class="bg-[#292929] text-white px-6 py-2 rounded-lg">
           Next
         </button>
       </div>
@@ -212,16 +212,18 @@
 </template>
 
 <script lang="ts" setup>
-const steps = [
+const steps = ref([
   { id: 1, title: "Basic Property Information" },
   { id: 2, title: "Detailed Property Information" },
   { id: 3, title: "Add Visuals" },
   { id: 4, title: "Finalize listing and publish" },
-];
+])
+
+const router = useRouter()
 
 const activeStep = ref(1); // Simulate the active step
 
-const informationStep = ref(3)
+const informationStep = ref(1)
 </script>
 
 <style scoped>

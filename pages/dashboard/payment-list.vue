@@ -1,7 +1,7 @@
 <template>
  <main class="space-y-6">
     <div class="flex items-center border-b border-gray-50 pb-4">
-        <button class="flex items-center gap-x-3 bg-gray-25 rounded-lg px-5 py-3.5">
+        <button @click="goBack()" class="flex items-center gap-x-3 bg-gray-25 rounded-lg px-5 py-3.5">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12.5 5C12.5 5 7.50001 8.68242 7.5 10C7.49999 11.3177 12.5 15 12.5 15" stroke="#292929" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -85,4 +85,8 @@ const expiringLeases = ref([
   }
 ])
 
+const router = useRouter()
+const goBack = () => {
+  router.back()
+}
 </script>

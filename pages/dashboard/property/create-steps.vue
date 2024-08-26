@@ -5,18 +5,18 @@
       <div class="flex items-center space-x-2">
         <img src="@/assets/icons/logo.svg" alt="Logo" class="h-8 w-auto" />
         <!-- Replace with your logo path -->
-        <span class="text-lg font-semibold">BLAckCountry</span>
+        <span class="text-lg font-semibold">BlackCountry</span>
       </div>
       <div class="flex space-x-4">
         <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md">
           Cancel
         </button>
-        <button class="bg-[#292929] text-white px-4 py-2 rounded-md">
+        <button @click="router.push('/dashboard/property/new')" class="bg-[#292929] text-white px-4 py-2 rounded-md">
           Continue
         </button>
       </div>
     </header>
-    <div class="max-w-3xl mx-auto py-10">
+    <div class="max-w-3xl mx-auto py-10 px-6">
       <h2 class="text-xl font-semibold mb-6">
         Follow these steps to add a new listing and showcase available property
         to potential tenants:
@@ -59,7 +59,7 @@
           </div>
           <div>
             <h3 class="text-lg font-medium text-[#171717]">{{ step.title }}</h3>
-            <p class="text-[#171717] font-light">{{ step.description }}</p>
+            <p class="text-[#171717] text-sm lg:text-base font-light">{{ step.description }}</p>
           </div>
         </div>
       </div>
@@ -71,6 +71,8 @@
 definePageMeta({
   layout: "dashboardZero",
 });
+
+const router = useRouter()
 const steps = [
   {
     id: 1,

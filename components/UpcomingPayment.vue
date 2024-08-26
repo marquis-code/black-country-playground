@@ -19,7 +19,7 @@
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 bg-white">
-                      <tr v-for="(item, idx) in upcomingPayments" :key="idx">
+                      <tr @click="router.push('/dashboard/payment-list')" class="cursor-pointer" v-for="(item, idx) in upcomingPayments" :key="idx">
                         <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-500 sm:pl-6 lg:pl-8">{{ item.tenant_name ?? 'Nil'}}</td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ item.category ?? 'Nil'}}</td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ item.amount ?? 'Nil'}}</td>
@@ -41,6 +41,8 @@
 
 <script setup lang="ts">
 import { dynamicIcons } from "@/utils/assets";
+
+const router = useRouter()
 
 const props = defineProps({
     upcomingPayments: {

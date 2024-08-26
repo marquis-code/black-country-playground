@@ -12,7 +12,7 @@
 
     <div>
       <h3 class="text-lg text-[#1D2739] mb-4">Interior area</h3>
-      <div class="grid grid-cols-3 gap-4">
+      <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
         <button v-for="item in interiorItems" :key="item" class="flex items-center space-x-2 border border-[#F0F2F5] rounded-md px-4 py-3.5 text-sm text-[#1D2739] hover:bg-[#EBF0EC]">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clip-path="url(#clip0_5289_72284)">
@@ -58,7 +58,7 @@
 
     <div>
       <h3 class="text-lg text-[#1D2739] mb-4">Exterior area</h3>
-      <div class="grid grid-cols-3 gap-4">
+      <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
         <button v-for="item in exteriorItems" :key="item" class="flex items-center space-x-2 border border-[#F0F2F5] rounded-md px-4 py-3.5 text-sm text-[#1D2739] hover:bg-[#EBF0EC]">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clip-path="url(#clip0_5289_72284)">
