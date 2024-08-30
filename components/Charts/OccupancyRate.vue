@@ -1,13 +1,13 @@
 <template>
     <div class="p-4 bg-white shadow rounded-lg">
-      <div class="flex justify-between items-center pl-4">
-        <div class="text-xl font-">Occupancy rate</div>
+      <div class="lg:flex justify-between items-center lg:pl-4 space-y-3">
+        <div class="text-sm first:lg:text-xl font-">Occupancy rate</div>
         <div class="flex space-x-4">
           <select class="text-sm outline-none font-medium bg-gray-50 rounded-md px-2.5 py-2">
             <option>Month</option>
             <option>Year</option>
           </select>
-          <select class="text-sm outline-none font-medium bg-gray-50 rounded-md px-2.5 py-2">
+          <select class="text-sm outline-none font-medium text-sm bg-gray-50 rounded-md px-2.5 py-2">
             <option>All properties</option>
             <option>Property 1</option>
             <option>Property 2</option>

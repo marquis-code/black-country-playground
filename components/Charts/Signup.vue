@@ -1,7 +1,7 @@
 <template>
     <div class="p-4 bg-white shadow rounded-lg">
       <div class="flex justify-between items-center pl-4">
-        <div class="text-xl font-">Sign ups</div>
+        <div class="text-md lg:text-xl font-">Sign ups</div>
         <select class="text-sm outline-none font-medium bg-gray-50 rounded-md px-3.5 py-2.5">
           <option>Today</option>
           <option>This Week</option>

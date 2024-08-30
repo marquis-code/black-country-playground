@@ -1,6 +1,6 @@
 <template>
   <main class="space-y-6">
-    <section class="max-w mx-auto w-full grid grid-cols-5 gap-6 mt-5">
+ <section class="max-w mx-auto w-full grid lg:grid-cols-5 gap-6 mt-5">
       <CoreDateInput v-model="startDate" placeholder="Choose the start date" />
       <CoreDateInput v-model="endDate" placeholder="Choose the end date" />
       <FiltersDropdown
@@ -21,6 +21,7 @@
         v-model="selectedProperties"
       />
     </section>
+    
 
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8">
       <div class="rounded-lg space-y-4">
@@ -41,7 +42,7 @@
       </div>
     </div>
 
-    <section class="max-w mx-auto w-full grid grid-cols-4 gap-6 mt-10">
+    <section class="max-w mx-auto w-full grid lg:grid-cols-4 gap-6 mt-10">
       <FiltersDropdown
         :options="['Today', 'This Week', 'This Month', 'This Year']"
         v-model="selectedTimeFrame"

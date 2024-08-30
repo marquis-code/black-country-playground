@@ -1,9 +1,9 @@
 <template>
     <div class="p-4 bg-white shadow rounded-lg">
- <section class="flex justify-between items-center pl-4">
+ <section class="lg:flex justify-between items-center lg:pl-4">
     <div class="flex justify-between items-center gap-x-5">
-        <div class="text-xl font-">Revenue</div>
-        <div class="text-xl font-">0</div>
+        <div class="text-sm lg:text-xl font-">Revenue</div>
+        <div class="text-sm lg:text-xl font-">0</div>
       </div>
       <div class="flex justify-between mt-4 space-x-4">
         <select class="text-sm outline-none font-medium bg-gray-50 rounded-md px-2.5 py-2">
