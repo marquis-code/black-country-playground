@@ -1,5 +1,6 @@
 
 <template>
+<main>
   <div class="relative h-screen">
     <!-- Full-Width Search Input -->
     <div class="absolute top-2 left-0 right-0  flex items-center px-5">
@@ -72,6 +73,8 @@
       referrerpolicy="no-referrer-when-downgrade"
     ></iframe>
   </div>
+  <slot name="action-buttons"></slot>
+</main>
 </template>
 
 <script lang="ts" setup>

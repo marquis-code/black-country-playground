@@ -1,4 +1,5 @@
 <template>
+<main>
   <div class="py-6 space-y-6">
 
     <div class="flex items-center justify-between space-x-4">
@@ -101,6 +102,8 @@
       </div>
     </div>
   </div>
+<slot name="action-buttons"></slot>
+</main>
 </template>
 
 <script lang="ts" setup>

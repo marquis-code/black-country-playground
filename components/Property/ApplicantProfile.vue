@@ -3,12 +3,12 @@
       <!-- Profile Section -->
       <div class="flex flex-col items-center">
         <img
-          :src="dynamicImage('avatar.png')"
+          :src="dynamicImage('male-avatar.png')"
           alt="Profile Picture"
           class="w-32 h-32 rounded-full mb-4"
         />
-        <h2 class="text-xl font-medium text-gray-800">Jake Tokumbo</h2>
-        <p class="text-gray-600 mb-4 text-sm">jt@gmail.com</p>
+        <h2 class="text-xl font-medium text-gray-800">Ada Dennis</h2>
+        <p class="text-gray-600 mb-4 text-sm">ad@gmail.com</p>
         <div class="text-sm text-gray-600 space-y-4 w-full">
           <p class="flex justify-between"><span class="text-[#667185]">Phone number:</span> 081000000000</p>
           <p class="flex justify-between"><span class="text-[#667185]">Date of Birth:</span> 01/01/1900</p>

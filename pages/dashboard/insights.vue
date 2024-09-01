@@ -65,142 +65,86 @@
         </div>
       </div>
     </template>
-    <main class="space-y-6">
-      <DashboardStats />
-      <section class="lg:flex gap-x-6">
-        <div class="w-full lg:max-w-6xl space-y-6">
-          <CategoryTabs :activeTab="activeTab" @setTab="setTab" />
-          <CardsRecentApplications v-if="activeTab === 'recent_applications'" />
-          <CardsMaintanceRequests v-if="activeTab === 'maintenance_requests'" />
-          <UpcomingPayment v-if="activeTab === 'overdue'" :upcomingPayments="upcomingPayments" />
-  
-          <div class="space-y-5">
-            <ExpiringLeases :expiringLeases="expiringLeases" />
-            <UpcomingPayment :upcomingPayments="upcomingPayments" />
-          </div>
-        </div>
-        <div class="w-full lg:max-w-lg">
-          <MembershipActivities :membersActivities="membersActivities" />
-        </div>
-      </section>
-    </main>
+  <main class="space-y-6">
+ <section class="max-w mx-auto w-full grid lg:grid-cols-5 gap-6 mt-5">
+      <CoreDateInput v-model="startDate" placeholder="Choose the start date" />
+      <CoreDateInput v-model="endDate" placeholder="Choose the end date" />
+      <FiltersDropdown
+        :options="['Today', 'This Week', 'This Month', 'This Year']"
+        v-model="selectedAgents"
+      />
+      <FiltersDropdown
+        :options="[
+          'All Tenants',
+          'This Week',
+          'This Month',
+          'This Year',
+        ]"
+        v-model="selectedTenants"
+      />
+      <FiltersDropdown
+        :options="['All properties', 'This Week', 'This Month', 'This Year']"
+        v-model="selectedProperties"
+      />
+    </section>
+    
+
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8">
+      <div class="rounded-lg space-y-4">
+        <CardsUserStats />
+        <CardsDownloadStats />
+      </div>
+      <div class="rounded-lg">
+        <ChartsSignup />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8">
+      <div class="rounded-lg">
+        <ChartsRevenue />
+      </div>
+      <div class="rounded-lg">
+        <ChartsOccupancyRate />
+      </div>
+    </div>
+
+    <section class="max-w mx-auto w-full grid lg:grid-cols-4 gap-6 mt-10">
+      <FiltersDropdown
+        :options="['Today', 'This Week', 'This Month', 'This Year']"
+        v-model="selectedTimeFrame"
+      />
+      <FiltersDropdown
+        :options="['All Agents', 'This Week', 'This Month', 'This Year']"
+        v-model="selectedAgents"
+      />
+      <FiltersDropdown
+        :options="[
+          'All Property managers',
+          'This Week',
+          'This Month',
+          'This Year',
+        ]"
+        v-model="selectedManagers"
+      />
+      <FiltersDropdown
+        :options="['All properties', 'This Week', 'This Month', 'This Year']"
+        v-model="selectedProperties"
+      />
+    </section>
+    <TablesProperty />
+  </main>
   </Layout>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import Layout from '@/layouts/dashboard.vue';
-// definePageMeta({
-//      layout: 'dashboard'
-// })
+const router = useRouter()
+const selectedTimeFrame = ref("Today");
+const selectedAgents = ref('All Agents')
+const selectedManagers = ref('All Property managers')
+const selectedProperties = ref('All properties')
+const selectedTenants = ref('All Tenants')
+const startDate = ref('')
+const endDate = ref('')
 
-const router = useRouter();
-
-const activeTab = ref("upcoming_events");
-
-const setTab = (item: string) => {
-  activeTab.value = item;
-};
-
-// onMounted(() => {
-//   router.push("/login");
-// });
-
-const membersActivities = ref([
-  {
-    description:
-      "Vickie Will assigned Cummings, Frami and Lynch apartments to agent Adetunde Salami",
-    date: "5th April, 2024 | 11:54 am",
-  },
-  {
-    description:
-      "Vickie Will assigned Cummings, Frami and Lynch apartments to agent Adetunde Salami",
-    date: "5th April, 2024 | 11:54 am",
-  },
-  {
-    description:
-      "Vickie Will assigned Cummings, Frami and Lynch apartments to agent Adetunde Salami",
-    date: "5th April, 2024 | 11:54 am",
-  },
-  {
-    description:
-      "Vickie Will assigned Cummings, Frami and Lynch apartments to agent Adetunde Salami",
-    date: "5th April, 2024 | 11:54 am",
-  },
-  {
-    description:
-      "Vickie Will assigned Cummings, Frami and Lynch apartments to agent Adetunde Salami",
-    date: "5th April, 2024 | 11:54 am",
-  },
-]);
-
-const upcomingPayments = ref([
-  {
-    tenant_name: "Jay Witting",
-    category: "Security",
-    amount: "116,120.52",
-    date: "22/03/2024",
-  },
-  {
-    tenant_name: "Jay Witting",
-    category: "Security",
-    amount: "116,120.52",
-    date: "22/03/2024",
-  },
-  {
-    tenant_name: "Jay Witting",
-    category: "Security",
-    amount: "116,120.52",
-    date: "22/03/2024",
-  },
-  {
-    tenant_name: "Jay Witting",
-    category: "Security",
-    amount: "116,120.52",
-    date: "22/03/2024",
-  },
-  {
-    tenant_name: "Jay Witting",
-    category: "Security",
-    amount: "116,120.52",
-    date: "22/03/2024",
-  },
-]);
-
-const expiringLeases = ref([
-  {
-    tenant_name: "Gary Schimmel",
-    property: "Morar - Parisian",
-    payment_frequency: "Yearly",
-    payment_count: "1/1",
-    expiry_date: "22/03/2024",
-  },
-  {
-    tenant_name: "Gary Schimmel",
-    property: "Morar - Parisian",
-    payment_frequency: "Yearly",
-    payment_count: "1/1",
-    expiry_date: "22/03/2024",
-  },
-  {
-    tenant_name: "Gary Schimmel",
-    property: "Morar - Parisian",
-    payment_frequency: "Yearly",
-    payment_count: "1/1",
-    expiry_date: "22/03/2024",
-  },
-  {
-    tenant_name: "Gary Schimmel",
-    property: "Morar - Parisian",
-    payment_frequency: "Yearly",
-    payment_count: "1/1",
-    expiry_date: "22/03/2024",
-  },
-  {
-    tenant_name: "Gary Schimmel",
-    property: "Morar - Parisian",
-    payment_frequency: "Yearly",
-    payment_count: "1/1",
-    expiry_date: "22/03/2024",
-  },
-]);
 </script>

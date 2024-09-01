@@ -1,240 +1,349 @@
 <template>
-  <main class="space-y-6 lg:p-6">
-    <!-- Top Controls -->
-    <div class="lg:flex space-y-6 lg:space-y-0 items-center justify-between">
-      <div class="flex space-x-4">
-        <button
-          class="bg-white border border-gray-300 rounded-md px-4 py-2 flex items-center space-x-2"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+  <Layout>
+    <template #header-content>
+      <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6 justify-between">
+        <div class="flex items-center gap-x-4">
+          <h4 class="text-[#1D2739] text-lg">Property Management</h4>
+          <button @click="router.push('/dashboard/property')" class="bg-[#5B8469] font-medium px-4 py-3 rounded-md text-white">Listings</button>
+          <button @click="router.push('/dashboard/property/rental-applications')" class="text-[#292929] font-medium bg-[#F0F2F5] px-4 py-3 rounded-md">Rental applications</button>
+          <button @click="router.push('/dashboard/property/lease-documents')" class="text-[#292929] font-medium bg-[#F0F2F5] px-4 py-3 rounded-md">Lease Documents</button>
+        </div>
+        <div class="flex items-center gap-x-4 lg:gap-x-6">
+          <NuxtLink
+            to="/dashboard/notification"
+            class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500"
           >
-            <path
-              d="M10.8333 3.33325H2.5"
-              stroke="#1D2739"
+            <span class="sr-only">View notifications</span>
+            <svg
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
               stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M9.16667 15.8333H2.5"
-              stroke="#1D2739"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M17.5013 15.8333H14.168"
-              stroke="#1D2739"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M17.5013 9.58325H9.16797"
-              stroke="#1D2739"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M17.4987 3.33325H15.832"
-              stroke="#1D2739"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M4.16667 9.58325H2.5"
-              stroke="#1D2739"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M12.082 1.66675C12.4703 1.66675 12.6644 1.66675 12.8176 1.73018C13.0218 1.81476 13.184 1.97699 13.2686 2.18118C13.332 2.33432 13.332 2.52846 13.332 2.91675V3.75008C13.332 4.13836 13.332 4.33251 13.2686 4.48565C13.184 4.68984 13.0218 4.85207 12.8176 4.93665C12.6644 5.00008 12.4703 5.00008 12.082 5.00008C11.6938 5.00008 11.4996 5.00008 11.3464 4.93665C11.1423 4.85207 10.98 4.68984 10.8954 4.48565C10.832 4.33251 10.832 4.13836 10.832 3.75008V2.91675C10.832 2.52846 10.832 2.33432 10.8954 2.18118C10.98 1.97699 11.1423 1.81476 11.3464 1.73018C11.4996 1.66675 11.6938 1.66675 12.082 1.66675Z"
-              stroke="#1D2739"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M10.418 14.1667C10.8062 14.1667 11.0004 14.1667 11.1536 14.2302C11.3577 14.3147 11.52 14.477 11.6046 14.6812C11.668 14.8343 11.668 15.0285 11.668 15.4167V16.2501C11.668 16.6383 11.668 16.8325 11.6046 16.9857C11.52 17.1898 11.3577 17.3521 11.1536 17.4367C11.0004 17.5001 10.8062 17.5001 10.418 17.5001C10.0297 17.5001 9.83555 17.5001 9.68239 17.4367C9.47822 17.3521 9.31597 17.1898 9.23139 16.9857C9.16797 16.8325 9.16797 16.6383 9.16797 16.2501V15.4167C9.16797 15.0285 9.16797 14.8343 9.23139 14.6812C9.31597 14.477 9.47822 14.3147 9.68239 14.2302C9.83555 14.1667 10.0297 14.1667 10.418 14.1667Z"
-              stroke="#1D2739"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M7.91797 7.91675C8.30625 7.91675 8.50039 7.91675 8.65355 7.98018C8.85772 8.06476 9.01997 8.22699 9.10455 8.43116C9.16797 8.58433 9.16797 8.7785 9.16797 9.16675V10.0001C9.16797 10.3883 9.16797 10.5825 9.10455 10.7357C9.01997 10.9398 8.85772 11.1021 8.65355 11.1867C8.50039 11.2501 8.30625 11.2501 7.91797 11.2501C7.52969 11.2501 7.33554 11.2501 7.1824 11.1867C6.97821 11.1021 6.81598 10.9398 6.7314 10.7357C6.66797 10.5825 6.66797 10.3883 6.66797 10.0001V9.16675C6.66797 8.7785 6.66797 8.58433 6.7314 8.43116C6.81598 8.22699 6.97821 8.06476 7.1824 7.98018C7.33554 7.91675 7.52969 7.91675 7.91797 7.91675Z"
-              stroke="#1D2739"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-
-          <span>Filter</span>
-        </button>
-        <div class="relative">
-          <input
-            type="text"
-            placeholder="Search"
-            class="w-full px-4 pl-10 py-2 border border-gray-300 rounded-md focus:outline-none"
-          />
-          <svg
-            class="absolute inset-y-0 left-3 top-3 flex items-center icon-search"
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g clip-path="url(#clip0_5289_71366)">
+              stroke="currentColor"
+              aria-hidden="true"
+            >
               <path
-                d="M14.582 14.5833L18.332 18.3333"
-                stroke="#1D2739"
-                stroke-width="1.5"
                 stroke-linecap="round"
                 stroke-linejoin="round"
+                d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
               />
-              <path
-                d="M16.668 9.16675C16.668 5.02461 13.3101 1.66675 9.16797 1.66675C5.02584 1.66675 1.66797 5.02461 1.66797 9.16675C1.66797 13.3089 5.02584 16.6667 9.16797 16.6667C13.3101 16.6667 16.668 13.3089 16.668 9.16675Z"
-                stroke="#1D2739"
-                stroke-width="1.5"
-                stroke-linejoin="round"
-              />
-            </g>
-            <defs>
-              <clipPath id="clip0_5289_71366">
-                <rect width="20" height="20" fill="white" />
-              </clipPath>
-            </defs>
-          </svg>
+            </svg>
+          </NuxtLink>
+          <div
+            class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10"
+            aria-hidden="true"
+          ></div>
+          <div class="relative">
+            <button
+              type="button"
+              class="-m-1.5 flex items-center p-1.5"
+              id="user-menu-button"
+              aria-expanded="false"
+              aria-haspopup="true"
+            >
+              <span class="sr-only">Open user menu</span>
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="40" height="40" rx="8" fill="#292929"/>
+                <path d="M20.0817 20.1818C20.0817 21.4242 19.8544 22.4924 19.3999 23.3864C18.9453 24.2765 18.3222 24.9621 17.5305 25.4432C16.7427 25.9205 15.8468 26.1591 14.843 26.1591C13.8355 26.1591 12.9358 25.9205 12.1442 25.4432C11.3563 24.9621 10.7351 24.2746 10.2805 23.3807C9.82599 22.4867 9.59872 21.4205 9.59872 20.1818C9.59872 18.9394 9.82599 17.8731 10.2805 16.983C10.7351 16.089 11.3563 15.4034 12.1442 14.9261C12.9358 14.4451 13.8355 14.2045 14.843 14.2045C15.8468 14.2045 16.7427 14.4451 17.5305 14.9261C18.3222 15.4034 18.9453 16.089 19.3999 16.983C19.8544 17.8731 20.0817 18.9394 20.0817 20.1818ZM18.343 20.1818C18.343 19.2348 18.1896 18.4375 17.8828 17.7898C17.5798 17.1383 17.1631 16.6458 16.6328 16.3125C16.1063 15.9754 15.5097 15.8068 14.843 15.8068C14.1726 15.8068 13.5741 15.9754 13.0476 16.3125C12.5211 16.6458 12.1044 17.1383 11.7976 17.7898C11.4946 18.4375 11.343 19.2348 11.343 20.1818C11.343 21.1288 11.4946 21.928 11.7976 22.5795C12.1044 23.2273 12.5211 23.7197 13.0476 24.0568C13.5741 24.3902 14.1726 24.5568 14.843 24.5568C15.5097 24.5568 16.1063 24.3902 16.6328 24.0568C17.1631 23.7197 17.5798 23.2273 17.8828 22.5795C18.1896 21.928 18.343 21.1288 18.343 20.1818ZM22.2706 26V14.3636H26.4183C27.3198 14.3636 28.0679 14.5189 28.6626 14.8295C29.2611 15.1402 29.7081 15.5701 30.0036 16.1193C30.299 16.6648 30.4467 17.2955 30.4467 18.0114C30.4467 18.7235 30.2971 19.3504 29.9979 19.892C29.7024 20.4299 29.2554 20.8485 28.657 21.1477C28.0623 21.447 27.3142 21.5966 26.4126 21.5966H23.2706V20.0852H26.2536C26.8217 20.0852 27.2839 20.0038 27.6399 19.8409C27.9998 19.678 28.263 19.4413 28.4297 19.1307C28.5964 18.8201 28.6797 18.447 28.6797 18.0114C28.6797 17.572 28.5945 17.1913 28.424 16.8693C28.2573 16.5473 27.9941 16.3011 27.6342 16.1307C27.2782 15.9564 26.8104 15.8693 26.2308 15.8693H24.0263V26H22.2706ZM28.0149 20.75L30.8899 26H28.8899L26.0717 20.75H28.0149Z" fill="#EBE5E0"/>
+                </svg>
+                
+              <span class="hidden lg:flex lg:items-center">
+              <div>
+                <span
+                class="ml-4 text-sm py-0 my-0 font-semibold block leading-6 text-gray-900"
+                aria-hidden="true"
+                >Viola Gottlieb</span
+              >
+              <span class="text-sm py-0 my-0 font-light text-[#667185] block">Super admin</span>
+              </div>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  
+              </span>
+            </button>
+          </div>
         </div>
       </div>
-      <div class="flex space-x-4">
-       <div class="w-full">
-        <button
-        class="bg-white border border-gray-300 rounded-md px-4 py-2 flex items-center space-x-2"
-      >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M17.7633 5.95108L17.3519 5.23725C17.0409 4.69739 16.8854 4.42746 16.6207 4.31982C16.356 4.21219 16.0567 4.29712 15.4581 4.46699L14.4413 4.7534C14.0591 4.84154 13.6581 4.79154 13.3092 4.61225L13.0284 4.45027C12.7292 4.25861 12.499 3.97603 12.3716 3.64387L12.0934 2.81272C11.9104 2.2627 11.8189 1.9877 11.601 1.8304C11.3833 1.6731 11.0939 1.6731 10.5153 1.6731H9.58628C9.0077 1.6731 8.71836 1.6731 8.50053 1.8304C8.28274 1.9877 8.19125 2.2627 8.00827 2.81272L7.72997 3.64387C7.60257 3.97603 7.37241 4.25861 7.07317 4.45027L6.79244 4.61225C6.44348 4.79154 6.04252 4.84154 5.66035 4.7534L4.64349 4.46699C4.04487 4.29712 3.74557 4.21219 3.48092 4.31982C3.21627 4.42746 3.06074 4.69739 2.74966 5.23725L2.33834 5.95108C2.04675 6.45712 1.90095 6.71015 1.92925 6.9795C1.95754 7.24885 2.15272 7.4659 2.54308 7.90002L3.40228 8.86059C3.61228 9.12642 3.76137 9.58975 3.76137 10.0063C3.76137 10.4231 3.61233 10.8863 3.40231 11.1522L2.54308 12.1128C2.15272 12.5469 1.95755 12.7639 1.92925 13.0333C1.90095 13.3027 2.04675 13.5557 2.33834 14.0617L2.74965 14.7755C3.06072 15.3153 3.21627 15.5853 3.48092 15.6929C3.74557 15.8006 4.04488 15.7157 4.64351 15.5458L5.66031 15.2593C6.04256 15.1712 6.44359 15.2213 6.79259 15.4006L7.07328 15.5626C7.37245 15.7543 7.60256 16.0368 7.72995 16.3689L8.00827 17.2002C8.19125 17.7502 8.28274 18.0252 8.50053 18.1825C8.71836 18.3398 9.0077 18.3398 9.58628 18.3398H10.5153C11.0939 18.3398 11.3833 18.3398 11.601 18.1825C11.8189 18.0252 11.9104 17.7502 12.0934 17.2002L12.3717 16.3689C12.499 16.0368 12.7291 15.7543 13.0284 15.5626L13.309 15.4006C13.658 15.2213 14.059 15.1712 14.4413 15.2593L15.4581 15.5458C16.0567 15.7157 16.356 15.8006 16.6207 15.6929C16.8854 15.5853 17.0409 15.3153 17.3519 14.7755L17.7633 14.0617C18.0549 13.5557 18.2006 13.3027 18.1724 13.0333C18.144 12.7639 17.9489 12.5469 17.5585 12.1128L16.6993 11.1522C16.4893 10.8863 16.3402 10.4231 16.3402 10.0063C16.3402 9.58975 16.4894 9.12642 16.6993 8.86059L17.5585 7.90002C17.9489 7.4659 18.144 7.24885 18.1724 6.9795C18.2006 6.71015 18.0549 6.45712 17.7633 5.95108Z"
-            stroke="#292929"
-            stroke-width="1.5"
-            stroke-linecap="round"
-          />
-          <path
-            d="M12.931 9.99992C12.931 11.6108 11.6251 12.9166 10.0143 12.9166C8.40346 12.9166 7.09766 11.6108 7.09766 9.99992C7.09766 8.38909 8.40346 7.08325 10.0143 7.08325C11.6251 7.08325 12.931 8.38909 12.931 9.99992Z"
-            stroke="#292929"
-            stroke-width="1.5"
-          />
-        </svg>
-        <span class="text-[#292929] text-sm">Configure table</span>
-      </button>
-       </div>
-       <div>
-        <button
-        class="bg-white border border-gray-300 rounded-md px-4 py-2 flex items-center space-x-2"
-      >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M10.0013 12.0833V3.75M10.0013 12.0833C9.4178 12.0833 8.32758 10.4214 7.91797 10M10.0013 12.0833C10.5848 12.0833 11.6751 10.4214 12.0846 10"
-            stroke="#292929"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M16.6654 13.75C16.6654 15.8183 16.2337 16.25 14.1654 16.25H5.83203C3.7637 16.25 3.33203 15.8183 3.33203 13.75"
-            stroke="#292929"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-
-        <span class="text-[#292929] text-sm">Export</span>
-      </button>
-       </div>
-      <div class="w-full">
-        <button @click="router.push('/dashboard/property/create-steps')"
-        class="bg-[#292929] text-white rounded-md px-4 py-2 flex items-center space-x-2"
-      >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M10 3.33325V16.6666"
-            stroke="white"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M3.33203 10H16.6654"
-            stroke="white"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-
-        <span class="text-sm">New Property</span>
-      </button>
+    </template>
+  <main class="min-h-screen">
+    <div class="p-6">
+      <!-- Filters and Other Actions -->
+      <div class="flex justify-between items-center mb-6">
+        <div class="flex space-x-4">
+          <button @click="propertyFilterModal = true" class="flex items-center gap-x-2 px-4 py-2 text-sm space-x-3 bg-white border-[0.5px] border-gray-300 rounded-md text-[#1D2739]">
+            Filter
+            <img :src="dynamicIcons('gray-filter')" />
+          </button>
+          <div class="relative">
+            <input type="text" placeholder="Search" class="px-4 text-sm py-3 outline-none pl-10 border-[0.5px] border-gray-300 text-[#667185] rounded-md w-64">
+            <img class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" :src="dynamicIcons('gray-search')" />
+          </div>
+        </div>
+        <div class="flex space-x-4">
+          <button @click="propertyConfigModal = true" class="px-4 py-3 bg-white flex items-center gap-x-3 text-[#292929] border-[0.5px] text-sm border-gray-300 rounded-md">
+            <img :src="dynamicIcons('gray-settings')" />
+            Configure table
+          </button>
+          <button class="px-4 py-3 bg-white border-[0.5px] text-sm flex items-center gap-x-3 border-gray-300 rounded-md text-gray-70">
+            <img :src="dynamicIcons('gray-download')" />
+            Export
+          </button>
+          <button @click="router.push('/dashboard/property/create-steps')" class="px-4 py-3 flex text-sm items-center gap-x-3 bg-[#292929] text-white rounded-md hover:bg-gray-800">
+            <img :src="dynamicIcons('white-add')" /> New Property
+          </button>
+        </div>
       </div>
-      </div>
-    </div>
 
-    <!-- Content Section -->
-    <div class="flex items-center justify-center h-full">
-      <div class="text-center">
+      <!-- Table -->
+      <div v-if="properties" class="bg-white rounded-lg">
+        <table class="min-w-full bg-white">
+          <thead class="border-b-[0.5px] border-gray-50">
+            <tr>
+              <th class="py-5 px-5 text-left text-sm font-medium text-gray-500 tracking-wider">Property name</th>
+              <th class="py-5 px-5 text-left text-sm font-medium text-gray-500 tracking-wider">Property type</th>
+              <th class="py-5 px-5 text-left text-sm font-medium text-gray-500 tracking-wider">Location</th>
+              <th class="py-5 px-5 text-left text-sm font-medium text-gray-500 tracking-wider">Agent assigned</th>
+              <th class="py-5 px-5 text-left text-sm font-medium text-gray-500 tracking-wider">Occupants</th>
+              <th class="py-5 px-5 text-left text-sm font-medium text-gray-500 tracking-wider">Bathroom count</th>
+              <th class="py-5 px-5 text-right text-sm font-medium text-gray-500 tracking-wider">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-50">
+            <tr class="cursor-pointer" v-for="(item, index) in properties" :key="index">
+              <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185] font-semibold relative">
+                <p>{{ item.propertyName }}</p>
+                <span v-if="item.status === 'draft'" class="text-[#1D2739] absolute left-0 bottom-0 bg-[#F7D394] text-xs px-3 py-1 rounded-sm">Draft</span>
+              </td>
+              <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185]">{{ item.propertyType }}</td>
+              <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185]">{{ item.location }}</td>
+              <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185]">{{ item.agentAssigned }}</td>
+              <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185]">{{ item.occupants }}</td>
+              <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185]">{{ item.bathroomCount }}</td>
+              <td class="py-5 px-5 whitespace-nowrap text-sm text-right">
+                <button @click="toggleDropdown(index)" class="inline-flex items-center text-sm font-medium text-[#667185] hover:text-black">
+                  <svg width="48" height="44" viewBox="0 0 48 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21.9966 22H22.0041" stroke="#292929" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M27 22H27.0075" stroke="#1D2739" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M17 22H17.0075" stroke="#1D2739" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    
+                </button>
+                <!-- Dropdown Menu -->
+                <div
+                  v-if="activeDropdown === index"
+                  class="absolute right-16 z-50 mt-2 w- bg-white border border-gray-200 rounded-md shadow-lg"
+                >
+                  <ul class="py-1 text-sm text-gray-700 divide divide-y-[0.5px]">
+                    <li>
+                      <a
+                        @click.prevent="handleDropdownClick"
+                        href="#"
+                        class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+                        >
+                        <img :src="dynamicIcons('view-property')" />
+                        View property</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        @click.prevent="handleDropdownClick"
+                        href="#"
+                        class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+                        >
+<img :src="dynamicIcons('edit-property')" />
+                        Edit property</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        @click.prevent="handleDropdownClick"
+                        href="#"
+                        class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+                        >
+<img :src="dynamicIcons('duplicate-property')" />
+                        Duplicate property & edit</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        @click.prevent="handleDropdownClick"
+                        href="#"
+                        class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+                        >
+                        <img :src="dynamicIcons('deactivate-property')" />
+                        Deactivate property</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        @click.prevent="handleDropdownClick"
+                        href="#"
+                        class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+                        >
+                        <img  :src="dynamicIcons('delete-property')"/>
+                        Delete property</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Screen Overlay -->
         <div
-          class="px-4 py-5 sm:p-6 h-80 rounded-lg flex flex-col gap-y-4 justify-center items-center border-gray-50"
-        >
-          <img
-            :src="dynamicIcons('leases-empty-state')"
-            alt="leases empty state"
-            class=""
-          />
-          <p class="text-[#1D2739]">No property added yet</p>
-        </div>
-        <!-- <div
-          class="bg-gray-200 rounded-full p-6 mx-auto w-24 h-24 flex items-center justify-center"
-        >
-        <img :src="dynamicIcons('payment-empty-state')" alt="leases empty state" class="" />
-        </div>
-        <p class="text-gray-500 mt-4">No property added yet</p> -->
+          v-if="activeDropdown !== null"
+          @click="closeDropdown"
+          class="fixed inset-0 z-40 bg-black opacity-25"
+        ></div>
+
+        <!-- Pagination -->
+        <nav class="flex justify-between items-center mt-4 px-4 py-6">
+          <div class="-mt-px flex w-0 flex-1">
+            <button class="px-6 text-sm py-2 bg-[#F9FAFB] text-[#545454] border-[0.5px] rounded-md" disabled>Previous</button>
+          </div>
+          <div class="hidden md:-mt-px md:flex">
+            <a href="#" class="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">1</a>
+            <a href="#" class="inline-flex items-center px-4 pt-4 text-sm font-medium text-[#1D2739]" aria-current="page">2</a>
+            <a href="#" class="inline-flex items-center border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">3</a>
+            <span class="inline-flex items-center border-transparent px-4 pt-4 text-sm font-medium text-gray-500">...</span>
+            <a href="#" class="inline-flex items-center border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">8</a>
+            <a href="#" class="inline-flex items-center border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">9</a>
+            <a href="#" class="inline-flex items-center border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">10</a>
+          </div>
+          <div class="-mt-px flex w-0 flex-1 justify-end">
+            <button class="px-6 text-sm py-2 bg-[#292929] text-white rounded-md">Next</button>
+          </div>
+        </nav>
       </div>
     </div>
   </main>
+
+  <PropertyConfigTableModal v-if="propertyConfigModal" @close="propertyConfigModal = false" />
+  <PropertyFilterModal v-if="propertyFilterModal" @close="propertyFilterModal = false" />
+</Layout>
 </template>
 
 <script lang="ts" setup>
-import { dynamicIcons } from "@/utils/assets";
+import Layout from '@/layouts/dashboard.vue';
+import { dynamicIcons } from '@/utils/assets';
+import { ref } from 'vue';
 const router = useRouter()
-definePageMeta({
-  layout: "dashboard",
-});
+
+const propertyConfigModal = ref(false)
+const propertyFilterModal = ref(false)
+
+const isModalOpen = ref(false);
+
+const openModal = () => {
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
+};
+
+const properties = ref([
+  {
+    propertyName: 'Cummings, Frami and Lynch',
+    propertyType: 'Apartment Building',
+    location: '1747 Tudor Close, Schmittfurt',
+    agentAssigned: 'Jackie Goodwin',
+    occupants: 5,
+    bathroomCount: 6,
+    status: 'active'
+  },
+  {
+    propertyName: 'Raynor - Ziemann',
+    propertyType: 'Duplex',
+    location: '1747 Tudor Close, Schmittfurt',
+    agentAssigned: 'Henry Veum',
+    occupants: 5,
+    bathroomCount: 6,
+    status: 'active'
+  },
+  {
+    propertyName: 'Gibson, Dibbert and Gulgowski',
+    propertyType: 'Studio Apartment',
+    location: '1747 Tudor Close, Schmittfurt',
+    agentAssigned: 'Henry Veum',
+    occupants: 5,
+    bathroomCount: 6,
+    status: 'draft'
+  },
+  {
+    propertyName: 'Langworth, Nader and Langworth',
+    propertyType: 'Townhouse',
+    location: '1747 Tudor Close, Schmittfurt',
+    agentAssigned: 'Jackie Goodwin',
+    occupants: 5,
+    bathroomCount: 6,
+    status: 'draft'
+  },
+  {
+    propertyName: 'Morar - Parisian',
+    propertyType: 'Condominium',
+    location: '1747 Tudor Close, Schmittfurt',
+    agentAssigned: 'Jackie Goodwin',
+    occupants: 5,
+    bathroomCount: 6,
+    status: 'active'
+  },
+  {
+    propertyName: 'Hudson Inc',
+    propertyType: 'Mansion',
+    location: '1747 Tudor Close, Schmittfurt',
+    agentAssigned: 'Henry Veum',
+    occupants: 5,
+    bathroomCount: 6,
+    status: 'active'
+  },
+  {
+    propertyName: 'Cremin and Sons',
+    propertyType: 'Duplex',
+    location: '1747 Tudor Close, Schmittfurt',
+    agentAssigned: 'Henry Veum',
+    occupants: 5,
+    bathroomCount: 6,
+    status: 'draft'
+  },
+  {
+    propertyName: 'Cremin and Sons',
+    propertyType: 'Mansion',
+    location: '1747 Tudor Close, Schmittfurt',
+    agentAssigned: 'Jackie Goodwin',
+    occupants: 5,
+    bathroomCount: 6,
+    status: 'draft'
+  },
+]);
+
+// State to manage which dropdown is active
+const activeDropdown = ref<number | null>(null);
+
+// Function to toggle the dropdown visibility
+const toggleDropdown = (index: number) => {
+  if (activeDropdown.value === index) {
+    activeDropdown.value = null;
+  } else {
+    activeDropdown.value = index;
+  }
+};
+
+// Function to close the dropdown
+const closeDropdown = () => {
+  activeDropdown.value = null;
+};
+
+// Function to handle dropdown option click
+const handleDropdownClick = () => {
+  closeDropdown();
+  // Additional logic for handling the selected option can be added here
+};
 </script>
+
+<style scoped>
+/* Additional custom styles if needed */
+</style>
