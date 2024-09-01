@@ -1,157 +1,207 @@
 <template>
-    <div class="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-      <div class="max-w-2xl w-full bg-white shadow-lg rounded-lg p-6">
-        <!-- Search Bar with Icons -->
-        <div class="flex items-center mb-4">
-          <div class="relative flex-grow">
-            <input
-              type="text"
-              placeholder="Search"
-              class="w-full p-3 pl-10 bg-gray-100 rounded-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="absolute left-3 top-3 h-5 w-5 text-gray-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M8 4a4 4 0 100 8 4 4 0 000-8zM16 16l4 4"
-              />
-            </svg>
-          </div>
-          <button class="ml-4 p-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 focus:outline-none">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-          </button>
-          <button class="ml-2 p-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 focus:outline-none">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 5h12M9 3v2m0 4v12m3-12v12m6-12v12"
-              />
-            </svg>
-          </button>
-        </div>
-  
-        <!-- Messages List -->
-        <div class="space-y-4">
-          <!-- Message Item -->
-          <div class="flex items-start p-4 bg-gray-50 rounded-lg shadow-sm">
-            <img
-              src="https://via.placeholder.com/40"
-              alt="User Avatar"
-              class="w-10 h-10 rounded-full object-cover"
-            />
-            <div class="ml-4 flex-grow">
-              <h4 class="font-semibold text-gray-800">John Walton</h4>
-              <p class="text-gray-600">I'm interested in renting a room in the apartment</p>
-            </div>
-            <div class="flex items-center">
-              <span class="text-gray-500 text-sm mr-4">08 Feb</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 text-green-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-          </div>
-  
-          <!-- Message Item -->
-          <div class="flex items-start p-4 bg-gray-50 rounded-lg shadow-sm">
-            <img
-              src="https://via.placeholder.com/40"
-              alt="User Avatar"
-              class="w-10 h-10 rounded-full object-cover"
-            />
-            <div class="ml-4 flex-grow">
-              <h4 class="font-semibold text-gray-800">Jason Co-living space Broadcast</h4>
-              <p class="text-gray-600">
-                I will send the address shortly. Kindly schedule through the platform.
-              </p>
-            </div>
-            <div class="flex items-center">
-              <span class="text-gray-500 text-sm mr-4">08 Feb</span>
-              <div class="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
-            </div>
-          </div>
-  
-          <!-- Message Item -->
-          <div class="flex items-start p-4 bg-gray-50 rounded-lg shadow-sm">
-            <img
-              src="https://via.placeholder.com/40"
-              alt="User Avatar"
-              class="w-10 h-10 rounded-full object-cover"
-            />
-            <div class="ml-4 flex-grow">
-              <h4 class="font-semibold text-gray-800">John Walton</h4>
-              <p class="text-gray-600">I'm interested in renting a room in the apartment</p>
-            </div>
-            <div class="flex items-center">
-              <span class="text-gray-500 text-sm mr-4">08 Feb</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 text-green-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
+<main class="min-h-screen">
+
+  <div class="max-w-2xl mx-auto mt-10 p-4 bg-white rounded-lg shadow-sm relative">
+    <!-- Search bar with icons -->
+    <div class="flex items-center space-x-4 mb-6">
+      <div class="relative w-full">
+        <input
+          type="text"
+          placeholder="Search"
+          class="w-full pl-10 pr-4 py-3 text-sm rounded-lg bg-[#EAEAEA] outline-none"
+        />
+        <svg
+          class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3.5a7.5 7.5 0 016.15 12.15z"
+          />
+        </svg>
+      </div>
+      <button class="p-2 rounded-lg bg-[#EAEAEA]">
+        <img :src="dynamicIcons('gray-add')" />
+      </button>
+     <div class="relative">
+      <button @click="toggleDropdown"  class="p-2 rounded-lg bg-[#EAEAEA]">
+        <img :src="dynamicIcons('gray-filter')" />
+      </button>
+      <div v-if="isDropdownOpen" class="absolute right-0 mt-2 w-60 bg-white border border-gray-50 rounded-xl z-10">
+        <div v-for="(filter, index) in filters" :key="index" @click="selectFilter(filter)" class="p-4 flex border-b last:border-b-0 border-gray-50 items-center hover:bg-gray-100 cursor-pointer">
+          <img :src="filter.avatar" alt="User Avatar" class="h-10 w-10 rounded-full object-cover mr-3" />
+          <div>
+            <p class="font-medium text-sm text-[#1D2739]">{{ filter.name }}</p>
+            <p class="text-[#1D2739] text-xs">{{ filter.role }}</p>
           </div>
         </div>
       </div>
+     </div>
     </div>
+
+    <!-- User list -->
+    <div class="rounded-lg">
+      <div v-for="(user, index) in users" :key="index"  class="flex border-b border-gray-50 last:border-0 items-center justify-between p-4 bg-white">
+        <div class="flex items-center space-x-4">
+          <img :src="dynamicImage('avatar.png')" alt="User Avatar" class="h-10 w-10 rounded-full object-cover" />
+          <div>
+            <p class="font-medium text-sm text-[#1D2739]">{{ user.name }}</p>
+            <p class="text-[#667185] text-xs">{{ user.message }}</p>
+          </div>
+        </div>
+        <div class="flex flex-col items-end space-y-1">
+          <p  class="text-xs text-[#667185]">{{ user.date }}</p>
+          <svg
+            v-if="user.status === 'completed'"
+            class="h-5 w-5 text-green-500"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+          <span
+            v-if="user.status === 'active'"
+            class="h-2 w-2 rounded-full bg-green-500"
+          ></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
   </template>
   
-  <script setup lang="ts">
+  <script lang="ts" setup>
+  import { ref, onMounted } from 'vue';
+  import { dynamicImage, dynamicIcons } from "@/utils/assets";
+  const router  = useRouter()
   definePageMeta({
      layout: 'dashboard'
 })
-
-  // No additional script logic is needed for this static UI
-  </script>
   
-  <style scoped>
-  /* No additional styles are necessary; Tailwind CSS handles all styling */
-  </style>
+  const isDropdownOpen = ref(false);
+  
+  const toggleDropdown = () => {
+    isDropdownOpen.value = !isDropdownOpen.value;
+  };
+  
+  const closeDropdown = (event) => {
+    if (event.target.closest('.relative')) return;
+    isDropdownOpen.value = false;
+  };
+  
+  onMounted(() => {
+    document.addEventListener('click', closeDropdown);
+  });
+  
+  const selectFilter = (filter) => {
+    console.log('Selected filter:', filter);
+    isDropdownOpen.value = false;
+  };
+  
+  const users = ref([
+    {
+      avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+      name: 'John Walton',
+      message: "I'm interested in renting a room in the apartment",
+      date: '08 Feb',
+      status: 'completed',
+    },
+    {
+      avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
+      name: 'Jason Co-living space Broadcast',
+      message: 'I will send the address shortly. Kindly schedule through the platform.',
+      date: '08 Feb',
+      status: 'active',
+    },
+    {
+      avatar: 'https://randomuser.me/api/portraits/men/42.jpg',
+      name: 'John Walton',
+      message: "I'm interested in renting a room in the apartment",
+      date: '08 Feb',
+      status: 'completed',
+    },
+    {
+      avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+      name: 'John Walton',
+      message: "I'm interested in renting a room in the apartment",
+      date: '08 Feb',
+      status: 'completed',
+    },
+    {
+      avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
+      name: 'Jason Co-living space Broadcast',
+      message: 'I will send the address shortly. Kindly schedule through the platform.',
+      date: '08 Feb',
+      status: 'active',
+    },
+    {
+      avatar: 'https://randomuser.me/api/portraits/men/42.jpg',
+      name: 'John Walton',
+      message: "I'm interested in renting a room in the apartment",
+      date: '08 Feb',
+      status: 'completed',
+    },
+    {
+      avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+      name: 'John Walton',
+      message: "I'm interested in renting a room in the apartment",
+      date: '08 Feb',
+      status: 'completed',
+    },
+    {
+      avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
+      name: 'Jason Co-living space Broadcast',
+      message: 'I will send the address shortly. Kindly schedule through the platform.',
+      date: '08 Feb',
+      status: 'active',
+    },
+    {
+      avatar: 'https://randomuser.me/api/portraits/men/42.jpg',
+      name: 'John Walton',
+      message: "I'm interested in renting a room in the apartment",
+      date: '08 Feb',
+      status: 'completed',
+    },
+  ]);
+  
+  const filters = ref([
+    {
+      avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+      name: 'Jeffery McKenzie',
+      role: 'Super admin',
+    },
+    {
+      avatar: 'https://randomuser.me/api/portraits/men/42.jpg',
+      name: 'Susie Roob',
+      role: 'Property manager',
+    },
+    {
+      avatar: 'https://randomuser.me/api/portraits/men/46.jpg',
+      name: 'Lonnie Wisoky',
+      role: 'Property manager',
+    },
+    {
+      avatar: 'https://randomuser.me/api/portraits/men/52.jpg',
+      name: 'Stacey Towne',
+      role: 'Property manager',
+    },
+    {
+      avatar: 'https://randomuser.me/api/portraits/men/62.jpg',
+      name: 'John Walton',
+      role: 'Property manager',
+    },
+  ]);
+  </script>
   

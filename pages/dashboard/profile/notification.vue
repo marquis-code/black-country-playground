@@ -1,13 +1,13 @@
 <template>
-  <div class="min-h-screen bg-gray-50 flex items-center justify-center">
-    <div class="max-w-lg w-full bg-white shadow-lg rounded-lg p-8">
+  <div class="min-h-screen  flex items-center justify-center">
+    <div class="max-w-xl w-full  p-8">
       <!-- Notification Header -->
-      <h2 class="text-2xl font-semibold text-gray-800 mb-6">Notification</h2>
+      <h2 class="text-lg font-medium text-[#171717] mb-6">Notification</h2>
 
       <!-- Email Notification Section -->
-      <div class="border-t border-gray-200 pt-4">
-        <div class="flex justify-between items-center mb-4">
-          <span class="text-gray-800 font-medium">Email Notification</span>
+      <div class="">
+        <div class="flex justify-between items-center mb-4 bg-white rounded-lg px-5 py-4">
+          <span class="font text-sm text-[#1D2739]">Email Notification</span>
           <label class="switch">
             <input type="checkbox" />
             <span class="slider round"></span>
@@ -15,7 +15,7 @@
         </div>
 
         <!-- Notifications List -->
-        <div class="bg-gray-50 rounded-lg p-4 space-y-4">
+        <div class="bg-white rounded-lg p-5 space-y-5">
           <CoreNotificationToggle label="New Property Listing Created" />
           <CoreNotificationToggle label="Property Listing Updated" />
           <CoreNotificationToggle label="New Visitation Scheduled" />
@@ -30,9 +30,9 @@
       </div>
 
       <!-- Push/In-app Notification Section -->
-      <div class="border-t border-gray-200 pt-4 mt-6">
-        <div class="flex justify-between items-center mb-4">
-          <span class="text-gray-800 font-medium">Push/In-app Notification</span>
+      <div class="mt-6">
+        <div class="flex justify-between items-center mb-4 bg-white rounded-lg px-5 py-4">
+          <span class="font text-sm text-[#1D2739]">Push/In-app Notification</span>
           <label class="switch">
             <input type="checkbox" checked />
             <span class="slider round"></span>
@@ -40,7 +40,7 @@
         </div>
 
         <!-- Notifications List -->
-        <div class="bg-gray-50 rounded-lg p-4 space-y-4">
+        <div class="bg-white rounded-lg p-5 space-y-5">
           <CoreNotificationToggle label="New Property Listing Created" checked />
           <CoreNotificationToggle label="Property Listing Updated" checked />
           <CoreNotificationToggle label="New Visitation Scheduled" checked />

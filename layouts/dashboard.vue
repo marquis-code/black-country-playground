@@ -308,7 +308,7 @@
 
     <div class="lg:pl-72">
       <div
-        class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8"
+        class="sticky border-4 top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8"
       >
         <button @click="isOpen = true" type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden">
           <span class="sr-only">Open sidebar</span>
@@ -327,8 +327,7 @@
             />
           </svg>
         </button>
-
-        <!-- Separator -->
+        
         <div class="h-6 w-px bg-gray-900/10 lg:hidden" aria-hidden="true"></div>
 
         <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
@@ -375,14 +374,10 @@
                 />
               </svg>
             </NuxtLink>
-
-            <!-- Separator -->
             <div
               class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10"
               aria-hidden="true"
             ></div>
-
-            <!-- Profile dropdown -->
             <div class="relative">
               <button
                 type="button"

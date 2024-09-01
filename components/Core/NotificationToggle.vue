@@ -1,6 +1,6 @@
 <template>
     <div class="flex justify-between items-center">
-      <span class="text-gray-800 font-medium">{{ label }}</span>
+      <span class="text-[#1D2739] font text-sm">{{ label }}</span>
       <label class="switch">
         <input type="checkbox" v-model="isChecked" @change="emitChange" />
         <span class="slider round"></span>
