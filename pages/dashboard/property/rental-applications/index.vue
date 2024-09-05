@@ -6,7 +6,7 @@
                     <h4 class="text-[#1D2739] text-lg font-semibold">Property Management</h4>
                     <button @click="router.push('/dashboard/property')" class="bg-[#5B8469] font-medium px-4 py-3 rounded-md text-white">Listings</button>
                     <button @click="router.push('/dashboard/property/rental-applications')" class="text-[#292929] font-medium bg-[#F0F2F5] px-4 py-3 rounded-md">Rental applications</button>
-                    <button @click="router.push('/dashboard/insights')" class="text-[#292929] font-medium bg-[#F0F2F5] px-4 py-3 rounded-md">Lease Documents</button>
+                    <button @click="router.push('/dashboard/property/lease-documents')" class="text-[#292929] font-medium bg-[#F0F2F5] px-4 py-3 rounded-md">Lease Documents</button>
                   </div>
                   <div class="flex items-center gap-x-4 lg:gap-x-6">
                     <NuxtLink
@@ -121,6 +121,7 @@
       
       <script setup lang="ts">
       import Layout from '@/layouts/dashboard.vue';
+      const router = useRouter()
       const applications = [
         {
           applicant: {
