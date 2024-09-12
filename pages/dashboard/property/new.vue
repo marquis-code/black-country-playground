@@ -21,7 +21,7 @@
           >
             Cancel
           </button>
-          <button
+          <button @click="handleSaveAndExit"
             class="bg-gray-900 text-sm text-white px-4 py-3 rounded-md hover:bg-gray-800"
           >
             Save & exit
@@ -101,6 +101,8 @@
             :currentStep="basicPropertyInformationStep"
           />
           <CreatePropertyForm
+            :formData="payload"
+            @updateFormData="handleBasicPropertyInformationFormData"
             v-if="activeParentStep === 1 && basicPropertyInformationStep === 1"
           >
             <template #action-buttons>
@@ -123,10 +125,12 @@
             </template>
           </CreatePropertyForm>
           <MapSection
+            class="z-10"
+            @locationSelected="handleLocationSelected"
             v-if="activeParentStep === 1 && basicPropertyInformationStep === 2"
           >
             <template #action-buttons>
-              <div class="flex justify-between mt-4">
+              <div class="flex justify-between mt-4 z-50">
                 <button
                   @click="handlePreviousStep"
                   class="bg-[#EBE5E0] text-[#292929] text-sm font-semibold px-4 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
@@ -152,6 +156,8 @@
             :currentStep="propertyDetailsStep"
           />
           <PropertyDetails
+          @updateCommonAreas="handleCommonAreas"
+          @updateIsFurnished="handlePropertyFurnished"
             v-if="activeParentStep === 2 && propertyDetailsStep === 1"
           >
             <template #action-buttons>
@@ -174,6 +180,7 @@
             </template>
           </PropertyDetails>
           <RoomDetails
+          @emitRoomData="handleRoomData"
             v-if="activeParentStep === 2 && propertyDetailsStep === 2"
           >
             <template #action-buttons>
@@ -255,6 +262,7 @@
             :currentStep="finalizeStep"
           />
           <ReviewDetails
+          @updateRules="handleUpdatedRules"
             v-if="activeParentStep === 4 && finalizeStep === 1"
           >
             <template #action-buttons>
@@ -296,7 +304,7 @@
               </div>
             </template>
           </PublishListing>
-          <AssignProperty v-if="activeParentStep === 4 && finalizeStep === 3">
+          <AssignProperty :agents="agentsList" :loading="loadingAgents" v-if="activeParentStep === 4 && finalizeStep === 3">
             <template #action-buttons>
               <div class="flex justify-between mt-4">
                 <button
@@ -321,7 +329,11 @@
 </template>
 
 <script lang="ts" setup>
+import { use_create_property } from '@/composables/modules/property/create'
 import LayoutWithoutSidebar from "@/layouts/dashboardWithoutSidebar.vue";
+import { useFetchAgents } from '@/composables/modules/agents/fetch'
+const { payload, create_property, loading, setPropertyData } = use_create_property()
+const { agentsList, loading: loadingAgents } = useFetchAgents()
 const steps = ref([
   { id: 1, title: "Basic Property Information" },
   { id: 2, title: "Detailed Property Information" },
@@ -409,4 +421,130 @@ function resetSubSteps() {
 function handleSubmit() {
   router.push('/dashboard/property/success')
 }
+
+const incomingData = ref({})
+
+function handleBasicPropertyInformationFormData(data: any) {
+  // handle the data emitted from the child component here
+  console.log('Data received from child component:', data)
+  incomingData.value = data
+  sessionStorage.setItem('property', JSON.stringify(incomingData.value))
+}
+const handleLocationSelected = (data: any) => {
+  console.log('Location data received:', data)
+
+  // Retrieve existing session data from sessionStorage (if any)
+  const storedData = sessionStorage.getItem('property')
+  let propertyData = storedData ? JSON.parse(storedData) : {}
+
+  // Update the session storage with new location data
+  propertyData = {
+    ...propertyData, // merge with existing data
+    latitude: data.latitude,
+    longitude: data.longitude,
+    address: data.fullAddress
+  }
+
+  // Store the updated data back to session storage
+  sessionStorage.setItem('property', JSON.stringify(propertyData))
+
+  console.log('Updated session storage with location:', propertyData)
+}
+
+const handleCommonAreas = (data: any) => {
+console.log(data, 'sara')
+const storedData = sessionStorage.getItem('property')
+let propertyData = storedData ? JSON.parse(storedData) : {}
+
+// Update the session storage with new location data
+propertyData = {
+  ...propertyData, // merge with existing data
+  commonAreas: data
+}
+
+// Store the updated data back to session storage
+sessionStorage.setItem('property', JSON.stringify(propertyData))
+}
+const handlePropertyFurnished = (data: any) => {
+  
+// Retrieve existing session data from sessionStorage (if any)
+const storedData = sessionStorage.getItem('property')
+let propertyData = storedData ? JSON.parse(storedData) : {}
+
+// Update the session storage with new location data
+propertyData = {
+  ...propertyData, // merge with existing data
+  isFurnishedCommonArea: data
+}
+
+// Store the updated data back to session storage
+sessionStorage.setItem('property', JSON.stringify(propertyData))
+
+
+}
+
+const roomsArray = ref([]) as any
+
+const handleRoomData = (room: any) => {
+  console.log("Room data received:", room);
+  // Push or update the received room data in the array
+  const roomIndex = roomsArray.value.findIndex(r => r.name === room.name);
+  if (roomIndex !== -1) {
+    roomsArray.value[roomIndex] = room;
+  } else {
+    roomsArray.value.push(room);
+  }
+  
+  console.log(roomsArray.value, 'room array')
+
+  const storedData = sessionStorage.getItem('property')
+let propertyData = storedData ? JSON.parse(storedData) : {}
+
+// Update the session storage with new location data
+propertyData = {
+  ...propertyData, // merge with existing data
+  rooms: roomsArray.value
+}
+
+// Store the updated data back to session storage
+sessionStorage.setItem('property', JSON.stringify(propertyData))
+};
+
+const goToNextStep = () => {
+  console.log("Moving to the next step...");
+  // Add logic here for moving to the next step in the property creation flow
+};
+
+const handleUpdatedRules = (updatedRules: any) => {
+  const storedData = sessionStorage.getItem('property')
+let propertyData = storedData ? JSON.parse(storedData) : {}
+propertyData = {
+  ...propertyData,
+  rules: updatedRules
+}
+sessionStorage.setItem('property', JSON.stringify(propertyData))
+  console.log('Updated Rules:', updatedRules)
+}
+
+
+const handleSaveAndExit = () => {
+  const storedData = sessionStorage.getItem('property')
+ let propertyData = storedData ? JSON.parse(storedData) : {}
+ setPropertyData(propertyData)
+ create_property()
+}
+
+
+// const roomsArray = ref([]);
+
+// const handleRoomData = (room: any) => {
+//   console.log("Room data received:", room);
+//   // Push the received room data into the array
+//   roomsArray.value.push(room);
+// };
+
+// const handleRoomDataUpdate = (updatedRooms: any) => {
+//   console.log("Updated Room Data:", updatedRooms);
+//   // You can now handle the updated room data here
+// };
 </script>

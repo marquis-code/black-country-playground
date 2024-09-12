@@ -4,14 +4,14 @@
         <!-- Filter Row -->
         <div class="flex items-center space-x-4 mb-6">
           <!-- Dropdown Filter -->
-          <div>
+          <di                                                                                                                                                             v>
             <select class="px-4 py-3 bg-[#F9FAFB] border-[0.5px] text-sm border-gray-300 rounded-lg">
               <option>All Tenants</option>
               <option>Tenant 1</option>
               <option>Tenant 2</option>
               <!-- Add more options as needed -->
             </select>
-          </div>
+          </di>
           
           <!-- Search Input -->
           <div class="relative flex-1">

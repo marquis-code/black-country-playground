@@ -1,87 +1,77 @@
 <template>
   <min>
     <div class="py-6">
-        <!-- Room Selection -->
         <div class="flex space-x-4 mb-4">
           <button
             v-for="room in rooms"
-            :key="room.id"
-            @click="setActiveRoom(room.id)"
+            :key="room.name"
+            @click="setActiveRoom(room.name)"
             :class="{
-              'bg-[#EBE5E0]': activeRoom === room.id,
-              'bg-white': activeRoom !== room.id,
+              'bg-[#EBE5E0]': activeRoom === room.name,
+              'bg-white': activeRoom !== room.name,
             }"
             class="px-4 py-2 border-[0.5px] text-[#1D2739] text-sm rounded-lg"
           >
             {{ room.name }}
           </button>
         </div>
-    
-        <!-- Furnished Question -->
         <div class="mb-4 flex justify-between items-center">
           <h3 class="mb-2 text-[#1D2739]">Is the room furnished?</h3>
-          <div class="flex space-x-4">
+          <div class="flex space-x-2">
             <button
-              @click="isFurnished = true"
               :class="{
-                'bg-black text-white': isFurnished,
-                'bg-gray-200 text-black': !isFurnished,
+                'bg-black text-white': isRoomFurnished,
+                'bg-white border border-gray-300 text-gray-700': !isRoomFurnished
               }"
-              class="px-5 py-1.5 border rounded-lg text-sm"
+              class="text-sm px-6 py-2 rounded-md"
+              @click="setFurnishedStatus(true)"
             >
               Yes
             </button>
             <button
-              @click="isFurnished = false"
               :class="{
-                'bg-black text-white': !isFurnished,
-                'bg-gray-200 text-black': isFurnished,
+                'bg-black text-white': !isRoomFurnished,
+                'bg-white border border-gray-300 text-gray-700': isRoomFurnished
               }"
-              class="px-5 py-1.5 border rounded-lg text-sm"
+              class="text-sm px-6 py-2 rounded-md"
+              @click="setFurnishedStatus(false)"
             >
               No
             </button>
           </div>
         </div>
-    
-        <!-- Interior Area -->
         <div class="mb-4">
           <h3 class="mb-2">Interior area</h3>
-          <div class="grid grid-cols-3 gap-4">
-            <div
+
+          <div class="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+            <label
               v-for="item in interiorItems"
               :key="item"
-              class="border text-[#171717] hover:border-[#5B8469] cursor-pointer text-sm rounded-lg px-4 py-3 flex items-center gap-x-1"
+              :for="item"
+              class="flex text-sm cursor-pointer pl-3 py-3 items-start gap-4 rounded-lg border transition"
+              :class="{
+                'bg-green-50 border-green-500': isSelected(item, 'interior'),
+                'border-gray-200': !isSelected(item, 'interior')
+              }"
             >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g clip-path="url(#clip0_5289_73155)">
-                <g opacity="0.8">
-                <g clip-path="url(#clip1_5289_73155)">
-                <rect width="20" height="20" rx="4" fill="#292929"/>
-                <path d="M0.192595 14.7782C0.192595 14.1829 1.45745 13.9055 2.31235 13.9055C2.55481 13.9055 2.9619 13.9543 2.9619 14.2805C2.9619 14.9187 1.6461 15.2669 0.970074 15.2669C0.611338 15.2669 0.192595 15.1388 0.192595 14.7782ZM3.39144 14.2805C3.39144 13.8915 3.10795 13.476 2.31235 13.476C1.43054 13.476 -0.237077 13.7482 -0.237077 14.7782C-0.237077 15.3275 0.248142 15.6964 0.970074 15.6964C1.81432 15.6964 3.39144 15.2812 3.39144 14.2805ZM-2.55469 18.6281C-1.45546 19.0225 0.21159 19.4316 2.39825 19.4316C5.84286 19.4316 10.4224 19.0265 10.4224 15.5243C10.4224 14.1852 9.58204 13.5934 8.90673 13.1178C8.31286 12.6995 7.94693 12.4144 7.90937 11.8469C7.88462 11.4728 8.06075 11.1335 8.26494 10.7408C8.49388 10.3003 8.75333 9.80112 8.75333 9.16984C8.75333 8.31307 8.11788 7.39084 6.7228 7.39084C5.61436 7.39084 4.59183 7.82425 3.50943 8.28329C2.11737 8.87355 0.53925 9.54268 -1.69072 9.54268C-1.99881 9.54268 -2.28589 9.52167 -2.55469 9.48425V7.1242C-2.044 7.18765 -1.52989 7.21952 -1.01528 7.2196C1.65272 7.2196 3.5231 6.31996 5.17331 5.52622C6.5789 4.85005 7.9065 4.21157 9.52923 4.21157C11.7723 4.21157 12.9458 5.48233 12.9458 6.73755C12.9458 7.58078 12.5083 8.09435 12.0453 8.63785C11.5681 9.1979 11.0747 9.77709 11.0747 10.7164C11.0747 11.618 11.4288 12.1025 11.7713 12.571C12.171 13.1178 12.5844 13.6835 12.5844 15.0269C12.5844 17.5906 10.1575 19.1775 7.79239 20.1152H-2.55469V18.6281ZM-2.55469 16.5168C-1.49543 16.8984 -0.378129 17.0937 0.747755 17.0943C2.69641 17.0943 5.96547 16.6643 5.96547 13.7851C5.96547 12.9381 5.28527 11.745 3.77291 11.745C2.75483 11.745 1.95261 12.0127 1.17686 12.2715C0.387723 12.5347 -0.357519 12.7834 -1.33501 12.7834C-1.76196 12.7834 -2.17106 12.7099 -2.55469 12.5929V10.4374C-2.26794 10.4711 -1.97945 10.4879 -1.69072 10.4876C0.731497 10.4876 2.47625 9.74787 3.87824 9.15343C4.91286 8.71469 5.80632 8.33581 6.7228 8.33581C7.52301 8.33581 7.80821 8.76664 7.80821 9.16984C7.80821 9.57016 7.62273 9.92703 7.42631 10.305C7.19089 10.758 6.92411 11.2715 6.96627 11.9095C7.03577 12.9559 7.74058 13.4524 8.36236 13.8904C8.98529 14.3291 9.47727 14.6755 9.47727 15.5243C9.47727 16.796 8.7434 18.4865 2.39825 18.4865C0.11633 18.4865 -1.56453 18.0051 -2.55469 17.6133V16.5168ZM-2.55469 13.0441C-2.16861 13.15 -1.76052 13.2131 -1.33501 13.2131C-0.287729 13.2131 0.52601 12.9415 1.31284 12.6791C2.09032 12.4196 2.82448 12.1747 3.77291 12.1747C5.10496 12.1747 5.53594 13.2597 5.53594 13.7851C5.53594 15.669 3.88025 16.6647 0.747755 16.6647C-0.594374 16.6647 -1.73174 16.3657 -2.55469 16.0533V13.0441ZM-2.55469 4.83853C-2.16734 4.92467 -1.77182 4.96867 -1.37502 4.96977C1.13498 4.96977 3.0645 3.91846 5.10727 2.80555C7.1673 1.68316 9.29755 0.522625 12.1069 0.522625C13.4075 0.522625 14.5158 0.898771 15.3116 1.61049C16.0843 2.30148 16.4928 3.24314 16.4928 4.3336C16.4928 5.47772 15.7903 6.50731 15.0467 7.59719C14.2386 8.78189 13.4026 10.0067 13.4026 11.4928C13.4026 14.641 15.9538 16.4834 20.4194 16.5836V17.7153C20.4002 17.7169 20.3813 17.7211 20.3632 17.7278C17.1244 18.9779 15.0311 16.7472 14.9373 16.6427C14.9171 16.6145 14.8903 16.5916 14.8593 16.5759C14.8283 16.5603 14.7939 16.5525 14.7592 16.553C14.7244 16.5536 14.6904 16.5626 14.6599 16.5792C14.6294 16.5958 14.6033 16.6196 14.584 16.6485C14.5594 16.686 14.5475 16.7305 14.5499 16.7754H14.5484C14.5484 16.7813 14.5327 17.3908 13.9984 18.289C13.7058 18.781 13.2131 19.425 12.3941 20.1152H8.89233C9.38777 19.881 9.91904 19.5935 10.4264 19.2475C12.1434 18.0765 13.014 16.6565 13.014 15.0269C13.014 13.5432 12.538 12.892 12.1181 12.3174C11.7887 11.8669 11.5042 11.4777 11.5042 10.7164C11.5042 9.93523 11.9258 9.44036 12.3722 8.91644C12.8653 8.33768 13.3753 7.73907 13.3753 6.73755C13.3753 5.26879 12.0542 3.78189 9.52923 3.78189C7.8085 3.78189 6.43803 4.44109 4.98711 5.13899C3.29963 5.95071 1.55473 6.78992 -1.01528 6.78992C-1.59835 6.78992 -2.12256 6.74603 -2.55469 6.68991V4.83853ZM-2.55469 0.82826C-2.06112 1.16743 -1.3294 1.45652 -0.265138 1.45652C2.12931 1.45652 3.91781 0.387938 5.81136 -0.743526C7.73569 -1.89326 9.7255 -3.08215 12.4503 -3.08215C14.9169 -3.08215 17.0486 -2.21373 18.786 -0.501205C19.6022 0.303324 20.1343 1.11534 20.4194 1.61279V4.19229C20.4146 4.20746 20.4106 4.22288 20.4074 4.23848C20.306 4.73119 19.524 5.3675 18.6962 6.04108C17.1212 7.32263 15.1611 8.91744 15.1701 11.4073C15.1739 12.4546 15.6169 13.3998 16.3856 14.0008C17.1027 14.5611 17.9871 14.7486 18.8493 14.7486C19.3981 14.7484 19.9375 14.6722 20.4194 14.5683V16.1542C16.2268 16.0569 13.8323 14.3704 13.8323 11.4928C13.8323 10.1394 14.6301 8.97011 15.4015 7.83937C16.1492 6.74344 16.9224 5.61025 16.9224 4.3336C16.9224 1.83684 14.9421 0.092947 12.1069 0.092947C9.18805 0.092947 7.00915 1.2801 4.90178 2.4284C2.90837 3.51439 1.02547 4.54009 -1.37502 4.54009C-1.7939 4.54009 -2.19034 4.48397 -2.55469 4.39734V0.82826ZM20.4194 7.54783C20.1422 7.77648 19.8754 7.98283 19.6174 8.18227C18.5018 9.04422 17.6207 9.72514 17.6207 10.9897C17.6207 11.5706 17.8423 12.0204 18.2612 12.2904C18.5982 12.5075 19.0237 12.589 19.4537 12.589C19.7861 12.589 20.1206 12.5401 20.4194 12.4677V13.5989C18.9136 13.9622 17.7201 13.8443 16.9677 13.2561C16.4287 12.8348 16.1178 12.1596 16.1153 11.4038C16.1078 9.36554 17.7997 7.98873 19.2926 6.77409C19.7045 6.43896 20.0923 6.12267 20.4194 5.80926V7.54783ZM20.4194 12.0235C19.7983 12.1897 18.9837 12.2446 18.4939 11.9294C18.1954 11.737 18.0504 11.4296 18.0504 10.9897C18.0504 9.93609 18.8178 9.34295 19.88 8.52216C20.0609 8.38299 20.2407 8.2424 20.4194 8.1004V12.0235ZM20.4194 20.1152H13.0474C14.3478 18.9039 14.7728 17.806 14.9104 17.2087C15.1917 17.4523 15.6607 17.8002 16.3036 18.0824C17.2116 18.4808 18.6568 18.8128 20.4194 18.1651V20.1152Z" fill="white" fill-opacity="0.9"/>
-                </g>
-                </g>
-                </g>
-                <defs>
-                <clipPath id="clip0_5289_73155">
-                <rect width="20" height="20" fill="white"/>
-                </clipPath>
-                <clipPath id="clip1_5289_73155">
-                <rect width="20" height="20" rx="4" fill="white"/>
-                </clipPath>
-                </defs>
-                </svg>
-                
-              {{ item }}
-            </div>
-            <button @click="showManualInput = !showManualInput" class="px-4 py-2 text-sm flex gap-x-2 items-center justify-center">
-                <img :src="dynamicIcons('gray-add')" />
-              Add manually
-            </button>
+            <img src="@/assets/icons/roomItems.svg" alt="" />
+              <div class="flex items-center">
+                <input
+                  type="checkbox"
+                  class="size-4 hidden rounded border-gray-300"
+                  :id="item"
+                  :checked="isSelected(item, 'interior')"
+                  @change="toggleSelection(item, 'interior')"
+                />
+              </div>
+              <div>
+                <strong class="font-medium text-sm text-[#171717]">
+                  {{ item }}
+                </strong>
+              </div>
+            </label>
           </div>
         </div>
-    
-        <!-- Manual Input Field -->
         <div v-if="showManualInput" class="mt-4">
           <input
             v-model="manualInput"
@@ -109,27 +99,17 @@
               v-for="option in availabilityOptions"
               :key="option.value"
               :class="{
-                'border-[#5B8469] border': availability === option.value,
+                'border-[#5B8469] border bg-gray-100': availability === option.value,
                 'border-gray-200 border': availability !== option.value,
               }"
               class="rounded-lg text-[#1D2739] text-sm px-6 py-2 cursor-pointer"
-              @click="availability = option.value"
+              @click="handleAvailabilityOptionClick(option)"
             >
               {{ option.label }}
             </div>
           </div>
       </div>
-
-      <!-- Conditionally Render the UI -->
       <div v-if="availability === 'now'" class="mt-4 space-y-4">
-       <!-- <div>
-        <label class="block text-sm font-medium">Set price</label>
-        <input
-          type="text"
-          placeholder="e.g 1000"
-          class="mt-1 block w-full bg-[#E4E7EC] text-sm px-3 py-3.5 border-[0.5px] outline-none border-gray-50 rounded-md"
-        />
-       </div> -->
        <div class="w-full mt-4">
         <label class="block text-sm font-medium mb-2">Set price</label>
         <div class="flex items-center bg-[#E4E7EC] border-[0.5px] border-gray-50 rounded-md px-3 py-2">
@@ -164,19 +144,14 @@
           </div>
       </div>
 
-      <div v-else-if="availability === 'not-available'" class="mt-4">
+      <div v-else-if="availability === 'unavailable'" class="mt-4">
         <label class="block text-sm font-medium">Enter occupant’s name</label>
         <input
           type="text"
+          v-model="occupantsName"
           placeholder="e.g Rita"
           class="mt-1 block w-full bg-[#E4E7EC] text-sm px-3 py-3.5 border-[0.5px] outline-none border-gray-50 rounded-md"
         />
-        <!-- <label class="block text-sm font-medium mt-4">Set price</label>
-        <input
-          type="text"
-          placeholder="e.g 1000"
-          class="mt-1 block w-full bg-[#E4E7EC] text-sm px-3 py-3.5 border-[0.5px] outline-none border-gray-50 rounded-md"
-        /> -->
         <div class="w-full mt-4">
             <label class="block text-sm font-medium mb-2">Set price</label>
             <div class="flex items-center bg-[#E4E7EC] border-[0.5px] border-gray-50 rounded-md px-3 py-2">
@@ -211,9 +186,10 @@
           </div>
       </div>
 
-      <div v-else-if="availability === 'available-from'" class="mt-4">
+      <div v-else-if="availability === 'available_from_date'" class="mt-4">
         <label class="block text-sm font-medium">Enter availability date</label>
         <input
+         v-model="availabilityDate"
           type="date"
           class="mt-1 block w-full bg-[#E4E7EC] text-sm px-3 py-3.5 border-[0.5px] outline-none border-gray-50 rounded-md"
         />
@@ -221,6 +197,7 @@
           >Enter occupant’s name</label
         >
         <input
+         v-model="occupantsName"
           type="text"
           placeholder="e.g Rita"
           class="mt-1 block w-full bg-[#E4E7EC] text-sm px-3 py-3.5 border-[0.5px] outline-none border-gray-50 rounded-md"
@@ -267,28 +244,41 @@
 import { ref } from "vue";
 import { dynamicIcons } from '@/utils/assets'
 const availability = ref("now");
+const activeRoom = ref('Room 1') as any;
 
 // Room data
-const rooms = [
-  { id: 1, name: 'Room 1' },
-  { id: 2, name: 'Room 2' },
-  { id: 3, name: 'Room 3' },
-  { id: 4, name: 'Room 4' },
-  { id: 5, name: 'Room 5' },
-];
+const rooms = ref([
+  { id: 1, name: 'Room 1', isMaster: false },
+  { id: 2, name: 'Room 2', isMaster: false },
+  { id: 3, name: 'Room 3', isMaster: false },
+  { id: 4, name: 'Room 4', isMaster: false },
+  { id: 5, name: 'Room 5', isMaster: false },
+]);
 
-// Reactive states
-const activeRoom = ref<number>(1);
+// Room features, availability, and form data
+const roomData = ref<any[]>(rooms.value.map((room: any) => ({
+  name: room.name,
+  availability: "available_now",
+  availableFrom: "",
+  occupantName: "",
+  isMaster: false,
+  images: [],
+  isFurnished: true,
+  rentAmount: 0,
+  currencyCode: "NGN",
+  rentFrequency: "monthly",
+  features: [],
+})));
+
+const availabilityDate = ref('')
+const occupantsName = ref('')
+const price = ref<string>('');
 const isFurnished = ref<boolean>(false);
 const showManualInput = ref<boolean>(false);
 const manualInput = ref<string>('');
-    const applyToAllRooms = ref<boolean>(false);
+const applyToAllRooms = ref<boolean>(false);
 const setAsMasterBedroom = ref<boolean>(false);
-// Reactive states for dropdown and input
 const priceFrequency = ref<string>('monthly');
-const price = ref<string>('');
-
-// Interior area items
 const interiorItems = ref<string[]>([
   'Bedframe',
   'Mattress',
@@ -301,16 +291,225 @@ const interiorItems = ref<string[]>([
   'Ceiling/standing fan',
   'Water heating',
 ]);
+// Emit event to notify parent component
+const emit = defineEmits(['updateCommonAreas', 'updateIsFurnished', 'updateRoomData', 'emitRoomData']);
+
+const handleAvailabilityOptionClick = (option: any) => {
+  availability.value = option.value
+}
 // Availability options array
 const availabilityOptions = [
   { label: 'Available Now', value: 'now' },
-  { label: 'Not available', value: 'not-available' },
-  { label: 'Available from (specify date)', value: 'available-from' },
+  { label: 'Not available', value: 'unavailable' },
+  { label: 'Available from (specify date)', value: 'available_from_date' },
 ];
 
-// Method to set active room
-const setActiveRoom = (roomId: number) => {
-  activeRoom.value = roomId;
+// // Load room data when a room is selected
+// const loadRoomData = (roomName: string) => {
+//   const room = roomData.value.find(r => r.name === roomName);
+//   if (room) {
+//     availability.value = room.availability;
+//     availabilityDate.value = room.availableFrom;
+//     occupantsName.value = room.occupantName;
+//     price.value = room.rentAmount;
+//     priceFrequency.value = room.rentFrequency;
+//     isRoomFurnished.value = room.isFurnished;
+//     setAsMasterBedroom.value = room.isMaster;
+//     roomFeatures.value = room.features;
+//   }
+// };
+
+// // Method to update room data when user inputs data
+// const updateRoomData = (roomName: string) => {
+//   const room = roomData.value.find((r: any) => r.name === roomName);
+//   if (room) {
+//     room.availability = availability.value;
+//     room.availableFrom = availability.value === 'available_from_date' ? availabilityDate.value : '';
+//     room.occupantName = occupantsName.value;
+//     room.isMaster = setAsMasterBedroom.value;
+//     room.rentAmount = price.value;
+//     room.rentFrequency = priceFrequency.value;
+//     room.isFurnished = isRoomFurnished.value;
+//     room.features = roomFeatures.value;
+//   }
+// };
+
+// Method to update room data when the user inputs data and before switching rooms
+// const updateRoomData = (roomName: string) => {
+//   const roomIndex = roomData.value.findIndex((r: any) => r.name === roomName);
+//   if (roomIndex !== -1) {
+//     // Update the existing room's data
+//     roomData.value[roomIndex] = {
+//       name: roomName,
+//       availability: availability.value,
+//       availableFrom: availability.value === 'available_from_date' ? availabilityDate.value : '',
+//       occupantName: occupantsName.value,
+//       isMaster: setAsMasterBedroom.value,
+//       rentAmount: parseInt(price.value),
+//       rentFrequency: priceFrequency.value,
+//       isFurnished: isRoomFurnished.value,
+//       features: roomFeatures.value,
+//       images: [] // You can update this to reflect actual images
+//     };
+    
+//     // Emit the updated roomData array to the parent component
+//     emit('updateRoomData', roomData.value);
+//   }
+// };
+// // Load room data when a room is selected
+// const loadRoomData = (roomName: string) => {
+//   const room = roomData.value.find(r => r.name === roomName);
+//   if (room) {
+//     availability.value = room.availability;
+//     availabilityDate.value = room.availableFrom;
+//     occupantsName.value = room.occupantName;
+//     price.value = room.rentAmount.toString();
+//     priceFrequency.value = room.rentFrequency;
+//     isRoomFurnished.value = room.isFurnished;
+//     setAsMasterBedroom.value = room.isMaster;
+//     roomFeatures.value = room.features;
+//   }
+// };
+
+// Method to update room data when the user inputs data and before switching rooms
+// const updateRoomData = (roomName: string) => {
+//   const roomIndex = roomData.value.findIndex((r: any) => r.name === roomName);
+//   if (roomIndex !== -1) {
+//     // Create room data object
+//     const room = {
+//       name: roomName,
+//       availability: availability.value,
+//       availableFrom: availability.value === 'available_from_date' ? availabilityDate.value : '',
+//       occupantName: occupantsName.value,
+//       isMaster: setAsMasterBedroom.value,
+//       rentAmount: parseInt(price.value),
+//       rentFrequency: priceFrequency.value,
+//       isFurnished: isRoomFurnished.value,
+//       features: roomFeatures.value,
+//       images: [] // You can update this to reflect actual images
+//     };
+    
+//     // Emit the room data for this specific room
+//     emit('emitRoomData', room);
+
+//     // Clear the current room's form data after emitting
+//     clearRoomFormData();
+//   }
+// };
+
+// Method to update room data
+const saveRoomData = (roomName: string) => {
+  const roomIndex = roomData.value.findIndex((r: any) => r.name === roomName);
+  if (roomIndex !== -1) {
+    // Update the existing room's data
+    roomData.value[roomIndex] = {
+      name: roomName,
+      availability: availability.value,
+      availableFrom: availability.value === 'available_from_date' ? availabilityDate.value : '',
+      occupantName: occupantsName.value,
+      isMaster: setAsMasterBedroom.value,
+      rentAmount: parseInt(price.value),
+      rentFrequency: priceFrequency.value,
+      isFurnished: isRoomFurnished.value,
+      features: roomFeatures.value,
+      images: [] // Update this with actual image data if available
+    };
+    
+    // Emit the room data for this specific room
+    emit('emitRoomData', roomData.value[roomIndex]);
+  }
+};
+
+
+// Load room data when a room is selected
+const loadRoomData = (roomName: string) => {
+  const room = roomData.value.find(r => r.name === roomName);
+  if (room) {
+    availability.value = room.availability;
+    availabilityDate.value = room.availableFrom;
+    occupantsName.value = room.occupantName;
+    price.value = room.rentAmount.toString();
+    priceFrequency.value = room.rentFrequency;
+    isRoomFurnished.value = room.isFurnished;
+    setAsMasterBedroom.value = room.isMaster;
+    roomFeatures.value = room.features;
+  }
+  // const room = roomData.value.find(r => r.name === roomName);
+  // if (room) {
+  //   availability.value = room.availability;
+  //   availabilityDate.value = room.availableFrom;
+  //   occupantsName.value = room.occupantName;
+  //   price.value = room.rentAmount.toString();
+  //   priceFrequency.value = room.rentFrequency;
+  //   isRoomFurnished.value = room.isFurnished;
+  //   setAsMasterBedroom.value = room.isMaster;
+  //   roomFeatures.value = room.features;
+  // }
+};
+
+// Clear form data after room is emitted
+const clearRoomFormData = () => {
+  availability.value = "now";
+  availabilityDate.value = "";
+  occupantsName.value = "";
+  price.value = "";
+  priceFrequency.value = "monthly";
+  isRoomFurnished.value = false;
+  setAsMasterBedroom.value = false;
+  roomFeatures.value = [];
+};
+
+const setActiveRoom = (roomName: any) => {
+  // activeRoom.value = roomName;
+
+  // // Update the current room's data before switching
+  // updateRoomData(activeRoom.value);
+  // // Load the new room's data
+  // loadRoomData(roomName);
+
+   // Save the current room's data before switching
+   saveRoomData(activeRoom.value);
+  
+  // Clear the form data to prevent overwriting
+  clearRoomFormData();
+  
+  // Load the new room's data
+  loadRoomData(roomName);
+
+  // Set the active room to the new one
+  activeRoom.value = roomName;
+}
+
+// Save and exit function to emit data and move to the next step
+const saveAndExit = () => {
+  // Save the current room data
+  saveRoomData(activeRoom.value);
+
+  // Clear the form data
+  clearRoomFormData();
+
+  // You can add logic here to navigate to the next step or emit a signal
+  // Example: emit('nextStep');
+};
+
+// Function to toggle selection
+const toggleSelection = (item: string, type: string) => {
+  const index = roomFeatures.value.findIndex(
+    (area: any) => area.name === item && area.type === type
+  );
+  if (index > -1) {
+    // Deselect the item
+    roomFeatures.value.splice(index, 1);
+  } else {
+    // Select the item
+    roomFeatures.value.push({
+      name: item,
+      type,
+      images: [], // Start with empty images
+    });
+  }
+  // Emit updated array to parent
+  emit("updateCommonAreas", roomFeatures.value);
 };
 
 // Method to add manual item
@@ -320,6 +519,22 @@ const addManualItem = () => {
     manualInput.value = ''; // Clear the input field after adding
     showManualInput.value = false; // Hide the input field after adding
   }
+};
+
+const roomFeatures = ref<any[]>([]);
+
+// Function to check if an item is already selected
+const isSelected = (item: string, type: string) => {
+  return roomFeatures.value.some(
+    (area: any) => area.name === item && area.type === type
+  );
+};
+
+
+const isRoomFurnished = ref(true);
+const setFurnishedStatus = (status: boolean) => {
+  isRoomFurnished.value = status;
+  emit("updateIsFurnished", isRoomFurnished.value);
 };
 </script>
 
@@ -358,3 +573,4 @@ select {
     min-width: 0; /* Ensures that the input can shrink */
   }
 </style>
+

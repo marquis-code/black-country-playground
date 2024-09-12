@@ -1,18 +1,6 @@
 <template>
   <main>
     <div class="container mx-auto p-4">
-        <!-- Tabs -->
-        <!-- <div class="flex space-x-4 mb-4">
-          <button
-            v-for="tab in tabs"
-            :key="tab"
-            @click="activeTab = tab"
-            :class="activeTab === tab ? 'bg-gray-300' : 'bg-gray-200'"
-            class="px-4 py-2 rounded-md"
-          >
-            {{ tab }}
-          </button>
-        </div> -->
       <div class="space-y-2 mb-10">
           <h2 class="text-[#1D2739] font-light">Click to add as as much pictures as you want to for each common area or space.</h2>
           <p class="text-sm">Accepts <span class="font-semibold text-[#1D2739]">jpg</span> & <span class="font-semibold text-[#1D2739]"> png</span> <span class="font-semibold text-[#1D2739]">2MB</span> size max/each</p>
@@ -20,36 +8,9 @@
       </div>
         <!-- Image Upload Sections for Each Room -->
         <section class="mt-3">
-        <div v-if="activeTab === 'Room 1'" class="grid grid-cols-2 gap-4">
-          <ImageUpload label="Living room" />
-          <ImageUpload label="Dining room" />
-          <ImageUpload label="Laundry area" />
-          <ImageUpload label="Kitchen" />
-        </div>
-        <div v-else-if="activeTab === 'Room 2'" class="grid grid-cols-2 gap-4">
-          <ImageUpload label="Living room" />
-          <ImageUpload label="Dining room" />
-          <ImageUpload label="Laundry area" />
-          <ImageUpload label="Kitchen" />
-        </div>
-        <div v-else-if="activeTab === 'Room 3'" class="grid grid-cols-2 gap-4">
-          <ImageUpload label="Living room" />
-          <ImageUpload label="Dining room" />
-          <ImageUpload label="Laundry area" />
-          <ImageUpload label="Kitchen" />
-        </div>
-        <div v-else-if="activeTab === 'Room 4'" class="grid grid-cols-2 gap-4">
-          <ImageUpload label="Living room" />
-          <ImageUpload label="Dining room" />
-          <ImageUpload label="Laundry area" />
-          <ImageUpload label="Kitchen" />
-        </div>
-        <div v-else-if="activeTab === 'Room 5'" class="grid grid-cols-2 gap-4">
-          <ImageUpload label="Living room" />
-          <ImageUpload label="Dining room" />
-          <ImageUpload label="Laundry area" />
-          <ImageUpload label="Kitchen" />
-        </div>
+          <div class="grid grid-cols-2 gap-4">
+            <ImageUpload @update:images="handleImages" v-for="item in commonAreas" :key="item.name" :label="item.name" location="common-areas" />
+          </div>
         </section>
       </div>
       <slot name="action-buttons"></slot>
@@ -61,6 +22,17 @@
   
   const tabs = ref(['Room 1', 'Room 2', 'Room 3', 'Room 4', 'Room 5'])
   const activeTab = ref('Room 1')
+  const commonAreas  = ref([]) as any
+
+  function handleImages(images: any) {
+  console.log(images); // This will log the base64 array of images
+}
+
+  onMounted(() => {
+    const storedData = sessionStorage.getItem('property')
+    let propertyData = storedData ? JSON.parse(storedData) : {}
+    commonAreas.value = propertyData.commonAreas
+  })
   
   // ImageUpload Component Logic
   const fileInput = ref<HTMLInputElement | null>(null)

@@ -76,7 +76,11 @@
             <img :src="dynamicIcons('gray-filter')" />
           </button>
           <div class="relative">
-            <input type="text" placeholder="Search" class="px-4 text-sm py-3 outline-none pl-10 border-[0.5px] border-gray-300 text-[#667185] rounded-md w-64">
+            <input
+            v-model="searchQuery"
+            placeholder="Search properties..."
+            @input="handleSearch"
+            type="text" class="px-4 text-sm py-3 outline-none pl-10 border-[0.5px] border-gray-300 text-[#667185] rounded-md w-64">
             <img class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" :src="dynamicIcons('gray-search')" />
           </div>
         </div>
@@ -94,11 +98,10 @@
           </button>
         </div>
       </div>
-
       <!-- Table -->
-      <div v-if="properties" class="bg-white rounded-lg">
-        <table class="min-w-full bg-white">
-          <thead class="border-b-[0.5px] border-gray-50">
+      <div class="bg-white rounded-lg">
+        <table v-if="properties" class="min-w-full bg-white">
+          <thead  class="border-b-[0.5px] border-gray-50">
             <tr>
               <th class="py-5 px-5 text-left text-sm font-medium text-gray-500 tracking-wider">Property name</th>
               <th class="py-5 px-5 text-left text-sm font-medium text-gray-500 tracking-wider">Property type</th>
@@ -110,16 +113,16 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-50">
-            <tr class="cursor-pointer" v-for="(item, index) in properties" :key="index">
+            <tr class="cursor-pointer" v-for="(item, index) in propertiesList" :key="index">
               <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185] font-semibold relative">
-                <p>{{ item.propertyName }}</p>
+                <p>{{ item.name ?? 'Nil' }}</p>
                 <span v-if="item.status === 'draft'" class="text-[#1D2739] absolute left-0 bottom-0 bg-[#F7D394] text-xs px-3 py-1 rounded-sm">Draft</span>
               </td>
-              <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185]">{{ item.propertyType }}</td>
-              <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185]">{{ item.location }}</td>
-              <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185]">{{ item.agentAssigned }}</td>
-              <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185]">{{ item.occupants }}</td>
-              <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185]">{{ item.bathroomCount }}</td>
+              <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185]">{{ item.propertyType ?? 'Nil' }}</td>
+              <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185]">{{ item.address ?? 'Nil' }}</td>
+              <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185]">{{ item?.agent?.firstName }} {{ item?.agent?.lastName }}</td>
+              <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185]">{{ item.occupants ?? 'Nil' }}</td>
+              <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185]">{{ item.bathroomCount  ?? 'Nil' }}</td>
               <td class="py-5 px-5 whitespace-nowrap text-sm text-right">
                 <button @click="toggleDropdown(index)" class="inline-flex items-center text-sm font-medium text-[#667185] hover:text-black">
                   <svg width="48" height="44" viewBox="0 0 48 44" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -191,7 +194,10 @@
             </tr>
           </tbody>
         </table>
-
+        <div v-if="loadingProperties" class="h-32 bg-slate-200 rounded animate-pulse w-full m-3"></div>
+        <div v-if="!loadingProperties && propertiesList.length === 0">
+          No properties found.
+        </div>
         <!-- Screen Overlay -->
         <div
           v-if="activeDropdown !== null"
@@ -200,7 +206,7 @@
         ></div>
 
         <!-- Pagination -->
-        <nav class="flex justify-between items-center mt-4 px-4 py-6">
+        <nav v-if="properties && !loadingProperties" class="flex justify-between items-center mt-4 px-4 py-6">
           <div class="-mt-px flex w-0 flex-1">
             <button class="px-6 text-sm py-2 bg-[#F9FAFB] text-[#545454] border-[0.5px] rounded-md" disabled>Previous</button>
           </div>
@@ -217,7 +223,8 @@
             <button class="px-6 text-sm py-2 bg-[#292929] text-white rounded-md">Next</button>
           </div>
         </nav>
-      </div>
+      </div>   
+
     </div>
   </main>
 
@@ -227,10 +234,21 @@
 </template>
 
 <script lang="ts" setup>
+import { useGetProperties } from '@/composables/modules/property/fetchProperties'
 import Layout from '@/layouts/dashboard.vue';
 import { dynamicIcons } from '@/utils/assets';
-import { ref } from 'vue';
 const router = useRouter()
+
+const { 
+  getProperties, 
+  loadingProperties, 
+  propertiesList, 
+  searchQuery, 
+  currentPage, 
+  totalPages, 
+  debouncedGetProperties 
+
+ } = useGetProperties()
 
 const propertyConfigModal = ref(false)
 const propertyFilterModal = ref(false)
@@ -342,6 +360,25 @@ const handleDropdownClick = () => {
   closeDropdown();
   // Additional logic for handling the selected option can be added here
 };
+
+// Handle search input change
+const handleSearch = () => {
+  debouncedGetProperties()
+}
+
+// Navigate to the previous page
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--
+  }
+}
+
+// Navigate to the next page
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++
+  }
+}
 </script>
 
 <style scoped>

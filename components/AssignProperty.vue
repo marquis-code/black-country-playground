@@ -8,10 +8,10 @@
                     class="w-full bg-[#F0F2F5] text-sm py-3 px-4 border-[0.5px] outline-none border-gray-100 rounded-md cursor-pointer" />
                 <div v-if="showDropdown" ref="dropdown"
                     class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1">
-                    <ul>
-                        <li v-for="user in users" :key="user" @click="selectUser(user)"
+                    <ul v-if="!loading">
+                        <li v-for="user in agents" :key="user.id" @click="selectUser(user)"
                             class="px-4 py-3 text-sm border-b-[0.5px] last:border-b-0 hover:bg-gray-50 cursor-pointer">
-                            {{ user }}
+                            {{ user.firstName }} {{ user.lastName }}
                         </li>
                     </ul>
                 </div>
@@ -22,7 +22,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+const props = defineProps({
+    agents: {
+        type: Array,
+        default: () => []
+    },
+    loading: {
+        type: Boolean,
+        default: false
+    }
+})
 
 const selectedUser = ref('');
 const showDropdown = ref(false);
@@ -39,6 +48,17 @@ function toggleDropdown() {
 }
 
 function selectUser(user: string) {
+    const storedData = sessionStorage.getItem('property')
+    let propertyData = storedData ? JSON.parse(storedData) : {}
+
+    // Update the session storage with new location data
+    propertyData = {
+        ...propertyData, // merge with existing data
+        agentId: user?.id
+    }
+
+    // Store the updated data back to session storage
+    sessionStorage.setItem('property', JSON.stringify(propertyData))
     selectedUser.value = user;
     showDropdown.value = false;
 }
