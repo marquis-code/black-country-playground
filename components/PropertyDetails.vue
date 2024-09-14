@@ -36,13 +36,13 @@
 
           <div class="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
             <label
-              v-for="(item, index) in interiorItems"
-              :key="item"
-              :for="item"
+              v-for="(item, index) in interiorAreas"
+              :key="item.name"
+              :for="item.name"
               class="flex cursor-pointer items-start gap-4 rounded-lg p-4 border transition"
               :class="{
-                'bg-green-50 border-green-500': isSelected(item, 'interior'),
-                'border-gray-200': !isSelected(item, 'interior')
+                'bg-green-50 border-green-500': isSelected(item.name, 'interior'),
+                'border-gray-200': !isSelected(item.name, 'interior')
               }"
             >
             <svg
@@ -77,13 +77,13 @@
                 <input
                   type="checkbox"
                   class="size-4 hidden rounded border-gray-300"
-                  :id="item"
-                  :checked="isSelected(item, 'interior')"
-                  @change="toggleSelection(item, 'interior')"
+                  :id="item.name"
+                  :checked="isSelected(item.name, 'interior')"
+                  @change="toggleSelection(item.name, 'interior')"
                 />
               </div>
               <div>
-                <strong class="font-medium text-[#171717]">{{ item }}</strong>
+                <strong class="font-medium text-[#171717]">{{ item.name }}</strong>
               </div>
             </label>
           </div>
@@ -118,13 +118,13 @@
 
           <div class="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
             <label
-              v-for="(item, index) in exteriorItems"
-              :key="item"
-              :for="item"
+              v-for="(item, index) in exteriorAreas"
+              :key="item.name"
+              :for="item.name"
               class="flex cursor-pointer items-start gap-4 rounded-lg p-4 border transition"
               :class="{
-                'bg-green-50 border-green-500': isSelected(item, 'exterior'),
-                'border-gray-200': !isSelected(item, 'exterior')
+                'bg-green-50 border-green-500': isSelected(item.name, 'exterior'),
+                'border-gray-200': !isSelected(item.name, 'exterior')
               }"
             >
             <svg
@@ -159,13 +159,13 @@
                 <input
                   type="checkbox"
                   class="size-4 hidden rounded border-gray-300"
-                  :id="item"
-                  :checked="isSelected(item, 'exterior')"
-                  @change="toggleSelection(item, 'exterior')"
+                  :id="item.name"
+                  :checked="isSelected(item.name, 'exterior')"
+                  @change="toggleSelection(item.name, 'exterior')"
                 />
               </div>
               <div>
-                <strong class="font-medium text-[#171717]">{{ item }}</strong>
+                <strong class="font-medium text-[#171717]">{{ item.name }}</strong>
               </div>
             </label>
           </div>
@@ -201,35 +201,25 @@
 <script lang="ts" setup>
 import { ref, defineEmits } from "vue";
 
-// Property items
-const interiorItems = ref([
-  "Living room",
-  "Living room furniture",
-  "Kitchen",
-  "Kitchen appliances",
-  "Dining area",
-  "Dining furniture",
-  "Window coverings",
-  "Air conditioning",
-  "Ceiling/standing fan",
-  "Study/Workspace",
-  "Bathroom",
-  "Laundry room",
-  "Storage area",
-  "Basement",
-]);
+const props = defineProps({
+  commonAreasList: {
+    type: Array,
+    default: () => []
+  },
+  interiorAreas: {
+    type: Array,
+    default: () => []
+  },
+  exteriorAreas: {
+    type: Array,
+    default: () => []
+  },
+  loading: {
+    type: Boolean,
+    default: false
+  }
+})
 
-const exteriorItems = ref([
-  "Fitness center",
-  "Pool",
-  "Rooftop terrace",
-  "Courtyards",
-  "Garden",
-  "Parking space/garage",
-  "Balcony",
-  "Patio",
-  "Fenced/gated",
-]);
 
 // State for dynamically adding items
 const showInteriorInput = ref(false);
@@ -246,7 +236,7 @@ const emit = defineEmits(['updateCommonAreas', 'updateIsFurnished']);
 // Add manual interior item
 const addInteriorItem = () => {
   if (newInteriorItem.value.trim()) {
-    interiorItems.value.push(newInteriorItem.value.trim());
+    props.interiorAreas.push(newInteriorItem.value.trim());
     newInteriorItem.value = "";
     showInteriorInput.value = false;
   }
@@ -255,7 +245,7 @@ const addInteriorItem = () => {
 // Add manual exterior item
 const addExteriorItem = () => {
   if (newExteriorItem.value.trim()) {
-    exteriorItems.value.push(newExteriorItem.value.trim());
+    props.exteriorAreas.push(newExteriorItem.value.trim());
     newExteriorItem.value = "";
     showExteriorInput.value = false;
   }
@@ -271,7 +261,7 @@ const isSelected = (item: string, type: string) => {
 // Function to toggle selection
 const toggleSelection = (item: string, type: string) => {
   const index = commonAreas.value.findIndex(
-    (area) => area.name === item && area.type === type
+    (area: any) => area.name === item && area.type === type
   );
   if (index > -1) {
     // Deselect the item

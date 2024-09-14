@@ -29,4 +29,8 @@ $_fetch_properties: (page = 1, perPage = 20, searchQuery = '') => {
     const url = "/house-types";
     return GATEWAY_ENDPOINT.get(url);
   },
+  $_fetch_common_areas: () => {
+    const url = "/common-areas";
+    return GATEWAY_ENDPOINT.get(url);
+  },
 };

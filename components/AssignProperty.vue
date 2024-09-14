@@ -34,15 +34,7 @@ const props = defineProps({
 })
 
 const selectedUser = ref('');
-const showDropdown = ref(false);
-const users = ref([
-    'Olga Effertz',
-    'Joy Adetunji',
-    'Gayle Bailey',
-    'Patrick Harvey',
-    'Robyn Lueilwitz',
-]);
-
+const showDropdown = ref(false)
 function toggleDropdown() {
     showDropdown.value = !showDropdown.value;
 }
@@ -59,7 +51,8 @@ function selectUser(user: string) {
 
     // Store the updated data back to session storage
     sessionStorage.setItem('property', JSON.stringify(propertyData))
-    selectedUser.value = user;
+    console.log(user, 'user here')
+    selectedUser.value = `${user.firstName} ${user.lastName}`;
     showDropdown.value = false;
 }
 

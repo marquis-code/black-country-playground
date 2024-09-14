@@ -21,6 +21,7 @@ export const use_auth_login = () => {
     const res = (await auth_api.$_login({
       email: credential.email.value,
       password: credential.password.value,
+      app: 'admin-app'
     })) as any;
     console.log(res, "response gere");
     loading.value = false;

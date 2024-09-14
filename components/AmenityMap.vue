@@ -1,5 +1,6 @@
 <template>
     <div class="container mx-auto -mt-28 relative">
+      {{loading}}
       <!-- Search input and buttons -->
       <div class="fixed top-45 left-[1068px] transform -translate-x-1/2 z-50 w-11/12 max-w-3xl bg-white rounded-lg shadow-lg p-4">
         <div class="flex items-center">

@@ -158,6 +158,10 @@
           <PropertyDetails
           @updateCommonAreas="handleCommonAreas"
           @updateIsFurnished="handlePropertyFurnished"
+          :commonAreasList="commonAreasList"
+          :interiorAreas="interiorAreas"
+          :exteriorAreas="exteriorAreas"
+          :loading="loadingCommonAreas"
             v-if="activeParentStep === 2 && propertyDetailsStep === 1"
           >
             <template #action-buttons>
@@ -331,11 +335,13 @@
 </template>
 
 <script lang="ts" setup>
+import { useGetCommonAreas } from '@/composables/modules/property/fetchCommonAreas'
 import { use_create_property } from '@/composables/modules/property/create'
 import LayoutWithoutSidebar from "@/layouts/dashboardWithoutSidebar.vue";
 import { useFetchAgents } from '@/composables/modules/agents/fetch'
 const { payload, create_property, loading, setPropertyData } = use_create_property()
 const { agentsList, loading: loadingAgents } = useFetchAgents()
+const { loading: loadingCommonAreas, commonAreasList, interiorAreas, exteriorAreas } = useGetCommonAreas()
 const steps = ref([
   { id: 1, title: "Basic Property Information" },
   { id: 2, title: "Detailed Property Information" },
