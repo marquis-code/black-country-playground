@@ -137,7 +137,7 @@ onMounted(() => {
 
 </style> -->
 
- <template>
+ <!-- <template>
   <main>
     <div class="relative h-screen">
 
@@ -375,4 +375,13 @@ const selectFilteredLocation = (item) => {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-  </style>
+  </style>  -->
+
+  <template>
+   <main class="relative h-screen">
+    <section>
+      <AmenityMap />
+    </section>
+     <slot name="action-buttons"></slot>
+   </main>
+  </template>

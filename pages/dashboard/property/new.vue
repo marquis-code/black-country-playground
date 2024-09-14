@@ -285,6 +285,7 @@
             </template>
           </ReviewDetails>
           <PublishListing
+          @updateQuestions="handleQuestions"
             v-if="activeParentStep === 4 && finalizeStep === 2"
           >
             <template #action-buttons>
@@ -315,9 +316,10 @@
                 </button>
                 <button
                   @click="handleSubmit"
-                  class="bg-[#292929] text-white text-sm font-semibold px-6 py-2.5 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
+                  :disabled="loading"
+                  class="bg-[#292929] disabled:cursor-not-allowed disabled:opacity-25 text-white text-sm font-semibold px-6 py-2.5 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
                 >
-                  Publish
+                  {{loading ? 'processing...' : 'Publish'}}
                 </button>
               </div>
             </template>
@@ -419,7 +421,41 @@ function resetSubSteps() {
 }
 
 function handleSubmit() {
-  router.push('/dashboard/property/success')
+  const storedData = sessionStorage.getItem('property');
+  if (storedData) {
+    const propertyData = JSON.parse(storedData);
+
+    // Map the session data to the payload structure
+    const mappedData = {
+      name: propertyData.name || "",
+      description: propertyData.description || "",
+      houseTypeId: propertyData.houseTypeId || "",
+      flooringTypeId: propertyData.flooringTypeId || "",
+      size: propertyData.size || 0,
+      sizeUnit: propertyData.sizeUnit || "",
+      bedroomCount: propertyData.bedroomCount || 0,
+      bathroomCount: propertyData.bathroomCount || 0,
+      floorNumber: propertyData.floorNumber || 0,
+      longitude: propertyData.longitude || null,
+      latitude: propertyData.latitude || null,
+      images: propertyData.images || [],
+      address: propertyData.address || "",
+      isFurnishedCommonArea: propertyData.isFurnishedCommonArea || false,
+      commonAreas: propertyData.commonAreas || [],
+      neighbouringLandmarks: propertyData.neighbouringLandmarks || [],
+      rooms: propertyData.rooms || [],
+      agentId: propertyData.agentId || "",
+      rules: propertyData.rules || [],
+    };
+
+    // Set the mapped data to the payload
+    setPropertyData(mappedData);
+
+    // Call create_property to create the property
+    create_property();
+  } else {
+    console.error('No property data found in session storage');
+  }
 }
 
 const incomingData = ref({})
@@ -535,16 +571,13 @@ const handleSaveAndExit = () => {
 }
 
 
-// const roomsArray = ref([]);
-
-// const handleRoomData = (room: any) => {
-//   console.log("Room data received:", room);
-//   // Push the received room data into the array
-//   roomsArray.value.push(room);
-// };
-
-// const handleRoomDataUpdate = (updatedRooms: any) => {
-//   console.log("Updated Room Data:", updatedRooms);
-//   // You can now handle the updated room data here
-// };
+const handleQuestions = (questionsData: any) => {
+  const storedData = sessionStorage.getItem('property')
+let propertyData = storedData ? JSON.parse(storedData) : {}
+propertyData = {
+  ...propertyData,
+  questions: questionsData
+}
+sessionStorage.setItem('property', JSON.stringify(propertyData))
+}
 </script>

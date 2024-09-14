@@ -38,7 +38,7 @@ export const use_create_property = () => {
 
   const create_property = async () => {
     loading.value = true;
-    const res = (await property_api.$_create(payload)) as any;
+    const res = (await property_api.$_create(payload.value)) as any;
 
     loading.value = false;
     if (res.type !== "ERROR") {
