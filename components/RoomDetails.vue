@@ -45,13 +45,13 @@
 
           <div class="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
             <label
-              v-for="item in interiorItems"
-              :key="item"
-              :for="item"
+              v-for="item in interiorAreas"
+              :key="item.name"
+              :for="item.name"
               class="flex text-sm cursor-pointer pl-3 py-3 items-start gap-4 rounded-lg border transition"
               :class="{
-                'bg-green-50 border-green-500': isSelected(item, 'interior'),
-                'border-gray-200': !isSelected(item, 'interior')
+                'bg-green-50 border-green-500': isSelected(item.name, 'interior'),
+                'border-gray-200': !isSelected(item.name, 'interior')
               }"
             >
             <img src="@/assets/icons/roomItems.svg" alt="" />
@@ -59,9 +59,9 @@
                 <input
                   type="checkbox"
                   class="size-4 hidden rounded border-gray-300"
-                  :id="item"
-                  :checked="isSelected(item, 'interior')"
-                  @change="toggleSelection(item, 'interior')"
+                  :id="item.name"
+                  :checked="isSelected(item.name, 'interior')"
+                  @change="toggleSelection(item.name, 'interior')"
                 />
               </div>
               <div>
@@ -255,6 +255,17 @@ const rooms = ref([
   { id: 5, name: 'Room 5', isMaster: false },
 ]);
 
+const props = defineProps({
+  interiorAreas: {
+    type: Array,
+    default: () => []
+  },
+  loading: {
+    type: Boolean,
+    default: false
+  }
+})
+
 // Room features, availability, and form data
 const roomData = ref<any[]>(rooms.value.map((room: any) => ({
   name: room.name,
@@ -279,18 +290,18 @@ const manualInput = ref<string>('');
 const applyToAllRooms = ref<boolean>(false);
 const setAsMasterBedroom = ref<boolean>(false);
 const priceFrequency = ref<string>('monthly');
-const interiorItems = ref<string[]>([
-  'Bedframe',
-  'Mattress',
-  'Desk & chair',
-  'Shelves/bookcases',
-  'Wardrobes/closet',
-  'Bathroom/Restroom',
-  'Window coverings',
-  'Air conditioning',
-  'Ceiling/standing fan',
-  'Water heating',
-]);
+// const interiorItems = ref<string[]>([
+//   'Bedframe',
+//   'Mattress',
+//   'Desk & chair',
+//   'Shelves/bookcases',
+//   'Wardrobes/closet',
+//   'Bathroom/Restroom',
+//   'Window coverings',
+//   'Air conditioning',
+//   'Ceiling/standing fan',
+//   'Water heating',
+// ]);
 // Emit event to notify parent component
 const emit = defineEmits(['updateCommonAreas', 'updateIsFurnished', 'updateRoomData', 'emitRoomData']);
 
@@ -515,7 +526,7 @@ const toggleSelection = (item: string, type: string) => {
 // Method to add manual item
 const addManualItem = () => {
   if (manualInput.value.trim() !== '') {
-    interiorItems.value.push(manualInput.value.trim());
+    props.interiorAreas.push(manualInput.value.trim());
     manualInput.value = ''; // Clear the input field after adding
     showManualInput.value = false; // Hide the input field after adding
   }

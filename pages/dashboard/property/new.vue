@@ -184,6 +184,8 @@
             </template>
           </PropertyDetails>
           <RoomDetails
+          :interiorAreas="interiorAreas"
+          :loading="loadingCommonAreas"
           @emitRoomData="handleRoomData"
             v-if="activeParentStep === 2 && propertyDetailsStep === 2"
           >

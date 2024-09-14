@@ -199,8 +199,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineEmits } from "vue";
-
 const props = defineProps({
   commonAreasList: {
     type: Array,
