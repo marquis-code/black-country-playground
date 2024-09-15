@@ -33,4 +33,8 @@ $_fetch_properties: (page = 1, perPage = 20, searchQuery = '') => {
     const url = "/common-areas";
     return GATEWAY_ENDPOINT.get(url);
   },
+  $_fetch_room_features: () => {
+    const url = "/rooms/features";
+    return GATEWAY_ENDPOINT.get(url);
+  },
 };

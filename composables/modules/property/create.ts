@@ -2,35 +2,26 @@ import { property_api } from "@/api_factory/modules/property";
 export const use_create_property = () => {
   const Router = useRouter();
   const payload = ref({
-    name: "",
-    description: "",
-    houseTypeId: "",
-    flooringTypeId: "",
+    name: null,
+    description: null,
+    houseTypeId: null,
+    flooringTypeId: null,
     size: 0,
-    sizeUnit: "",
+    sizeUnit: null,
     bedroomCount: 0,
     bathroomCount: 0,
     floorNumber: 0,
     longitude: null,
     latitude: null,
     images: [
-      "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+      "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
     ],
-    address: "",
+    address: null,
     isFurnishedCommonArea: false,
     commonAreas: [],
-    neighbouringLandmarks: [
-      {
-        name: "string",
-        type: "School",
-        description: "Acme School",
-        longitude: 3.406448,
-        latitude: 6.465422,
-        address: "Broad street lagos island",
-      },
-    ],
+    neighbouringLandmarks: [],
     rooms: [],
-    agentId: "",
+    agentId: null,
     rules: [],
   }) as any;
 
@@ -42,7 +33,7 @@ export const use_create_property = () => {
 
     loading.value = false;
     if (res.type !== "ERROR") {
-      Router.push("/dashboard/property");
+      Router.push("/dashboard/property/success");
     }
   };
 

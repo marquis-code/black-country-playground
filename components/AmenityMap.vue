@@ -245,6 +245,7 @@ const searchAmenities = async (
     });
 
     amenities.value = response.data.map((facility: any) => ({
+      ...facility,
       id: facility.place_id,
       name: facility.name,
       display_name: facility.display_name,
@@ -271,6 +272,7 @@ const searchAmenities = async (
 const landmarksArray = ref([]) as any
 // Method to zoom to selected amenity from the list
 const zoomToAmenity = (amenity: any) => {
+  console.log(amenity, 'amenity selected')
   map.value.setView([amenity.lat, amenity.lon], 15);
   L.marker([amenity.lat, amenity.lon])
     .addTo(map.value)
@@ -278,10 +280,10 @@ const zoomToAmenity = (amenity: any) => {
     .openPopup();
   showDropdown.value = false;
   landmarksArray.value.push({
-    name: amenity.name,
+    name: amenity.name ?? amenity.display_name,
     type: amenity.type,
-    description: amenity.type,
-    longitude:amenity.lon,
+    description: amenity.display_name,
+    longitude: amenity.lon,
     latitude: amenity.lat,
     address: amenity.display_name
   })

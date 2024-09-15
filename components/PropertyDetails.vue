@@ -198,7 +198,7 @@
   </main>
 </template>
 
-<script lang="ts" setup>
+<!-- <script lang="ts" setup>
 const props = defineProps({
   commonAreasList: {
     type: Array,
@@ -281,5 +281,118 @@ const isFurnishedCommonArea = ref(true);
 const setFurnishedStatus = (status: boolean) => {
   isFurnishedCommonArea.value = status;
   emit("updateIsFurnished", isFurnishedCommonArea.value);
+};
+</script> -->
+
+
+<script lang="ts" setup>
+const props = defineProps({
+  commonAreasList: {
+    type: Array,
+    default: () => []
+  },
+  interiorAreas: {
+    type: Array,
+    default: () => []
+  },
+  exteriorAreas: {
+    type: Array,
+    default: () => []
+  },
+  loading: {
+    type: Boolean,
+    default: false
+  }
+})
+
+// State for dynamically adding items
+const showInteriorInput = ref(false);
+const showExteriorInput = ref(false);
+const newInteriorItem = ref("");
+const newExteriorItem = ref("");
+
+// Track common areas in an array
+const commonAreas = ref<any[]>([]);
+
+// Current room name being edited
+const currentRoomName = ref<string>('Room 1'); // Initialize with the first room's name
+
+// Emit event to notify parent component
+const emit = defineEmits(['updateCommonAreas', 'updateIsFurnished', 'saveRoomData']);
+
+// Add manual interior item
+const addInteriorItem = () => {
+  if (newInteriorItem.value.trim()) {
+    props.interiorAreas.push(newInteriorItem.value.trim());
+    newInteriorItem.value = "";
+    showInteriorInput.value = false;
+  }
+};
+
+// Add manual exterior item
+const addExteriorItem = () => {
+  if (newExteriorItem.value.trim()) {
+    props.exteriorAreas.push(newExteriorItem.value.trim());
+    newExteriorItem.value = "";
+    showExteriorInput.value = false;
+  }
+};
+
+// Function to check if an item is already selected
+const isSelected = (item: string, type: string) => {
+  return commonAreas.value.some(
+    (area: any) => area.name === item && area.type === type
+  );
+};
+
+// Function to toggle selection
+const toggleSelection = (item: string, type: string) => {
+  const index = commonAreas.value.findIndex(
+    (area: any) => area.name === item && area.type === type
+  );
+  if (index > -1) {
+    // Deselect the item
+    commonAreas.value.splice(index, 1);
+  } else {
+    // Select the item
+    commonAreas.value.push({
+      name: item,
+      type,
+      images: [], // Start with empty images
+    });
+  }
+  // Emit updated array to parent
+  emit("updateCommonAreas", commonAreas.value);
+};
+
+// Handle furnished status
+const isFurnishedCommonArea = ref(true);
+const setFurnishedStatus = (status: boolean) => {
+  isFurnishedCommonArea.value = status;
+  emit("updateIsFurnished", isFurnishedCommonArea.value);
+};
+
+// Save room data function
+const saveRoomData = (roomName: string) => {
+  emit('saveRoomData', roomName);
+};
+
+// Watcher for form changes
+watch([isFurnishedCommonArea, commonAreas], () => {
+  saveRoomData(currentRoomName.value);
+}, { deep: true });
+
+// Method to handle navigation between rooms
+const handleRoomTabChange = (newRoomName: string) => {
+  // Save current room data before switching
+  saveRoomData(currentRoomName.value);
+  currentRoomName.value = newRoomName;
+};
+
+// Method to handle the "Next" button click
+const handleNextButtonClick = () => {
+  // Save current room data
+  saveRoomData(currentRoomName.value);
+  // Logic to navigate to the next room
 };
 </script>

@@ -100,7 +100,7 @@
       </div>
       <!-- Table -->
       <div class="bg-white rounded-lg">
-        <table v-if="properties" class="min-w-full bg-white">
+        <table v-if="propertiesList" class="min-w-full bg-white">
           <thead  class="border-b-[0.5px] border-gray-50">
             <tr>
               <th class="py-5 px-5 text-left text-sm font-medium text-gray-500 tracking-wider">Property name</th>
@@ -206,7 +206,7 @@
         ></div>
 
         <!-- Pagination -->
-        <nav v-if="properties && !loadingProperties" class="flex justify-between items-center mt-4 px-4 py-6">
+        <nav v-if="propertiesList && !loadingProperties" class="flex justify-between items-center mt-4 px-4 py-6">
           <div class="-mt-px flex w-0 flex-1">
             <button class="px-6 text-sm py-2 bg-[#F9FAFB] text-[#545454] border-[0.5px] rounded-md" disabled>Previous</button>
           </div>
@@ -262,81 +262,6 @@ const openModal = () => {
 const closeModal = () => {
   isModalOpen.value = false;
 };
-
-const properties = ref([
-  {
-    propertyName: 'Cummings, Frami and Lynch',
-    propertyType: 'Apartment Building',
-    location: '1747 Tudor Close, Schmittfurt',
-    agentAssigned: 'Jackie Goodwin',
-    occupants: 5,
-    bathroomCount: 6,
-    status: 'active'
-  },
-  {
-    propertyName: 'Raynor - Ziemann',
-    propertyType: 'Duplex',
-    location: '1747 Tudor Close, Schmittfurt',
-    agentAssigned: 'Henry Veum',
-    occupants: 5,
-    bathroomCount: 6,
-    status: 'active'
-  },
-  {
-    propertyName: 'Gibson, Dibbert and Gulgowski',
-    propertyType: 'Studio Apartment',
-    location: '1747 Tudor Close, Schmittfurt',
-    agentAssigned: 'Henry Veum',
-    occupants: 5,
-    bathroomCount: 6,
-    status: 'draft'
-  },
-  {
-    propertyName: 'Langworth, Nader and Langworth',
-    propertyType: 'Townhouse',
-    location: '1747 Tudor Close, Schmittfurt',
-    agentAssigned: 'Jackie Goodwin',
-    occupants: 5,
-    bathroomCount: 6,
-    status: 'draft'
-  },
-  {
-    propertyName: 'Morar - Parisian',
-    propertyType: 'Condominium',
-    location: '1747 Tudor Close, Schmittfurt',
-    agentAssigned: 'Jackie Goodwin',
-    occupants: 5,
-    bathroomCount: 6,
-    status: 'active'
-  },
-  {
-    propertyName: 'Hudson Inc',
-    propertyType: 'Mansion',
-    location: '1747 Tudor Close, Schmittfurt',
-    agentAssigned: 'Henry Veum',
-    occupants: 5,
-    bathroomCount: 6,
-    status: 'active'
-  },
-  {
-    propertyName: 'Cremin and Sons',
-    propertyType: 'Duplex',
-    location: '1747 Tudor Close, Schmittfurt',
-    agentAssigned: 'Henry Veum',
-    occupants: 5,
-    bathroomCount: 6,
-    status: 'draft'
-  },
-  {
-    propertyName: 'Cremin and Sons',
-    propertyType: 'Mansion',
-    location: '1747 Tudor Close, Schmittfurt',
-    agentAssigned: 'Jackie Goodwin',
-    occupants: 5,
-    bathroomCount: 6,
-    status: 'draft'
-  },
-]);
 
 // State to manage which dropdown is active
 const activeDropdown = ref<number | null>(null);

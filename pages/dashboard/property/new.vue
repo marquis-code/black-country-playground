@@ -22,9 +22,10 @@
             Cancel
           </button>
           <button @click="handleSaveAndExit"
-            class="bg-gray-900 text-sm text-white px-4 py-3 rounded-md hover:bg-gray-800"
+           :disabled="loading"
+            class="bg-gray-900 disabled:cursor-not-allowed disabled:opacity-25 text-sm text-white px-4 py-3 rounded-md hover:bg-gray-800"
           >
-            Save & exit
+          {{loading ? 'saving...' : 'Save & exit'}}
           </button>
         </div>
       </header>
@@ -185,6 +186,8 @@
           </PropertyDetails>
           <RoomDetails
           :interiorAreas="interiorAreas"
+          :roomFeaturesList="roomFeaturesList"
+          :loadingRoomFeatures="loadingRoomFeatures"
           :loading="loadingCommonAreas"
           @emitRoomData="handleRoomData"
             v-if="activeParentStep === 2 && propertyDetailsStep === 2"
@@ -337,6 +340,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useGetRoomFeatures } from  '@/composables/modules/property/fetchRoomFeatures'
 import { useGetCommonAreas } from '@/composables/modules/property/fetchCommonAreas'
 import { use_create_property } from '@/composables/modules/property/create'
 import LayoutWithoutSidebar from "@/layouts/dashboardWithoutSidebar.vue";
@@ -344,6 +348,7 @@ import { useFetchAgents } from '@/composables/modules/agents/fetch'
 const { payload, create_property, loading, setPropertyData } = use_create_property()
 const { agentsList, loading: loadingAgents } = useFetchAgents()
 const { loading: loadingCommonAreas, commonAreasList, interiorAreas, exteriorAreas } = useGetCommonAreas()
+const { loading: loadingRoomFeatures, roomFeaturesList } = useGetRoomFeatures()
 const steps = ref([
   { id: 1, title: "Basic Property Information" },
   { id: 2, title: "Detailed Property Information" },
@@ -571,11 +576,11 @@ sessionStorage.setItem('property', JSON.stringify(propertyData))
 }
 
 
-const handleSaveAndExit = () => {
+const handleSaveAndExit = async () => {
   const storedData = sessionStorage.getItem('property')
  let propertyData = storedData ? JSON.parse(storedData) : {}
  setPropertyData(propertyData)
- create_property()
+ await create_property()
 }
 
 
