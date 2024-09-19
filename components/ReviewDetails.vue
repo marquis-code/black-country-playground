@@ -159,9 +159,17 @@
       answer: 'Yes',
     },
   ])
+
+  const props = defineProps({
+    payload: {
+      type: Object,
+      default: () => {}
+    }
+  })
   
   // Emit the updated rules whenever the rules array changes
   watch(rules, () => {
+    props.payload.rules.value = rules.value
     emit('updateRules', rules.value)
   }, { deep: true })
   

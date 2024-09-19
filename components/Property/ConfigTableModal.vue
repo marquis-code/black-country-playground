@@ -4,7 +4,7 @@
     @click.self="closeModal"
   >
     <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full">
-      <h2 class="text-xl font-semibold mb-4">Configure table</h2>
+      <h2 class="text-lg font-semibold mb-4">Configure table</h2>
       <div class="space-y-4">
         <CoreToggleSwitch
           id="masterBedroom"
@@ -50,13 +50,13 @@
       </div>
       <div class="mt-6 gap-x-6 flex justify-between">
         <button
-          class="bg-[#EBE5E0] text-[#292929] w-full px-4 py-3 text-sm rounded"
+          class="bg-[#EBE5E0] text-[#292929] w-full px-4 py-2.5 text-sm rounded"
           @click="resetOptions"
         >
           Reset
         </button>
         <button
-          class="bg-[#292929] w-full text-white px-4 py-3 text-sm rounded"
+          class="bg-[#292929] w-full text-white px-4 py-2.5 text-sm rounded"
           @click="saveOptions"
         >
           Save

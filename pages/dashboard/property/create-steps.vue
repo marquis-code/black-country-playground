@@ -7,7 +7,7 @@
           <span class="text-lg font-semibold">BlackCountry</span>
         </div>
         <div class="flex space-x-4">
-          <button @click="goBack" class="bg-gray-200 text-sm text-gray-700 px-4 py-3 rounded-md">
+          <button @click="openCancelModal = true" class="bg-gray-200 text-sm text-gray-700 px-4 py-3 rounded-md">
             Cancel
           </button>
           <button @click="router.push('/dashboard/property/new')" class="bg-[#292929] text-sm text-white px-4 py-3 rounded-md">
@@ -67,6 +67,15 @@
         </div>
       </div>
     </main>
+
+    <CoreReusableModal
+    :isOpen="openCancelModal" 
+    message="By cancelling, you will loose progress of your property upload" 
+    confirmButtonText="No, Continue uploading" 
+    cancelButtonText="Yes, Cancel"
+    @close="handleClose" 
+    @confirm="handleConfirm"
+    />
   </LayoutWithoutSidebar>
 </template>
 
@@ -75,6 +84,16 @@ import { useGoBack } from '@/composables/core/useGoBack'
 import LayoutWithoutSidebar from '@/layouts/dashboardWithoutSidebar.vue'
 const { goBack } = useGoBack()
 const router = useRouter()
+
+const handleConfirm = () => {
+   router.push('/dashboard/property/new')
+   openCancelModal.value = false
+}
+
+const handleClose= () => {
+   router.push('/dashboard/property')
+   openCancelModal.value = false
+}
 const steps = [
   {
     id: 1,
@@ -101,6 +120,8 @@ const steps = [
       "Establish clear and concise guidelines for tenants by setting up house rules that outline expectations and regulations for living in the property.",
   },
 ];
+
+const openCancelModal = ref(false)
 </script>
 
 <style scoped>

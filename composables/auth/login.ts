@@ -1,3 +1,5 @@
+import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { useUser } from "@/composables/auth/user";
 import { auth_api } from "@/api_factory/modules/auth";
 
@@ -18,17 +20,28 @@ export const use_auth_login = () => {
 
   const login = async () => {
     loading.value = true;
-    const res = (await auth_api.$_login({
-      email: credential.email.value,
-      password: credential.password.value,
-      app: 'admin-app'
-    })) as any;
-    console.log(res, "response gere");
-    loading.value = false;
-    if (res.type !== "ERROR") {
-      useUser().createUser(res.data);
-      router.push("/dashboard");
+    try {
+      const res = await auth_api.$_login({
+        email: credential.email.value,
+        password: credential.password.value,
+        app: 'admin-app'
+      });
+      // window.location.href = "/dashboard"
+
+      if(res.status == 200 || res.status == 201){
+        console.log(res, 'res here');
+        useUser().createUser(res.data);
+        router.push("/dashboard");
+        window.location.href = "/dashboard"
+      }
+
+    } catch (error) {
+      console.error("Login failed:", error);
+      // Handle login error (e.g., show an error message)
+    } finally {
+      loading.value = false;
     }
   };
+
   return { credential, login, loading, isFormDisabled };
 };

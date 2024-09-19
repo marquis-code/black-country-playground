@@ -4,8 +4,8 @@
       <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6 justify-between">
         <div class="flex items-center gap-x-4">
           <h4 class="text-[#1D2739] text-lg">Dashboard</h4>
-          <button @click="router.push('/dashboard')" class="bg-[#5B8469] font-medium px-4 py-3 rounded-md text-white">Overview</button>
-          <button @click="router.push('/dashboard/insights')" class="text-[#292929] font-medium bg-[#F0F2F5] px-4 py-3 rounded-md">Insights</button>
+          <button :class="[activeTabHeader === 'overview' ? 'bg-[#5B8469] text-white' : 'bg-[#F0F2F5] text-[#292929]']" @click="activeTabHeader = 'overview'" class="font-medium px-4 py-2.5 text-sm rounded-md">Overview</button>
+          <button :class="[activeTabHeader === 'insights' ? 'bg-[#5B8469] text-white' : 'bg-[#F0F2F5] text-[#292929]']" @click="activeTabHeader = 'insights'" class="font-medium px-4 py-2.5 text-sm rounded-md">Insights</button>
         </div>
         <div class="flex items-center gap-x-4 lg:gap-x-6">
           <NuxtLink
@@ -48,10 +48,10 @@
                 
               <span class="hidden lg:flex lg:items-center">
               <div>
-                <span
+                <span v-if="user"
                 class="ml-4 text-sm py-0 my-0 font-semibold block leading-6 text-gray-900"
                 aria-hidden="true"
-                >Viola Gottlieb</span
+                > {{user?.firstName}}  {{user?.lastName}}</span
               >
               <span class="text-sm py-0 my-0 font-light text-[#667185] block">Super admin</span>
               </div>
@@ -65,7 +65,7 @@
         </div>
       </div>
     </template>
-    <main class="space-y-6">
+    <main v-if="activeTabHeader === 'overview'" class="space-y-6">
       <DashboardStats />
       <section class="lg:flex gap-x-6">
         <div class="w-full lg:max-w-6xl space-y-6">
@@ -84,16 +84,34 @@
         </div>
       </section>
     </main>
+    <main  v-if="activeTabHeader === 'insights'" >
+      <DashboardInsights />
+    </main>
   </Layout>
 </template>
 
 <script setup lang="ts">
+import { useUser } from '@/composables/auth/user'
+const { user } = useUser()
 import Layout from '@/layouts/dashboard.vue';
-// definePageMeta({
-//      layout: 'dashboard'
-// })
+definePageMeta({
+     middleware: 'auth'
+})
 
+const activeTabHeader = ref('overview')
+const route = useRoute()
 const router = useRouter();
+
+const setActive = (item: string) => {
+  if(item === 'overview') {
+    activeTabHeader.value = 'overview'
+    router.push('/dashboard')
+  }
+  if(item === 'insights') {
+    activeTabHeader.value = 'insights'
+    router.push('/dashboard/insights')
+  }
+}
 
 const activeTab = ref("upcoming_events");
 
@@ -101,9 +119,6 @@ const setTab = (item: string) => {
   activeTab.value = item;
 };
 
-// onMounted(() => {
-//   router.push("/login");
-// });
 
 const membersActivities = ref([
   {

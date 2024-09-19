@@ -28,10 +28,17 @@
   console.log(images); // This will log the base64 array of images
 }
 
+const props = defineProps({
+  payload: {
+    type: Object,
+    default: () => {}
+  }
+})
   onMounted(() => {
     const storedData = sessionStorage.getItem('property')
     let propertyData = storedData ? JSON.parse(storedData) : {}
     commonAreas.value = propertyData.commonAreas
+    props.payload.commonAreas.value = propertyData.commonAreas
   })
   
   // ImageUpload Component Logic

@@ -4,14 +4,15 @@
       @click.self="closeModal"
     >
       <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full">
-        <h2 class="text-xl font-semibold mb-4">Filter</h2>
-        <div class="space-y-4">
+        <h2 class="text-lg font-semibold mb-4">Filter</h2>
+        <div class="space-y-6">
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1">
               <label class="block text-sm font-medium text-gray-700">Date created/updated</label>
               <input 
                 type="date" 
                 placeholder="From" 
+                v-model="fromDate"
                 class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none"
               />
             </div>
@@ -20,57 +21,143 @@
               <input 
                 type="date" 
                 placeholder="To" 
+                v-model="toDate"
                 class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none"
               />
             </div>
           </div>
-          <div class="space-y-1">
+          <div class="space-y-1 relative">
             <label class="block text-sm font-medium text-[#1D2739]">Property name</label>
-            <select 
-            class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none"
-            >
-              <option>All properties</option>
-              <!-- Add more options as needed -->
-            </select>
+            <input type="text" readonly placeholder="Single agent/property manager" v-model="selectedPropertyName"
+            @click="togglePropertyDropdown"
+            class="w-full bg-[#F0F2F5] text-sm py-3 px-4 border-[0.5px] outline-none border-gray-100 rounded-md cursor-pointer" />
+            <div v-if="showPropertyDropdown" ref="dropdown"
+                  class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1">
+                  <ul v-if="!loadingProperties">
+                      <li v-for="property in propertiesList" :key="property.id" @click="selectProperty(property)"
+                          class="px-4 py-3 text-sm border-b-[0.5px] last:border-b-0 hover:bg-gray-50 cursor-pointer">
+                          {{ property.name}}
+                      </li>
+                  </ul>
+              </div>
           </div>
           <div class="space-y-1">
             <label class="block text-sm font-medium text-[#1D2739]">Agent/Property manager assigned</label>
-            <select 
-            class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none"
-              >
-              <option>All users</option>
-              <!-- Add more options as needed -->
-            </select>
+            <div class="mt-1 relative">
+              <input type="text" readonly placeholder="Single agent/property manager" v-model="selectedUserText"
+                  @click="toggleDropdown"
+                  class="w-full bg-[#F0F2F5] text-sm py-3 px-4 border-[0.5px] outline-none border-gray-100 rounded-md cursor-pointer" />
+              <div v-if="showDropdown" ref="dropdown"
+                  class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1">
+                  <ul v-if="!loading">
+                      <li v-for="user in agentsList" :key="user.id" @click="selectUser(user)"
+                          class="px-4 py-3 text-sm border-b-[0.5px] last:border-b-0 hover:bg-gray-50 cursor-pointer">
+                          {{ user.firstName }} {{ user.lastName }}
+                      </li>
+                  </ul>
+              </div>
+          </div>
           </div>
         </div>
-        <div class="mt-10 flex justify-between gap-x-6">
-          <button class="bg-[#EBE5E0] font-semibold text-[#292929] w-full px-4 py-3.5 text-sm rounded-md" @click="resetFilters">Reset</button>
-          <button class="bg-[#292929] font-semibold w-full text-white px-4 py-3.5 text-sm rounded-md"  @click="applyFilters">Apply filter</button>
+        <div class="mt-10 flex justify-between gap-x-6 pt-20">
+          <button class="bg-[#EBE5E0] font-semibold text-[#292929] w-full px-4 py-3 text-sm rounded-md" @click="resetFilters">Reset</button>
+          <button class="bg-[#292929] font-semibold w-full text-white px-4 py-3 text-sm rounded-md"  @click="applyFilters">Apply filter</button>
         </div>
       </div>
     </div>
   </template>
   
   <script setup lang="ts">
-  import { ref } from 'vue'
+  import { useGetProperties } from "@/composables/modules/property/fetchProperties";
+  import { useFetchAgents } from '@/composables/modules/agents/fetch'
+  const {
+  loadingProperties,
+  propertiesList
+} = useGetProperties();
+  const { agentsList, loading } = useFetchAgents()
   
-  const closeModal = () => {
-    // Emit an event to close the modal
-    emit('close')
-  }
-  
-  const resetFilters = () => {
-    // Logic to reset filters
-    console.log('Filters reset')
-  }
-  
-  const applyFilters = () => {
-    // Logic to apply filters
-    console.log('Filters applied')
-    closeModal()
-  }
+  const emit = defineEmits<{
+  (e: 'close'): void
+  (e: 'applyFilters', filters: any): void
+}>();
 
-  const fromDate = ref<string>('');
+const closeModal = () => {
+  emit('close');
+}
+
+const fromDate = ref<string>('');
 const toDate = ref<string>('');
+const propertyName = ref<string>('');
+const agentId = ref<string>('');
+
+const resetFilters = () => {
+  fromDate.value = '';
+  toDate.value = '';
+  propertyName.value = '';
+  agentId.value = '';
+  applyFilters();
+}
+
+const applyFilters = () => {
+  // Emit the filters to the parent component
+  emit('applyFilters', {
+    fromDate: fromDate.value,
+    toDate: toDate.value,
+    searchQuery: propertyName.value,
+    agentId: agentId.value,
+  });
+  closeModal();
+}
+
+const selectedUser = ref({});
+const selectedProperty = ref({})
+const selectedPropertyName = ref('')
+const selectedUserText = ref('');
+const showDropdown = ref(false)
+const showPropertyDropdown = ref(false)
+function toggleDropdown() {
+    showDropdown.value = !showDropdown.value;
+}
+
+function togglePropertyDropdown() {
+    showPropertyDropdown.value = !showPropertyDropdown.value;
+}
+
+
+function selectUser(user: any) {
+  agentId.value = user.id
+  selectedUser.value = user
+  selectedUserText.value = `${user.firstName} ${user.lastName}`;
+  showDropdown.value = false;
+}
+
+function selectProperty(property: any) {
+  selectedProperty.value = property
+  selectedPropertyName.value = property.name
+  showPropertyDropdown.value = false;
+}
+
+const propertyDropdownRef = ref<HTMLElement | null>(null);
+  const agentDropdownRef = ref<HTMLElement | null>(null);
+
+function handleClickOutside(event: MouseEvent) {
+    const propertyDropdown = propertyDropdownRef.value;
+    if (propertyDropdown && !propertyDropdown.contains(event.target as Node)) {
+        showDropdown.value = false;
+    }
+
+    const agentDropdown = agentDropdownRef.value;
+    if (agentDropdown && !agentDropdown.contains(event.target as Node)) {
+        showDropdown.value = false;
+    }
+}
+
+onMounted(() => {
+    document.addEventListener('click', handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+    document.removeEventListener('click', handleClickOutside);
+});
   </script>
   

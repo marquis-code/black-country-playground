@@ -55,25 +55,25 @@
   import { dynamicIcons } from '@/utils/assets'; // assuming you have a dynamicIcons function in utils
   const router = useRouter()
   const firstSection = ref([
-  { icon: 'total-properties', value: '0', label: 'Total Properties' },
-  { icon: 'total-tenants', value: '0', label: 'Total tenants' },
-  { icon: 'total-income', value: '₦0.00', label: 'Total Income' },
+  { icon: 'total-properties', value: '0', label: 'Total Properties', path: '/dashboard/property' },
+  { icon: 'total-tenants', value: '0', label: 'Total tenants', path: '#' },
+  { icon: 'total-income', value: '₦0.00', label: 'Total Income', path: '#' },
 ])
 
 const secondSection = ref([
-  { icon: 'total-rooms', value: '0', label: 'Total members' },
-  { icon: 'total-rooms', value: '0', label: 'Total rooms' },
+  { icon: 'total-rooms', value: '0', label: 'Total members', path: '#' },
+  { icon: 'total-rooms', value: '0', label: 'Total rooms', path: '#' },
 ])
 
 const thirdSection = ref([
-  { icon: 'total-rooms', value: '0', label: 'Available rooms' },
-  { icon: 'total-rooms', value: '0', label: 'Occupied rooms' },
-  { icon: 'total-rooms', value: '0%', label: 'Occupancy rate' },
+  { icon: 'total-rooms', value: '0', label: 'Available rooms', path: '/#' },
+  { icon: 'total-rooms', value: '0', label: 'Occupied rooms', path: '#' },
+  { icon: 'total-rooms', value: '0%', label: 'Occupancy rate', path: '#' },
 ])
 
 const fourthSection = ref([
-  { icon: 'total-rooms', value: '0', label: 'Agents' },
-  { icon: 'total-rooms', value: '0', label: 'Service providers' },
+  { icon: 'total-rooms', value: '0', label: 'Agents', path: '#' },
+  { icon: 'total-rooms', value: '0', label: 'Service providers' , path: '#'},
 ])
 
   </script>

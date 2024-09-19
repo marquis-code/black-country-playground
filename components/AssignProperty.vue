@@ -30,6 +30,10 @@ const props = defineProps({
     loading: {
         type: Boolean,
         default: false
+    },
+    payload: {
+        type: Object,
+        default: () => {}
     }
 })
 
@@ -40,6 +44,7 @@ function toggleDropdown() {
 }
 
 function selectUser(user: string) {
+    props.payload.agentId.value = user.id
     const storedData = sessionStorage.getItem('property')
     let propertyData = storedData ? JSON.parse(storedData) : {}
 
@@ -54,6 +59,7 @@ function selectUser(user: string) {
     console.log(user, 'user here')
     selectedUser.value = `${user.firstName} ${user.lastName}`;
     showDropdown.value = false;
+
 }
 
 function handleClickOutside(event: MouseEvent) {

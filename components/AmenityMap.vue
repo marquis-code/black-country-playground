@@ -1,15 +1,19 @@
 <template>
     <div class="container mx-auto -mt-28 relative">
-      {{loading}}
-      <!-- Search input and buttons -->
-      <div class="fixed top-45 left-[1068px] transform -translate-x-1/2 z-50 w-11/12 max-w-3xl bg-white rounded-lg shadow-lg p-4">
-        <div class="flex items-center">
+      <div class="absolute lg:fixed top-45 left-[1068px] transform -translate-x-1/2 z-50 w-11/12 max-w-3xl bg-white rounded-lg shadow-lg p-4">
+        <div class="flex items-center relative">
           <input
             v-model="location"
             type="text"
             placeholder="Enter location"
-            class="bg-[#292929] text-white py-3 rounded-md pl-4 placeholder-gray-400 focus:outline-none w-full"
+            class="bg-[#292929] pl-14 text-white py-3 rounded-md  placeholder-gray-400 focus:outline-none w-full"
           />
+          <svg class="absolute left-6" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5.83203 15C4.30792 15.3431 3.33203 15.8703 3.33203 16.4614C3.33203 17.4953 6.3168 18.3333 9.9987 18.3333C13.6806 18.3333 16.6654 17.4953 16.6654 16.4614C16.6654 15.8703 15.6894 15.3431 14.1654 15" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M12.0846 7.50008C12.0846 8.65066 11.1519 9.58341 10.0013 9.58341C8.85072 9.58341 7.91797 8.65066 7.91797 7.50008C7.91797 6.34949 8.85072 5.41675 10.0013 5.41675C11.1519 5.41675 12.0846 6.34949 12.0846 7.50008Z" stroke="white" stroke-width="1.5"/>
+            <path d="M11.0491 14.5781C10.7681 14.8487 10.3924 15.0001 10.0015 15.0001C9.61047 15.0001 9.2348 14.8487 8.95372 14.5781C6.37989 12.0841 2.93063 9.298 4.61273 5.25319C5.52222 3.06618 7.70542 1.66675 10.0015 1.66675C12.2975 1.66675 14.4806 3.06619 15.3901 5.25319C17.0701 9.29291 13.6293 12.0927 11.0491 14.5781Z" stroke="white" stroke-width="1.5"/>
+            </svg>
+            
           <div class="bg-[#292929] text-white rounded-md px-4 py-3 shadow-md z-10 flex items-center gap-x-2 ml-2">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M3.33203 4.16675H16.6654" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -20,7 +24,7 @@
           </div>
         </div>
     
-        <!-- Buttons to search for different amenities -->
+   
         <div class="flex justify-around my-4">
           <button
             v-for="option in searchOptions"
@@ -35,11 +39,9 @@
             {{ option }}
           </button>
         </div>
-  
-        <!-- Amenity results -->
         <section v-if="showDropdown">
             <div v-if="amenities.length > 0" class="px-4 z-50 relative bg-white opacity-95 rounded-lg">
-                <h3 class="text-lg py-0 my-0 font-medium text-[#1D2739] mb-4">Neighborhood Amenities</h3>
+                <h3 class="text-base py-0 my-0 font-medium text-[#1D2739] mb-4">Neighborhood Amenities</h3>
                 <ul class="space-y-3">
                   <li
                     v-for="amenity in amenities"
@@ -68,17 +70,19 @@
               </div>
         </section>
       </div>
-    
-      <!-- Map container -->
-      <div class="relative h-96 w-full mb-6 mt-28 z-10" id="map"></div> <!-- Set lower z-index to ensure map is below -->
+      <div class="relative h-96 w-full mb-6 mt-28 z-10" id="map"></div>
     </div>
   </template>
   
-  <script lang="ts" setup>
-import { ref, onMounted, watch } from "vue";
+<script setup lang="ts">
+import { use_create_property } from '@/composables/modules/property/create'
 import axios from "axios";
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
+
+const { setPropertyData, payload } = use_create_property();
+
+const emit = defineEmits(['locationSelected', 'searchResult', 'amenityObj']);
 
 const showDropdown = ref(true);
 const toggleSidebar = () => {
@@ -136,17 +140,21 @@ onMounted(async () => {
           }
         );
 
+        // console.log(response.data, 'here ooojfgsdjkfshrgjkfghrjklrtjklegtklregtkergtkergtkregklge');
         if (response.data && response.data.display_name) {
-            console.log(response, 'here ooo')
-            const storedData = sessionStorage.getItem("property");
-            let propertyData = storedData ? JSON.parse(storedData) : {};
-            propertyData = {
-                ...propertyData,
-                latitude:response?.data?.lat,
-                longitude: response?.data?.lon,
-                address: response?.data?.display_name
-            }
-            sessionStorage.setItem("property", JSON.stringify(propertyData));
+          payload.latitude.value = response.data.lat
+          payload.longitude.value = response.data.lon
+          payload.address.value = response.data.display_name
+          // Create an object with the necessary data
+          const baseObj = {
+            latitude: parseFloat(response.data.lat),
+            longitude: parseFloat(response.data.lon),
+            address: response.data.display_name
+          };
+          
+          // Call setPropertyData with the new object
+          console.log(baseObj, 'before setting');
+          setPropertyData(baseObj);
         }
 
         map.value.setView([latitude, longitude], 13);
@@ -193,11 +201,25 @@ const searchLocation = async () => {
       }
     );
 
+//     const emit = defineEmits<{
+//   (event: 'locationSelected', data: any): any,
+//   (event: 'searchResult', data: any): any
+// }>()
+
+    console.log(response, 'res from nominatim')
+
     if (response.data.length > 0) {
       const place = response.data[0];
-      const lat = place.lat;
-      const lon = place.lon;
+      const lat = parseFloat(place.lat);
+      const lon = parseFloat(place.lon);
 
+      const baseObj = {
+        latitude: lat,
+        longitude: lon,
+        address: place.display_name
+    };
+
+      setPropertyData(baseObj)
       map.value.setView([lat, lon], 13);
       L.marker([lat, lon])
         .addTo(map.value)
@@ -206,6 +228,7 @@ const searchLocation = async () => {
 
       selectedLat.value = lat;
       selectedLon.value = lon;
+      emit('searchResult', response.data[0] )
 
       // Fetch amenities near the searched location
       searchAmenities(lat, lon, "Hospital"); // Default to hospitals on search
@@ -269,59 +292,36 @@ const searchAmenities = async (
   }
 };
 
-const landmarksArray = ref([]) as any
 // Method to zoom to selected amenity from the list
 const zoomToAmenity = (amenity: any) => {
-  console.log(amenity, 'amenity selected')
+  console.log(amenity, 'amenity selected');
+  emit('amenityObj', amenity)
+  // const landmarksArray = ref([]) as any;
   map.value.setView([amenity.lat, amenity.lon], 15);
   L.marker([amenity.lat, amenity.lon])
     .addTo(map.value)
     .bindPopup(`Amenity: ${amenity.name}`)
     .openPopup();
   showDropdown.value = false;
-  landmarksArray.value.push({
-    name: amenity.name ?? amenity.display_name,
-    type: amenity.type,
-    description: amenity.display_name,
-    longitude: amenity.lon,
-    latitude: amenity.lat,
-    address: amenity.display_name
-  })
+  // landmarksArray.value.push({
+  //   name: amenity.name ?? amenity.display_name,
+  //   type: amenity.type,
+  //   description: amenity.display_name,
+  //   longitude: amenity.lon,
+  //   latitude: amenity.lat,
+  //   address: amenity.display_name
+  // });
 
-  const storedData = sessionStorage.getItem("property");
-  let propertyData = storedData ? JSON.parse(storedData) : {};
-  propertyData = {
-    ...propertyData,
-    neighbouringLandmarks: landmarksArray.value,
-  };
-  sessionStorage.setItem("property", JSON.stringify(propertyData));
+  // const amenityPropertyData = {
+  //   neighbouringLandmarks: landmarksArray.value,
+  // };
+
+  // emit('locationSelected', landmarksArray)
+  // console.log(amenityPropertyData, 'here dsff blab alla')
+  
+  // Ensure setPropertyData is properly setting the values
+  // setPropertyData(amenityPropertyData);
 };
+
 </script>
-  
-  <style scoped>
-#map {
-  height: 700px;
-  width: 100%;
-  z-index: 10; /* Ensure map has a lower z-index */
-}
-
-/* Loading spinner */
-.loader {
-  border: 8px solid #f3f3f3;
-  border-top: 8px solid #3498db;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-</style>
-  
+   

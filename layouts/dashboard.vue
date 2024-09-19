@@ -355,7 +355,7 @@
     <!-- Buttons -->
     <div class="space-y-3">
       <button
-        type="'button"
+        type="button"
         class="w-full disabled:cursor-not-allowed text-sm disabled:opacity-25 bg-[#292929] text-white py-3.5 rounded-md font-semibold"
         @click="onConfirm"
         :disabled="loading"
@@ -363,7 +363,7 @@
         Yes, log out
       </button>
       <button
-        type="'button"
+        type="button"
         class="w-full bg-[#EBE5E0] text-gray-700 text-sm py-3.5 rounded-md font-semibold"
         @click="onCancel"
       >
