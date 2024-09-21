@@ -19,15 +19,27 @@
         </div>
       </div>
 
-         <!-- Section: Room Details -->
-    <div>
+      <div>        
+        <!-- Display images if the payload has images -->
+        <section v-if="Array.isArray(payload.images) && payload.images.length" class="grid grid-cols-2 gap-6">
+          <div v-for="(item, index) in payload.images" :key="index" class="border p-2">
+            <p>{{ item }}</p> <!-- Display the URL for debugging -->
+            <img 
+              :src="item" 
+              :alt="'Image ' + (index + 1)" 
+              class="w-full h-auto object-cover"
+            />
+          </div>
+        </section>
+        
+        <!-- Display a fallback message when no images are available -->
+        <p v-else>No images available.</p>
+      </div>
+    <!-- <div>
         <div class="mt-2">
-          <PreviewRoomDetails :rooms="rooms" />
+          <PreviewRoomDetails :rooms="payload.rooms" />
         </div>
       </div>
-  
-  
-      <!-- Section: Add Visuals -->
       <div>
         <div class="flex justify-between items-center">
         <h3 class="text-lg text-[#1D2739]">Add visuals</h3>
@@ -37,17 +49,19 @@
           <PreviewPropertyVisuals :visuals="visuals" />
         </div>
       </div>
-  
-      <!-- Section: Finalize Listings and Edit -->
       <div class="space-y-3">
       <div class="flex justify-between items-center">
         <h3 class="text font-medium text-[#1D2739]">Finalize listings and edit</h3>
         <button class="text-[#326543] mb-3">Edit</button>
       </div>
         <div class="mt-2">
-          <PreviewFinalizeListing :rules="rules" />
+          <PreviewFinalizeListing :rules="payload.rules" />
         </div>
       </div>
+       <PreviewCommonArea :commonAreas="payload.commonAreas" />
+      <PreviewRoomSelection :rooms="payload.rooms" />
+      <PreviewListingRules :rules="payload.rules" />
+      <PreviewPreScreeningQuestions :questions="payload.questions" /> -->
     </div>
   </template>
   
@@ -162,6 +176,13 @@ const rooms = [
   },
   // Add more rooms if needed
 ]
+
+const props = defineProps({
+  payload: {
+    type: Object,
+    default: () => {}
+  }
+})
   </script>
   
   <style scoped>

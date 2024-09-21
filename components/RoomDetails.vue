@@ -1,20 +1,20 @@
 <template>
   <min>
     <div class="py-6">
-        <div class="flex space-x-4 mb-4">
-          <button
-            v-for="room in rooms"
-            :key="room.name"
-            @click="setActiveRoom(room.name)"
-            :class="{
-              'bg-[#EBE5E0]': activeRoom === room.name,
-              'bg-white': activeRoom !== room.name,
-            }"
-            class="px-4 py-2 border-[0.5px] text-[#1D2739] text-sm rounded-lg"
-          >
-            {{ room.name }}
-          </button>
-        </div>
+      <div class="flex space-x-4 mb-4">
+        <button
+          v-for="room in rooms"
+          :key="room.id"
+          @click="setActiveRoom(room.name)"
+          :class="{
+            'bg-[#EBE5E0]': activeRoom === room.name,
+            'bg-white': activeRoom !== room.name,
+          }"
+          class="px-4 py-2 border-[0.5px] text-[#1D2739] text-sm rounded-lg"
+        >
+          {{ room.name }}
+        </button>
+      </div>
         <div class="mb-4 flex justify-between items-center">
           <h3 class="mb-2 text-[#1D2739]">Is the room furnished?</h3>
           <div class="flex space-x-2">
@@ -133,6 +133,7 @@
             <CoreToggleSwitch
               id="applyAll"
               label="Apply these responses above to all remaining rooms"
+              @change="applyResponsesToAllRooms"
               v-model="applyToAllRooms"
             />
         
@@ -241,7 +242,6 @@
 </template>
 
  <script setup lang="ts">
-import { ref, watch } from "vue";
 import { dynamicIcons } from '@/utils/assets'
 
 // Declare reactive variables first
@@ -264,15 +264,6 @@ const availabilityOptions = [
   { label: 'Available from (specify date)', value: 'available_from_date' },
 ];
 
-// Room data
-const rooms = ref([
-  { id: 1, name: 'Room 1', isMaster: false },
-  { id: 2, name: 'Room 2', isMaster: false },
-  { id: 3, name: 'Room 3', isMaster: false },
-  { id: 4, name: 'Room 4', isMaster: false },
-  { id: 5, name: 'Room 5', isMaster: false },
-]);
-
 const props = defineProps({
   interiorAreas: {
     type: Array,
@@ -287,8 +278,8 @@ const props = defineProps({
     default: () => []
   },
   payload: {
-    type: Array,
-    default: () => []
+    type: Object,
+    default: () => ({ bedroomCount: 1 })
   },
   loadingRoomFeatures: {
     type: Boolean,
@@ -296,20 +287,71 @@ const props = defineProps({
   }
 })
 
+const rooms = ref([]) as any;
+
+// Function to dynamically generate rooms based on the bedroom count
+const generateRooms = (bedroomCount: number) => {
+  rooms.value = [];
+  for (let i = 1; i <= bedroomCount; i++) {
+    rooms.value.push({
+      id: i,
+      name: `Room ${i}`,
+      isMaster: false,
+    });
+  }
+};
+
+
+// Watch for changes in bedroom count and regenerate rooms
+watch(() => props?.payload?.bedroomCount, (newCount: any) => {
+  if (newCount) {
+    generateRooms(newCount);
+  }
+}, { immediate: true });
+
+// // When the component is mounted, generate rooms and initialize data
+// onMounted(() => {
+//   if (props.payload.bedroomCount) {
+//     generateRooms(props.payload.bedroomCount);
+//   }
+//   initializeRoomData();
+// });
+
+
+
 // Room features, availability, and form data
-const roomData = ref<any[]>(rooms.value.map((room: any) => ({
-  name: room.name,
-  availability: "available_now",
-  availableFrom: "",
-  occupantName: "",
-  isMaster: false,
-  images: [],
-  isFurnished: true,
-  rentAmount: 0,
-  currencyCode: "NGN",
-  rentFrequency: "monthly",
-  features: [],
-})));
+const roomData = ref<any[]>([]);
+
+// Initialize room data based on the number of rooms
+const initializeRoomData = () => {
+  roomData.value = rooms.value.map((room: any) => ({
+    name: room.name,
+    availability: "available_now",
+    availableFrom: "",
+    occupantName: "",
+    isMaster: false,
+    rentAmount: 0,
+    currencyCode: "NGN",
+    rentFrequency: "monthly",
+    isFurnished: true,
+    features: [],
+  }));
+};
+
+// // Room features, availability, and form data
+// const roomData = ref<any[]>(rooms.value.map((room: any) => ({
+//   name: room.name,
+//   availability: "available_now",
+//   availableFrom: "",
+//   occupantName: "",
+//   isMaster: false,
+//   images: [],
+//   isFurnished: true,
+//   rentAmount: 0,
+//   currencyCode: "NGN",
+//   rentFrequency: "monthly",
+//   features: [],
+// })));
 
 // Emit event to notify parent component
 const emit = defineEmits(['updateCommonAreas', 'updateIsFurnished', 'updateRoomData', 'emitRoomData']);
@@ -346,6 +388,7 @@ const saveRoomData = (roomName: string) => {
     emit('emitRoomData', roomData.value[roomIndex]);
   }
 };
+
 
 // Load room data when a room is selected
 const loadRoomData = (roomName: string) => {
@@ -400,11 +443,17 @@ const saveAndExit = () => {
   // Example: emit('nextStep');
 };
 
+// Automatically save room data on any form change
+const autoSaveRoomData = () => {
+  saveRoomData(activeRoom.value);
+};
+
 // Watchers for form changes
 watch(
   [availability, availabilityDate, occupantsName, rentAmount, rentFrequency, isRoomFurnished, setAsMasterBedroom, roomFeatures],
   () => {
-    saveRoomData(activeRoom.value);
+    // saveRoomData(activeRoom.value);
+    autoSaveRoomData(); // Automatically save the current room's data
   },
   { deep: true }
 );
@@ -454,4 +503,31 @@ const setFurnishedStatus = (status: boolean) => {
 const handleAvailabilityOptionClick = (option: any) => {
   availability.value = option.value
 }
+
+// Apply responses to all rooms
+const applyResponsesToAllRooms = () => {
+  const currentRoomData = roomData.value.find(room => room.name === activeRoom.value);
+  if (currentRoomData) {
+    rooms.value.forEach((room) => {
+      if (room.name !== activeRoom.value) {
+        const roomIndex = roomData.value.findIndex((r: any) => r.name === room.name);
+        if (roomIndex !== -1) {
+          // Apply current room's data to the other rooms
+          roomData.value[roomIndex] = {
+            ...currentRoomData,
+            name: room.name, // Keep the room name unique
+          };
+          emit('emitRoomData', roomData.value[roomIndex]); // Emit updated data
+        }
+      }
+    });
+  }
+};
+
+
+// When the component is mounted, generate rooms and initialize data
+onMounted(() => {
+  generateRooms(props.payload.bedroomCount.value); // Pass bedroomCount from payload
+  initializeRoomData();
+})
 </script>

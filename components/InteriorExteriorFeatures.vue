@@ -19,7 +19,7 @@
       <div class="bg-white p-6 rounded-lg border-[0.5px] space-y-4 border-gray-50">  
         <div class="space-y-2">
           <p class="font-medium text-sm text-[#667185]">
-            Furnished: <span class="font-medium text-red-500">No</span>
+            Furnished: <span class="font-medium text-gray-900">{{property.isFurnishedCommonArea ? 'Yes' : 'No'}}</span>
           </p>
   
           <div class="space-y-2">
@@ -27,25 +27,9 @@
   
             <!-- Amenities -->
             <div class="grid grid-cols-3 gap-3">
-              <div class="flex items-center space-x-2 p-2 bg-white border-[0.5px] border-gray-100 rounded-md">
-                <img :src="dynamicIcons('roombg')" alt="Living room" class="w-6 h-6">
-                <p class="text-[#1D2739] text-sm">Living room</p>
-              </div>
-              <div class="flex items-center space-x-2 p-2 bg-white border-[0.5px] border-gray-100 rounded-md">
-                <img :src="dynamicIcons('roombg')" alt="Kitchen" class="w-6 h-6">
-                <p class="text-[#1D2739] text-sm">Kitchen</p>
-              </div>
-              <div class="flex items-center space-x-2 p-2 bg-white border-[0.5px] border-gray-100 rounded-md">
-                <img :src="dynamicIcons('roombg')" alt="Storage" class="w-6 h-6">
-                <p class="text-[#1D2739] text-sm">Storage area</p>
-              </div>
-              <div class="flex items-center space-x-2 p-2 bg-white border-[0.5px] border-gray-100 rounded-md">
-                <img :src="dynamicIcons('roombg')" alt="Bathroom" class="w-6 h-6">
-                <p class="text-[#1D2739] text-sm">Bathroom</p>
-              </div>
-              <div class="flex items-center space-x-2 p-2 bg-white border-[0.5px] border-gray-100 rounded-md">
-                <img :src="dynamicIcons('roombg')" alt="Basement" class="w-6 h-6">
-                <p class="text-[#1D2739] text-sm">Basement</p>
+              <div v-for="item in interiorCommonAreas" :key="item.id" class="flex items-center space-x-2 p-2 bg-white border-[0.5px] border-gray-100 rounded-md">
+                <img :src="dynamicImage('roomBg.png')" alt="Living room" class="w-7 h-7">
+                <p class="text-[#1D2739] text-sm">{{item.name}}</p>
               </div>
             </div>
             <button class="mt-2 font-medium text-[#1D2739]">View less</button>
@@ -61,17 +45,9 @@
   
           <!-- Exterior Amenities -->
           <div class="grid grid-cols-3 gap-3">
-            <div class="flex items-center space-x-2 p-2 bg-white border-[0.5px] border-gray-100 rounded-md">
-              <img :src="dynamicIcons('roombg')" alt="Parking space" class="w-6 h-6">
-              <p class="text-[#1D2739] text-sm">Parking space</p>
-            </div>
-            <div class="flex items-center space-x-2 p-2 bg-white border-[0.5px] border-gray-100 rounded-md">
-              <img :src="dynamicIcons('roombg')" alt="Balcony" class="w-6 h-6">
-              <p class="text-[#1D2739] text-sm">Balcony</p>
-            </div>
-            <div class="flex items-center space-x-2 p-2 bg-white border-[0.5px] border-gray-100 rounded-md">
-              <img :src="dynamicIcons('roombg')" alt="Fenced/gated" class="w-6 h-6">
-              <p class="text-[#1D2739] text-sm">Fenced/gated</p>
+            <div  v-for="item in exteriorCommonAreas" :key="item.id" class="flex items-center space-x-2 p-2 bg-white border-[0.5px] border-gray-100 rounded-md">
+              <img :src="dynamicImage('roomBg.png')" alt="Parking space" class="w-7 h-7">
+              <p class="text-[#1D2739] text-sm">{{item.name}}</p>
             </div>
           </div>
         </div>
@@ -87,6 +63,14 @@
       type: Object,
       default: () => {}
     }
+  })
+
+  const exteriorCommonAreas = computed(() => {
+     return props.property.commonAreas.filter((item: any) => item.type === 'exterior')
+  })
+
+  const interiorCommonAreas = computed(() => {
+    return props.property.commonAreas.filter((item: any) => item.type === 'interior')
   })
   // No additional logic required for this layout.
   </script>

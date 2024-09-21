@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="py-6 space-y-6">
+    <div class="pb-6 space-y-6">
       <!-- Furnished status -->
       <div class="flex items-center justify-between space-x-4">
         <label class="text-lg text-[#1D2739]">Is the common area furnished?</label>
@@ -27,8 +27,6 @@
           </button>
         </div>
       </div>
-
-      <!-- Interior area -->
       <div>
         <h3 class="text-lg text-[#1D2739] mb-4">Interior area</h3>
         <fieldset>
@@ -157,7 +155,7 @@
             v-model="newInteriorItem"
             type="text"
             placeholder="e.g. Basement"
-            class="flex-1 border-2 border-[#5B8469] rounded-md px-4 py-2 text-sm text-[#1D2739] placeholder-[#667185] focus:outline-none focus:ring-2 focus:ring-[#5B8469]"
+            class="flex-1 border-2 border-[#5B8469] rounded-md px-4 outline-none py-3 text-sm text-[#1D2739] placeholder-[#667185] focus:outline-none focus:ring-2 focus:ring-[#5B8469]"
           />
           <button class="text-sm text-[#5B8469]" @click="addInteriorItem">Add</button>
         </div>
@@ -358,21 +356,78 @@ const currentRoomName = ref<string>('Room 1'); // Initialize with the first room
 // Emit event to notify parent component
 const emit = defineEmits(['updateCommonAreas', 'updateIsFurnished', 'saveRoomData']);
 
-// Add manual interior item
+// // Add manual interior item
+// const addInteriorItem = () => {
+//   if (newInteriorItem.value.trim()) {
+//     props.interiorAreas.push({
+//       name: newInteriorItem.value.trim(), 
+//       type: "interior",
+//       canBeFurnished: isFurnishedCommonArea.value,
+//       houseId: null,
+//       images: []
+//     });
+//     newInteriorItem.value = "";
+//     showInteriorInput.value = false;
+//   }
+// };
+
+// Add manual interior item and update the list
 const addInteriorItem = () => {
   if (newInteriorItem.value.trim()) {
-    props.interiorAreas.push(newInteriorItem.value.trim());
+    const newItem = {
+      name: newInteriorItem.value.trim(),
+      id: `${newInteriorItem.value.trim()}_${Date.now()}`, // Generating a unique ID
+      type: "interior",
+      canBeFurnished: isFurnishedCommonArea.value,
+      images: []
+    };
+    
+    // Push the new item to the interior furnished areas list (UI list)
+    props.interiorFurnishedAreasList.push(newItem);
+    
+    // Push to the selected areas (common areas)
+    commonAreas.value.push(newItem);
+
+    // Reset the input field
     newInteriorItem.value = "";
     showInteriorInput.value = false;
+
+    // Emit the updated common areas
+    emit("updateCommonAreas", commonAreas.value);
   }
 };
 
-// Add manual exterior item
+// // Add manual exterior item
+// const addExteriorItem = () => {
+//   if (newExteriorItem.value.trim()) {
+//     props.exteriorAreas.push(newExteriorItem.value.trim());
+//     newExteriorItem.value = "";
+//     showExteriorInput.value = false;
+//   }
+// };
+
+// Add manual exterior item and update the list
 const addExteriorItem = () => {
   if (newExteriorItem.value.trim()) {
-    props.exteriorAreas.push(newExteriorItem.value.trim());
+    const newItem = {
+      name: newExteriorItem.value.trim(),
+      id: `${newExteriorItem.value.trim()}_${Date.now()}`, // Generating a unique ID
+      type: "exterior",
+      images: []
+    };
+
+    // Push the new item to the exterior furnished areas list (UI list)
+    props.exteriorFurnishedAreasList.push(newItem);
+    
+    // Push to the selected areas (common areas)
+    commonAreas.value.push(newItem);
+
+    // Reset the input field
     newExteriorItem.value = "";
     showExteriorInput.value = false;
+
+    // Emit the updated common areas
+    emit("updateCommonAreas", commonAreas.value);
   }
 };
 
@@ -406,6 +461,10 @@ const toggleSelection = (item: string, type: string) => {
 
 // Handle furnished status
 const isFurnishedCommonArea = ref(true);
+
+onMounted(() => {
+  isFurnishedCommonArea.value = props?.payload?.isFurnishedCommonArea
+})
 const setFurnishedStatus = (status: boolean) => {
   isFurnishedCommonArea.value = status;
   props.payload.isFurnishedCommonArea.value = status;

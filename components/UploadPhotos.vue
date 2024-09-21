@@ -1,44 +1,46 @@
 <template>
-  <main>
-    <div class="container mx-auto p-4">
-      <div class="space-y-2 mb-10">
+    <main>
+      <div class="container mx-auto p-4">
+        <div class="space-y-2 mb-10">
           <h2 class="text-[#1D2739] font-light">Click to add as as much pictures as you want to for each common area or space.</h2>
-          <p class="text-sm">Accepts <span class="font-semibold text-[#1D2739]">jpg</span> & <span class="font-semibold text-[#1D2739]"> png</span> <span class="font-semibold text-[#1D2739]">2MB</span> size max/each</p>
-      
-      </div>
+          <p class="text-sm">Accepts <span class="font-semibold text-[#1D2739]">jpg</span> & <span class="font-semibold text-[#1D2739]">png</span> <span class="font-semibold text-[#1D2739]">2MB</span> size max/each</p>
+        </div>
         <!-- Image Upload Sections for Each Room -->
         <section class="mt-3">
           <div class="grid grid-cols-2 gap-4">
-            <ImageUpload @update:images="handleImages" v-for="item in commonAreas" :key="item.name" :label="item.name" location="common-areas" />
+            <ImageUpload
+              @update:images="handleImages"
+              v-for="item in commonAreas"
+              :key="item.name"
+              :label="item.name"
+              location="common-areas"
+            />
           </div>
         </section>
       </div>
       <slot name="action-buttons"></slot>
-  </main>
+    </main>
   </template>
   
   <script setup lang="ts">
-  import { ref, reactive } from 'vue'
+  const commonAreas  = ref<any[]>([]) // Ensuring an array
   
-  const tabs = ref(['Room 1', 'Room 2', 'Room 3', 'Room 4', 'Room 5'])
-  const activeTab = ref('Room 1')
-  const commonAreas  = ref([]) as any
-
   function handleImages(images: any) {
-  console.log(images); // This will log the base64 array of images
-}
-
-const props = defineProps({
-  payload: {
-    type: Object,
-    default: () => {}
+    console.log(images); // This will log the base64 array of images
   }
-})
+  
+  const props = defineProps({
+    payload: {
+      type: Object,
+      default: () => ({ commonAreas: [] }) // Default to an empty array if commonAreas is not provided
+    }
+  })
+  
+  // Ensure `payload.commonAreas` is handled correctly
   onMounted(() => {
-    const storedData = sessionStorage.getItem('property')
-    let propertyData = storedData ? JSON.parse(storedData) : {}
-    commonAreas.value = propertyData.commonAreas
-    props.payload.commonAreas.value = propertyData.commonAreas
+    if (props.payload && Array.isArray(props.payload.commonAreas.value)) {
+      commonAreas.value = props.payload.commonAreas.value // Assign the array directly
+    }
   })
   
   // ImageUpload Component Logic

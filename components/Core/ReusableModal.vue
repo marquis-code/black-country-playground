@@ -18,7 +18,7 @@
         <h2 class="text-lg font-semibold text-gray-700 mb-2">{{ title }}</h2>
   
         <!-- Message -->
-        <p class="text-gray-500 mb-6">{{ message }}</p>
+        <p class="text-gray-500 mb-6 leading-snug">{{ message }}</p>
   
         <!-- Slot for custom content -->
         <slot />

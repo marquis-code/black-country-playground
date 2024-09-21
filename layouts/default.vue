@@ -1,12 +1,10 @@
 <template>
 	<div>
         <NuxtPage />
+		<GlobalModal />
 	</div>
 </template>
 
-<script setup lang="ts">
-// definePageMeta({
-//   middleware: 'auth'
-// })
+<script setup>
+import GlobalModal from '@/components/core/GlobalModal.vue';
 </script>
-

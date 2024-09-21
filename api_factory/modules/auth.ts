@@ -3,5 +3,9 @@ export const auth_api = {
 	$_login: (credential: any) => {
 		const url = '/auth/login'
 		return GATEWAY_ENDPOINT.post(url, credential)
-	}
+	},
+	$_update_profile: (payload: any) => {
+		const url = '/tenants/profile'
+		return GATEWAY_ENDPOINT.patch(url, payload);
+	},
 }

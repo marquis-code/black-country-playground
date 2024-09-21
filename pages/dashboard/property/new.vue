@@ -13,7 +13,7 @@
             <span class="text-lg font-semibold">BlackCountry</span>
           </div>
           <div class="flex space-x-4 items-center">
-            <button class="text-[#326543] text-sm hover:text-[#326543]">
+            <button @click="router.push('/dashboard/property/preview')" class="text-[#326543] text-sm hover:text-[#326543]">
               Preview
             </button>
             <button
@@ -162,7 +162,6 @@
             id="second-part"
             class="lg:pl-10 p-4 space-y-6 lg:max-w-screen-7xl w-full"
           >
-          {{payload}}
             <CoreProgressStepper
               v-if="activeParentStep === 1"
               :titles="[
@@ -198,14 +197,12 @@
                 </div>
               </template>
             </CreatePropertyForm>
-            <MapSection
-              class="z-10"
-              :payload="payload"
-              @searchResult="handleLocationSearch"
-              @selectedAmenity="handleSelectedAmenity"
-              v-if="
-                activeParentStep === 1 && basicPropertyInformationStep === 2
-              "
+            <CoreMapboxSearch
+            class="z-10"
+            :payload="payload"
+            v-if="
+            activeParentStep === 1 && basicPropertyInformationStep === 2
+          "
             >
               <template #action-buttons>
                 <div class="flex justify-between mt-4 z-50">
@@ -222,8 +219,8 @@
                     Next
                   </button>
                 </div>
-              </template>                                                       2
-            </MapSection>
+              </template> 
+            </CoreMapboxSearch>
             <CoreProgressStepper
               v-if="activeParentStep === 2"
               :titles="[
@@ -258,7 +255,7 @@
                   </button>
                   <button
                     @click="handleNextStep"
-                    :disabled="propertyDetailsStep === 2"
+                    :disabled="propertyDetailsStep === Number(2)"
                     class="bg-[#292929] text-white text-sm font-semibold px-6 py-2.5 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
                   >
                     Next
@@ -295,28 +292,50 @@
             <CoreProgressStepper
               v-if="activeParentStep === 3"
               :titles="[
+                'Upload Property Exterior and Street View Images',
                 'Upload images of the common area',
                 'Upload images of the private rooms',
               ]"
-              :totalSteps="2"
+              :totalSteps="3"
               :currentStep="visualsStep"
             />
+            <UploadPropertyExterior
+            :payload="payload"
+            v-if="activeParentStep === 3 && visualsStep === 1"
+            >
+            <template #action-buttons>
+              <div class="flex justify-between mt-4">
+                <button
+                  @click="handlePreviousStep"
+                  :disabled="visualsStep === Number(1)"
+                  class="bg-[#EBE5E0] text-[#292929] text-sm font-semibold px-4 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
+                >
+                  Previous
+                </button>
+                <button
+                  @click="handleNextStep"
+                  :disabled="visualsStep === Number(3)" 
+                  class="bg-[#292929] text-white text-sm font-semibold px-6 py-2.5 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
+                >
+                  Next
+                </button>
+              </div>
+            </template>
+            </UploadPropertyExterior>
             <UploadPhotos
               :payload="payload"
-              v-if="activeParentStep === 3 && visualsStep === 1"
+              v-if="activeParentStep === 3 && visualsStep === 2"
             >
               <template #action-buttons>
                 <div class="flex justify-between mt-4">
                   <button
                     @click="handlePreviousStep"
-                    :disabled="visualsStep === 1"
                     class="bg-[#EBE5E0] text-[#292929] text-sm font-semibold px-4 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
                   >
                     Previous
                   </button>
                   <button
                     @click="handleNextStep"
-                    :disabled="visualsStep === 2"
                     class="bg-[#292929] text-white text-sm font-semibold px-6 py-2.5 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
                   >
                     Next
@@ -326,7 +345,7 @@
             </UploadPhotos>
             <AddVideoTours
               :payload="payload"
-              v-if="activeParentStep === 3 && visualsStep === 2"
+              v-if="activeParentStep === 3 && visualsStep === 3"
             >
               <template #action-buttons>
                 <div class="flex justify-between mt-4">
@@ -371,7 +390,7 @@
                   </button>
                   <button
                     @click="handleNextStep"
-                    :disabled="finalizeStep === 3"
+                    :disabled="finalizeStep === Number(3)"
                     class="bg-[#292929] text-white text-sm font-semibold px-6 py-2.5 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
                   >
                     Next
@@ -446,7 +465,7 @@ import { useGetCommonAreas } from '@/composables/modules/property/fetchCommonAre
 import { use_create_property } from '@/composables/modules/property/create'
 import LayoutWithoutSidebar from "@/layouts/dashboardWithoutSidebar.vue";
 import { useFetchAgents } from '@/composables/modules/agents/fetch'
-const { payload, create_property, loading, setPropertyData } = use_create_property()
+const { payload, create_property, loading } = use_create_property()
 const { agentsList, loading: loadingAgents } = useFetchAgents()
 const { loading: loadingCommonAreas, commonAreasList, interiorAreas, exteriorAreas, exteriorFurnishedAreasList, exteriorUnFurnishedAreasList, interiorFurnishedAreasList, interiorUnFurnishedAreasList } = useGetCommonAreas()
 const { loading: loadingRoomFeatures, roomFeaturesList } = useGetRoomFeatures()
@@ -556,7 +575,7 @@ function resetSubSteps() {
 }
 
 function handleSubmit() {
-      setPropertyData(payload);
+      // setPropertyData(payload);
        create_property();
 }
 
@@ -609,34 +628,36 @@ const handleLocationSearch = (data: any) => {
 }
 
 const handleCommonAreas = (data: any) => {
-console.log(data, 'sara')
-const storedData = sessionStorage.getItem('property')
-let propertyData = storedData ? JSON.parse(storedData) : {}
+// console.log(data, 'sara')
+// const storedData = sessionStorage.getItem('property')
+// let propertyData = storedData ? JSON.parse(storedData) : {}
 
 // Update the session storage with new location data
-propertyData = {
-  ...propertyData, // merge with existing data
-  commonAreas: data
-}
+// propertyData = {
+//   ...propertyData, // merge with existing data
+//   commonAreas: data
+// }
 
-// Store the updated data back to session storage
-sessionStorage.setItem('property', JSON.stringify(propertyData))
+payload.commonAreas.value = data
+
+// // Store the updated data back to session storage
+// sessionStorage.setItem('property', JSON.stringify(propertyData))
 }
 const handlePropertyFurnished = (data: any) => {
 
 // Retrieve existing session data from sessionStorage (if any)
-const storedData = sessionStorage.getItem('property')
-let propertyData = storedData ? JSON.parse(storedData) : {}
+// const storedData = sessionStorage.getItem('property')
+// let propertyData = storedData ? JSON.parse(storedData) : {}
 
-// Update the session storage with new location data
-propertyData = {
-  ...propertyData, // merge with existing data
-  isFurnishedCommonArea: data
-}
+// // Update the session storage with new location data
+// propertyData = {
+//   ...propertyData, // merge with existing data
+//   isFurnishedCommonArea: data
+// }
 
-// Store the updated data back to session storage
-sessionStorage.setItem('property', JSON.stringify(propertyData))
-
+// // Store the updated data back to session storage
+// sessionStorage.setItem('property', JSON.stringify(propertyData))
+payload.isFurnishedCommonArea.value = data
 
 }
 
@@ -652,19 +673,21 @@ const handleRoomData = (room: any) => {
     roomsArray.value.push(room);
   }
 
-  console.log(roomsArray.value, 'room array')
+  // console.log(roomsArray.value, 'room array')
 
-  const storedData = sessionStorage.getItem('property')
-let propertyData = storedData ? JSON.parse(storedData) : {}
+//   const storedData = sessionStorage.getItem('property')
+// let propertyData = storedData ? JSON.parse(storedData) : {}
 
-// Update the session storage with new location data
-propertyData = {
-  ...propertyData, // merge with existing data
-  rooms: roomsArray.value
-}
+// // Update the session storage with new location data
+// propertyData = {
+//   ...propertyData, // merge with existing data
+//   rooms: roomsArray.value
+// }
 
-// Store the updated data back to session storage
-sessionStorage.setItem('property', JSON.stringify(propertyData))
+// // Store the updated data back to session storage
+// sessionStorage.setItem('property', JSON.stringify(propertyData))
+
+payload.rooms.value = roomsArray.value
 };
 
 const goToNextStep = () => {
@@ -673,14 +696,7 @@ const goToNextStep = () => {
 };
 
 const handleUpdatedRules = (updatedRules: any) => {
-  const storedData = sessionStorage.getItem('property')
-let propertyData = storedData ? JSON.parse(storedData) : {}
-propertyData = {
-  ...propertyData,
-  rules: updatedRules
-}
-sessionStorage.setItem('property', JSON.stringify(propertyData))
-  console.log('Updated Rules:', updatedRules)
+payload.rules.value = updatedRules
 }
 
 
@@ -688,19 +704,13 @@ const handleSaveAndExit = async () => {
   const storedData = sessionStorage.getItem('property')
  let propertyData = storedData ? JSON.parse(storedData) : {}
 //  setPropertyData({...propertyData, isPublished: false})
-setPropertyData(payload);
+// setPropertyData(payload);
  await create_property()
 }
 
 
 const handleQuestions = (questionsData: any) => {
-  const storedData = sessionStorage.getItem('property')
-let propertyData = storedData ? JSON.parse(storedData) : {}
-propertyData = {
-  ...propertyData,
-  questions: questionsData
-}
-sessionStorage.setItem('property', JSON.stringify(propertyData))
+  payload.questions.value = questionsData
 }
 
 const validateBasicPropertyInformationStep = () => {

@@ -84,7 +84,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { use_create_property } from '@/composables/modules/property/create'
+const {  payload} = use_create_property()
 
 interface Question {
   question: string;
@@ -109,7 +110,9 @@ const questions = ref<Question[]>([
 ]);
 
 // Watch questions and emit to parent component whenever they change
-watch(questions, (newQuestions) => {
+watch(questions, (newQuestions: any) => {
+  // props.payload.questions.value = newQuestions
+  console.log(newQuestions, 'Question here')
   props.payload.questions.value = newQuestions
   emit('updateQuestions', newQuestions);
 }, { deep: true });

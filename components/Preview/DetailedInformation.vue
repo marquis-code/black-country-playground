@@ -2,12 +2,12 @@
     <div>
       <div>
         <h4 class="font-light text-[#667185]">Is the common area furnished?</h4>
-        <p>{{ details.isFurnished ? 'Yes' : 'No' }}</p>
+        <p>{{ payload.isFurnishedCommonArea.value ? 'Yes' : 'No' }}</p>
       </div>
       <div class="mt-4">
         <h4 class="font-light text-[#667185]">Interior amenities</h4>
         <div class="flex flex-wrap gap-2">
-          <span v-for="item in details.interiorAmenities" :key="item" class="bg-white border-[0.5px] border-[#E4E7EC] font-light text-sm flex items-center gap-x-2 p-2 px-3 rounded-md">
+          <span v-for="item in interiorAmenities" :key="item" class="bg-white border-[0.5px] border-[#E4E7EC] font-light text-sm flex items-center gap-x-2 p-2 px-3 rounded-md">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_6590_54802)">
                 <g opacity="0.8">
@@ -26,13 +26,13 @@
                 </clipPath>
                 </defs>
                 </svg>                
-            {{ item }}</span>
+            {{ item.name }}</span>
         </div>
       </div>
       <div class="mt-4">
         <h4 class="font-light text-[#667185]">Exterior amenities</h4>
         <div class="flex flex-wrap gap-2">
-          <span v-for="item in details.exteriorAmenities" :key="item" class="bg-white border-[0.5px] border-[#E4E7EC] font-light text-sm flex items-center gap-x-2 p-2 px-3 rounded-md">
+          <span v-for="item in exteriorAmenities" :key="item" class="bg-white border-[0.5px] border-[#E4E7EC] font-light text-sm flex items-center gap-x-2 p-2 px-3 rounded-md">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_6590_54802)">
                 <g opacity="0.8">
@@ -51,13 +51,16 @@
                 </clipPath>
                 </defs>
                 </svg>  
-            {{ item }}</span>
+            {{ item.name }}</span>
         </div>
       </div>
     </div>
   </template>
   
   <script setup lang="ts">
+  import { use_create_property } from "@/composables/modules/property/create"
+
+  const { payload } = use_create_property()
   interface Room {
     name: string
     isFurnished: boolean
@@ -74,6 +77,14 @@
   const props = defineProps<{
     details: Details
   }>()
+
+  const interiorAmenities = computed(() => {
+    return payload.commonAreas.value.filter((item: any) => item.type === 'interior')
+  })
+
+  const exteriorAmenities = computed(() => {
+    return payload.commonAreas.value.filter((item: any) => item.type === 'exterior')
+  })
   </script>
   
   <style scoped>

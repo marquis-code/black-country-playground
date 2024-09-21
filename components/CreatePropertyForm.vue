@@ -1,7 +1,7 @@
 <template>
     <form class="space-y-4">
         <div class="space-y-1">
-          <label class="block font-medium text-[#1D2739] text-sm">Property name {{payload.name.value}}</label>
+          <label class="block font-medium text-[#1D2739] text-sm">Property name</label>
           <input
             type="text"
             v-model="payload.name.value"
@@ -45,33 +45,23 @@
            </option>
           </select>
         </div>
-        <!-- <div class="space-y-1">
-          <label class="block font-medium text-[#1D2739] text-sm">Property size</label>
-          <input
-            type="text"
-            class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none"
-            placeholder="sqm e.g 1000"
-            v-model="localFormData.size"
-            @input="updateParentFormData"
-          />
-        </div> -->
         <div class="space-y-1">
           <label for="property-size" class="block text-sm font-medium text-gray-700">Property size</label>
           <div class="mt-1 relative rounded-md shadow-sm">
             <!-- Dropdown Select embedded -->
             <div class="absolute inset-y-0 left-0 flex items-center">
               <select
-                v-model="payload.sizeUnit.value"
+                v-model.number="payload.sizeUnit.value"
                 class="focus:ring-indigo-500 text-lg focus:border-indigo-500 outline-none h-full py-0 pl-3 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md">
                 <option v-for="item in propertyUnits" :key="item" :value="item">{{item}}</option>
               </select>
             </div>
             <!-- Input field -->
             <input
-              type="number"
+             type="tel"
               name="property-size"
               id="property-size"
-              v-model="payload.size.value"
+              v-model.number="payload.size.value"
               class="w-full px-4 py-3.5 pl-32 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none"
               placeholder="e.g 1000"
             />
@@ -88,9 +78,9 @@
               -
             </button>
             <input
-              type="text"
+            type="tel"
               class="text-center bg-[#292929] text-white w-16 px-4 py-2 border rounded-lg"
-              v-model="payload.floorNumber.value"
+              v-model.number="payload.floorNumber.value"
             />
             <button
               type="button"
@@ -112,9 +102,9 @@
               -
             </button>
             <input
-              type="text"
+            type="tel"
               class="text-center bg-[#292929] text-white w-16 px-4 py-2 border rounded-lg"
-              v-model="payload.bedroomCount.value"
+              v-model.number="payload.bedroomCount.value"
             />
             <button
               @click="payload.bedroomCount.value ++"
@@ -138,9 +128,9 @@
               -
             </button>
             <input
-              type="text"
+              type="tel"
               class="text-center bg-[#292929] text-white w-16 px-4 py-2 border rounded-lg"
-              v-model="payload.bathroomCount.value"
+              v-model.number="payload.bathroomCount.value"
             />
             <button
               type="button"

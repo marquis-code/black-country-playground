@@ -27,6 +27,7 @@
                 v-for="feature in activeRoom.features"
                 :key="feature.name"
                 :roomName="activeRoom.name"
+                :payload="payload"
                 :label="feature.name"
                 location="rooms"
                 @update:images="handleImages"
@@ -45,16 +46,23 @@
     const rooms = ref<any[]>([]) // To store the rooms array
     const activeRoom = ref<any>(null) // The currently selected room based on activeTab
 
+    const props = defineProps({
+  payload: {
+    type: Object,
+    default: () => {}
+  }
+})
+
     function handleImages(images: any) {
   console.log(images); // This will log the base64 array of images
 }
     
     // On mount, get the property from session storage and populate tabs
     onMounted(() => {
-      const property = JSON.parse(sessionStorage.getItem('property') || '{}')
-      if (property && property.rooms) {
-        rooms.value = property.rooms // Save rooms data
-        tabs.value = property.rooms.map((room: any) => room.name) // Extract room names for tabs
+      const property = props.payload
+      if (property && property.rooms.value) {
+        rooms.value = property.rooms.value // Save rooms data
+        tabs.value = property.rooms.value.map((room: any) => room.name) // Extract room names for tabs
         activeTab.value = tabs.value[0] // Set the first room as active by default
         activeRoom.value = rooms.value.find((room: any) => room.name === activeTab.value) // Set the first room as the active room
       }

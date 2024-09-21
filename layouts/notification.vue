@@ -1,3 +1,2 @@
 <template>
-    v
 </template>

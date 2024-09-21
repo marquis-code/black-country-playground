@@ -154,7 +154,10 @@ onMounted(async () => {
           
           // Call setPropertyData with the new object
           console.log(baseObj, 'before setting');
-          setPropertyData(baseObj);
+          payload.latitude.value = parseFloat(response.data.lat)
+          payload.longitude.value = parseFloat(response.data.lat)
+          payload.address.value = parseFloat(response.data.lat)
+          // setPropertyData(baseObj);
         }
 
         map.value.setView([latitude, longitude], 13);
@@ -219,7 +222,11 @@ const searchLocation = async () => {
         address: place.display_name
     };
 
-      setPropertyData(baseObj)
+          payload.latitude.value = baseObj.latitude
+          payload.longitude.value = baseObj.longitude
+          payload.address.value =  baseObj.address
+
+      // setPropertyData(baseObj)
       map.value.setView([lat, lon], 13);
       L.marker([lat, lon])
         .addTo(map.value)
