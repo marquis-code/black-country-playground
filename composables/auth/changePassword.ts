@@ -35,7 +35,8 @@ export const use_change_password = () => {
 				autoClose: 5000,
 				dangerouslyHTMLString: true,
 			  });
-			Router.push('/login')
+			localStorage.clear()
+			Router.push('/dashboard/profile/password-change-success')
 		}
 	}
 

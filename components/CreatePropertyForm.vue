@@ -1,42 +1,51 @@
 <template>
     <form class="space-y-4">
         <div class="space-y-1">
-          <label class="block font-medium text-[#1D2739] text-sm">Property name</label>
+          <label for="property-name" class="block font-medium text-[#1D2739] text-sm">Property name</label>
           <input
             type="text"
+            name="property-name"
+            id="property-name"
             v-model="payload.name.value"
             class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none"
-            placeholder="Enter full name"
+            placeholder="Enter property Name"
           />
         </div>
         <div class="space-y-1">
-          <label class="block font-medium text-[#1D2739] text-sm"
+          <label for="property-description" class="block font-medium text-[#1D2739] text-sm"
             >Brief description</label
           >
           <textarea
             rows="6"
             cols="6"
+            name="property-description"
+            id="property-description"
             v-model="payload.description.value"
             class="w-full px-4 py-2 resize-none border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none"
-            placeholder="Enter your reason for moving out"
+            placeholder="Enter property description"
           ></textarea>
         </div>
         <div class="space-y-1">
-          <label class="block font-medium text-[#1D2739] text-sm"
+          <label for="property-type" class="block font-medium text-[#1D2739] text-sm"
             >Building/property type</label
           >
           <select
+          name="property-type"
+          id="property-type"
           v-model="payload.houseTypeId.value"
           class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none"
           >
+           <option value="">Select property type</option>
            <option :value="item.id" v-for="(item, idx) in propertyTypesList" :key="idx">
             {{ item.name }}
            </option>
           </select>
         </div>
         <div class="space-y-1">
-          <label class="block font-medium text-[#1D2739] text-sm">Flooring type</label>
+          <label for="flooring-type" class="block font-medium text-[#1D2739] text-sm">Flooring type</label>
           <select
+          name="flooring-type"
+          id="flooring-type"
           v-model="payload.flooringTypeId.value"
           class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none"
           >
@@ -46,17 +55,20 @@
           </select>
         </div>
         <div class="space-y-1">
-          <label for="property-size" class="block text-sm font-medium text-gray-700">Property size</label>
+          <label name="property-size-unit" for="property-size" class="block text-sm font-medium text-gray-700">Property size</label>
           <div class="mt-1 relative rounded-md shadow-sm">
             <!-- Dropdown Select embedded -->
             <div class="absolute inset-y-0 left-0 flex items-center">
               <select
+                name="property-size-unit"
+                id="property-size-unit"
                 v-model.number="payload.sizeUnit.value"
                 class="focus:ring-indigo-500 text-lg focus:border-indigo-500 outline-none h-full py-0 pl-3 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md">
                 <option v-for="item in propertyUnits" :key="item" :value="item">{{item}}</option>
               </select>
             </div>
             <!-- Input field -->
+            <label name="property-size" for="property-size" class="block sr-only text-sm font-medium text-gray-700">Property size</label>
             <input
              type="tel"
               name="property-size"
@@ -68,7 +80,7 @@
           </div>
         </div>
         <div class="flex justify-between items-center">
-          <label class="block font-medium text-[#1D2739] text-sm">Floor number</label>
+          <label for="floor-number" class="block font-medium text-[#1D2739] text-sm">Floor number</label>
           <div class="flex items-center space-x-2">
             <button
               type="button"
@@ -79,6 +91,8 @@
             </button>
             <input
             type="tel"
+            name="floor-number"
+              id="floor-number"
               class="text-center bg-[#292929] text-white w-16 px-4 py-2 border rounded-lg"
               v-model.number="payload.floorNumber.value"
             />
@@ -92,7 +106,7 @@
           </div>
         </div>
         <div class="flex justify-between items-center">
-          <label class="block font-medium text-[#1D2739] text-sm">Number of bedrooms</label>
+          <label name="bedroom-count" class="block font-medium text-[#1D2739] text-sm">Number of bedrooms</label>
           <div class="flex items-center space-x-2">
             <button
               @click="handleBedroomNumberDecrease"
@@ -103,6 +117,8 @@
             </button>
             <input
             type="tel"
+            name="bedroom-count"
+            id="bedroom-count"
               class="text-center bg-[#292929] text-white w-16 px-4 py-2 border rounded-lg"
               v-model.number="payload.bedroomCount.value"
             />
@@ -116,7 +132,7 @@
           </div>
         </div>
         <div class="flex pb-20 justify-between items-center">
-          <label class="block font-medium text-[#1D2739] text-sm"
+          <label for="bathroom-count" class="block font-medium text-[#1D2739] text-sm"
             >Number of bathrooms/Restrooms</label
           >
           <div class="flex items-center space-x-2">
@@ -129,6 +145,8 @@
             </button>
             <input
               type="tel"
+              name="bathroom-count"
+              id="bathroom-count"
               class="text-center bg-[#292929] text-white w-16 px-4 py-2 border rounded-lg"
               v-model.number="payload.bathroomCount.value"
             />

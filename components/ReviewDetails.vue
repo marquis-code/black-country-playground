@@ -133,7 +133,7 @@
     </main>
   </template>
   
-  <script setup lang="ts">
+  <!-- <script setup lang="ts">
   import { ref, watch, defineEmits } from 'vue'
   
   // Define the emit function to pass data to the parent
@@ -208,4 +208,98 @@
   <style scoped>
   /* Additional styles can be added if needed */
   </style>
-  
+   -->
+
+   <script setup lang="ts">
+// Define the emit function to pass data to the parent
+const emit = defineEmits(['updateRules']);
+
+// States for predefined rules
+const smokingAllowed = ref(false);
+const petsAllowed = ref(false);
+
+// State for new custom rule input
+const newCustomRule = ref<string>('');
+
+// State for rules list (both predefined and custom rules)
+const rules = ref<{ rule: string; options?: string[]; answer?: string }[]>([
+  {
+    rule: 'Smoking Allowed',
+    options: ['Yes', 'No'],
+    answer: 'No',
+  },
+  {
+    rule: 'Pets Allowed',
+    options: ['Yes', 'No'],
+    answer: 'Yes',
+  },
+]);
+
+const props = defineProps({
+  payload: {
+    type: Object,
+    default: () => ({ rules: [] }),
+  },
+});
+
+// Prefill rules on component mounted
+onMounted(() => {
+  console.log(props.payload.rules, 'rules here')
+  // Check if there are existing rules in the payload and prefill the rules array
+  if (Array.isArray(props?.payload?.rules?.value) && props.payload?.rules?.value?.length > 0) {
+    rules.value = props?.payload?.rules?.value;
+
+    // Update the states of `smokingAllowed` and `petsAllowed` based on the prefilled values
+    const smokingRule = rules.value.find((r) => r.rule === 'Smoking Allowed');
+    if (smokingRule) {
+      smokingAllowed.value = smokingRule.answer === 'Yes';
+    }
+
+    const petsRule = rules.value.find((r) => r.rule === 'Pets Allowed');
+    if (petsRule) {
+      petsAllowed.value = petsRule.answer === 'Yes';
+    }
+  }
+});
+
+// Emit the updated rules whenever the rules array changes
+watch(
+  rules,
+  () => {
+    props.payload.rules.value = rules.value; // Update the payload object
+    emit('updateRules', rules.value);
+  },
+  { deep: true }
+);
+
+// Toggle function to set the answer for predefined rules
+function setAnswer(ruleName: string, answer: string) {
+  const rule = rules.value.find((r) => r.rule === ruleName);
+  if (rule) {
+    rule.answer = answer;
+    if (ruleName === 'Smoking Allowed') {
+      smokingAllowed.value = answer === 'Yes';
+    }
+    if (ruleName === 'Pets Allowed') {
+      petsAllowed.value = answer === 'Yes';
+    }
+  }
+}
+
+// Function to add a new custom rule
+function addCustomRule() {
+  if (newCustomRule.value.trim()) {
+    rules.value.push({ rule: newCustomRule.value.trim() });
+    newCustomRule.value = '';
+  }
+}
+
+// Function to remove a rule by index
+function removeRule(index: number) {
+  rules.value.splice(index, 1);
+}
+
+// Tailwind CSS classes
+const activeClass = 'bg-black text-white';
+const inactiveClass = 'bg-white text-black';
+</script>

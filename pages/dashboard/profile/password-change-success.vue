@@ -13,11 +13,17 @@
           </div>
           <h2 class="mb-4 text-xl text-[#171717] font-semibold text-center">Password changed Successful</h2>
           <p class="mb-6 text-[#667185] text-center">You have successfully changed a password to your account.</p>
-          <button @click="router.push('/dashboard/profile/payment-information')" class="w-full py-4 text-sm font-semibold text-white bg-[#292929] rounded-md">Proceed to login</button>
+          <button @click="handleClick" class="w-full py-4 text-sm font-semibold text-white bg-[#292929] rounded-md">Proceed to login</button>
         </div>
     </main>
     </template>
   
     <script setup lang="ts">
-   const router = useRouter()
+   const Router = useRouter()
+
+   const handleClick = () => {
+      localStorage.clear()
+      window.location.href = "/login"
+			Router.push('/login')
+   }
   </script>

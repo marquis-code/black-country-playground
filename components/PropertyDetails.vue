@@ -353,23 +353,15 @@ const commonAreas = ref<any[]>([]);
 // Current room name being edited
 const currentRoomName = ref<string>('Room 1'); // Initialize with the first room's name
 
+// Initialize with existing common areas selections from props
+onMounted(() => {
+  if (props.payload?.commonAreas?.value) {
+    commonAreas.value = props.payload.commonAreas.value;
+  }
+});
+
 // Emit event to notify parent component
 const emit = defineEmits(['updateCommonAreas', 'updateIsFurnished', 'saveRoomData']);
-
-// // Add manual interior item
-// const addInteriorItem = () => {
-//   if (newInteriorItem.value.trim()) {
-//     props.interiorAreas.push({
-//       name: newInteriorItem.value.trim(), 
-//       type: "interior",
-//       canBeFurnished: isFurnishedCommonArea.value,
-//       houseId: null,
-//       images: []
-//     });
-//     newInteriorItem.value = "";
-//     showInteriorInput.value = false;
-//   }
-// };
 
 // Add manual interior item and update the list
 const addInteriorItem = () => {
@@ -397,14 +389,6 @@ const addInteriorItem = () => {
   }
 };
 
-// // Add manual exterior item
-// const addExteriorItem = () => {
-//   if (newExteriorItem.value.trim()) {
-//     props.exteriorAreas.push(newExteriorItem.value.trim());
-//     newExteriorItem.value = "";
-//     showExteriorInput.value = false;
-//   }
-// };
 
 // Add manual exterior item and update the list
 const addExteriorItem = () => {
@@ -463,8 +447,10 @@ const toggleSelection = (item: string, type: string) => {
 const isFurnishedCommonArea = ref(true);
 
 onMounted(() => {
-  isFurnishedCommonArea.value = props?.payload?.isFurnishedCommonArea
-})
+  isFurnishedCommonArea.value = props?.payload?.isFurnishedCommonArea;
+});
+
+
 const setFurnishedStatus = (status: boolean) => {
   isFurnishedCommonArea.value = status;
   props.payload.isFurnishedCommonArea.value = status;

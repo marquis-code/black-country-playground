@@ -28,7 +28,7 @@
           </NuxtLink>
           <div class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true"></div>
           <div class="relative">
-            <button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false"
+            <button @click="router.push('/dashboard/profile')" type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false"
               aria-haspopup="true">
               <span class="sr-only">Open user menu</span>
               <!-- <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -50,7 +50,7 @@
                   >
                   <span class="text-sm py-0 my-0 font-light text-[#667185] block">Super admin</span>
                 </div>
-                <svg @click="router.push('/dashboard/profile')" class="cursor-pointer" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg  class="cursor-pointer" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="#1D2739" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
@@ -64,76 +64,9 @@
   <main>
 
   <PropertyDetailsHeader v-if="!loading" :propertyObj="propertyObj" />
+  <PropertyImageGallery :images="propertyObj?.images" class="mt-6" />
  <section v-if="!loading">
   <div class="pt-4 pb-8">
-    <!-- Property Images Section -->
-    <div v-if="propertyObj?.images" class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6 p-6 lg:p-0">
-      <div>
-        <PropertyImageCarousel
-          v-if="propertyObj?.images?.length"
-          :images="propertyObj.images"
-          :interval="5000"
-        />
-        <!-- <img :src="dynamicImage(mainImage)" alt="Main Image" class="rounded-lg w-full" /> -->
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-        <!-- <img :src="dynamicImage(secondaryImage1)" alt="Image 2" class="rounded-lg w-full" /> -->
-        <PropertyImageCarousel
-          v-if="propertyObj?.images?.length"
-          :images="propertyObj.images"
-          :interval="5000"
-        />
-        <!-- <img :src="dynamicImage(secondaryImage2)" alt="Image 3" class="rounded-lg w-full" /> -->
-        <PropertyImageCarousel
-          v-if="propertyObj?.images?.length"
-          :images="propertyObj.images"
-          :interval="5000"
-        />
-        <!-- <img :src="dynamicImage(secondaryImage3)" alt="Image 4" class="rounded-lg w-full" /> -->
-        <PropertyImageCarousel
-          v-if="propertyObj?.images?.length"
-          :images="propertyObj.images"
-          :interval="5000"
-        />
-        <div
-          class="relative cursor-pointer"
-        >
-          <!-- <img :src="dynamicImage(secondaryImage4)" alt="Image 5" class="rounded-lg w-full cursor-pointer" /> -->
-          <PropertyImageCarousel
-            @click="router.push(`/dashboard/property/${propertyObj.id}/image-gallery`)"
-            v-if="propertyObj?.images?.length"
-            :images="propertyObj.images"
-            :interval="5000"
-          />
-          <div
-          @click="router.push(`/dashboard/property/${propertyObj.id}/image-gallery`)"
-            class="absolute cursor-pointer inset-0 bg-black bg-opacity-50 flex justify-center items-center text-white text-lg font-bold rounded-lg"
-          >
-            View all {{propertyObj?.images?.length}}
-          </div>
-        </div>
-      </div>
-    </div>
-    <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6 p-6 lg:p-0">
-      <div>
-        <img :src="dynamicImage(mainImage)" alt="Main Image" class="rounded-lg w-full" />
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-        <img :src="dynamicImage(secondaryImage1)" alt="Image 2" class="rounded-lg w-full" />
-        <img :src="dynamicImage(secondaryImage2)" alt="Image 3" class="rounded-lg w-full" />
-        <img :src="dynamicImage(secondaryImage3)" alt="Image 4" class="rounded-lg w-full" />
-        <div
-          class="relative cursor-pointer"
-        >
-          <img :src="dynamicImage(secondaryImage4)" alt="Image 5" class="rounded-lg w-full cursor-pointer" />
-          <div
-            class="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center text-white text-lg font-bold rounded-lg"
-          >
-            View all +12
-          </div>
-        </div>
-      </div>
-    </div>
     <PropertyInfo :propertyObj="propertyObj" :loading="loading" />
   </div>
  </section>
@@ -425,36 +358,36 @@ initials.value = getInitials.value;
 })
 
 // Similar Properties
-const similarProperties = ref([
-  {
-    id: 1,
-    image: "property1.png",
-    name: "Jason Co-living Space",
-    address: "Iconic Tower, off Ajose Adegun VI, Lagos.",
-    price: "5 bedrooms | 6 baths | 5254 sqft",
-  },
-  {
-    id: 2,
-    image: "property2.png",
-    name: "Jason Co-living Space",
-    address: "Iconic Tower, off Ajose Adegun VI, Lagos.",
-    price: "5 bedrooms | 6 baths | 5254 sqft",
-  },
-  {
-    id: 3,
-    image: "property1.png",
-    name: "Jason Co-living Space",
-    address: "Iconic Tower, off Ajose Adegun VI, Lagos.",
-    price: "5 bedrooms | 6 baths | 5254 sqft",
-  },
-  {
-    id: 4,
-    image: "property2.png",
-    name: "Jason Co-living Space",
-    address: "Iconic Tower, off Ajose Adegun VI, Lagos.",
-    price: "5 bedrooms | 6 baths | 5254 sqft",
-  },
-]);
+// const similarProperties = ref([
+//   {
+//     id: 1,
+//     image: "property1.png",
+//     name: "Jason Co-living Space",
+//     address: "Iconic Tower, off Ajose Adegun VI, Lagos.",
+//     price: "5 bedrooms | 6 baths | 5254 sqft",
+//   },
+//   {
+//     id: 2,
+//     image: "property2.png",
+//     name: "Jason Co-living Space",
+//     address: "Iconic Tower, off Ajose Adegun VI, Lagos.",
+//     price: "5 bedrooms | 6 baths | 5254 sqft",
+//   },
+//   {
+//     id: 3,
+//     image: "property1.png",
+//     name: "Jason Co-living Space",
+//     address: "Iconic Tower, off Ajose Adegun VI, Lagos.",
+//     price: "5 bedrooms | 6 baths | 5254 sqft",
+//   },
+//   {
+//     id: 4,
+//     image: "property2.png",
+//     name: "Jason Co-living Space",
+//     address: "Iconic Tower, off Ajose Adegun VI, Lagos.",
+//     price: "5 bedrooms | 6 baths | 5254 sqft",
+//   },
+// ]);
 const route = useRoute()
 
 const handleFavorite = () => {};

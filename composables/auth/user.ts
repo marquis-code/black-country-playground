@@ -76,9 +76,26 @@ export const useUser = () => {
     runtimeData.token.value = user?.token?.token;
   };
 
+  // const updateUser = (user: any) => {
+  //   runtimeData.user.value = user;
+  //   localStorageData.user.value = user;
+  // };
+
   const updateUser = (user: any) => {
-    runtimeData.user.value = user;
-    localStorageData.user.value = user;
+    if (user) {
+      if (user.firstName) {
+        runtimeData.user.value.firstName = user.firstName;
+        localStorageData.user.value.firstName = user.firstName;
+      }
+      if (user.lastName) {
+        runtimeData.user.value.lastName = user.lastName;
+        localStorageData.user.value.lastName = user.lastName;
+      }
+      if (user.email) {
+        runtimeData.user.value.email = user.email;
+        localStorageData.user.value.email = user.email;
+      }
+    }
   };
 
   return {

@@ -43,13 +43,32 @@ export const useGetProperties = () => {
 
     const { $_fetch_properties } = property_api;
 
+    // const getProperties = async () => {
+    //     loadingProperties.value = true;
+    //     try {
+    //         const res = await $_fetch_properties(metadata.value, filters.value) as any;
+
+    //         if (res.type !== 'ERROR') {
+    //             propertiesList.value = res?.data?.result ?? [];
+    //             metadata.value = res?.data?.metadata;
+    //         }
+    //     } catch (error) {
+    //         console.error('Error fetching properties:', error);
+    //     } finally {
+    //         loadingProperties.value = false;
+    //     }
+    // };
+
     const getProperties = async () => {
         loadingProperties.value = true;
         try {
             const res = await $_fetch_properties(metadata.value, filters.value) as any;
-
+    
             if (res.type !== 'ERROR') {
-                propertiesList.value = res?.data?.result ?? [];
+                // Sort properties by 'createdAt' in descending order
+                propertiesList.value = (res?.data?.result ?? []).sort((a: any, b: any) => {
+                    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                });
                 metadata.value = res?.data?.metadata;
             }
         } catch (error) {

@@ -1,7 +1,7 @@
 <template>
     <div class="space-y-6">
       <!-- Gallery Section -->
-      <div class="flex items-center border-[0.5px] border-gray-50 space-x-4 bg-white p-4 rounded-lg">
+      <div @click="router.push(`/dashboard/property/${property.id}/common-areas`)" class="flex cursor-pointer items-center border-[0.5px] border-gray-50 space-x-4 bg-white p-4 rounded-lg">
         <img :src="dynamicImage('placeholder.png')" alt="Gallery" class="w-12 h-12 rounded-full">
         <div class="flex-1">
           <h3 class="text-lg font-medium">Gallery</h3>
@@ -64,6 +64,8 @@
       default: () => {}
     }
   })
+
+  const router = useRouter()
 
   const exteriorCommonAreas = computed(() => {
      return props.property.commonAreas.filter((item: any) => item.type === 'exterior')

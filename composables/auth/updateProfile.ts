@@ -1,51 +1,32 @@
 import { auth_api } from "@/api_factory/modules/auth";
 import { useRouter } from "vue-router";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useNuxtApp } from "#app"; // Use this to show toast notifications
+import { useUser } from '@/composables/auth/user'
 
 export const use_update_profile = () => {
   const Router = useRouter();
-  
+  const { updateUser } = useUser()
+
+  // Initialize the credential object with default values
   const credential = ref({
     firstName: "",
     lastName: "",
+    profilePicture: "",
     email: "",
-    isEmailVerified: false,
-    isActive: false,
-    phoneNumber: "",
-    dateOfBirth: "",
-    gender: "",
-    maritalStatus: "",
-    profilePicture: null,
-    currentLandlord: null,
-    rentalAddress: null,
-    lengthOfTenancy: null,
-    reasonForMovingOut: null,
-    employmentStatus: null,
-    employerName: null,
-    employerAddress: null,
-    occupation: null,
-    monthlyNetSalary: null,
-    nextOfKinName: null,
-    nextOfKinRelationship: null,
-    nextOfKinEmail: null,
-    nextOfKinAddress: null,
-    nextOfKinPhone: null,
-    nextOfKinOccupation: null,
-    nextOfKinEmployer: null,
-    nextOfKinEmployerAddress: null,
-    shouldContactReferences: null,
+    role: ""
   }) as any;
 
   const loading = ref(false);
   const error = ref(null); // Track error messages
 
+  // Function to update the profile
   const updateProfile = async (profilePayload: any) => {
     loading.value = true;
     error.value = null; // Reset error before the API call
 
     try {
-      const res = await auth_api.$_update_profile(profilePayload);
+      const res = (await auth_api.$_update_profile(profilePayload)) as any;
 
       loading.value = false;
 
@@ -54,6 +35,8 @@ export const use_update_profile = () => {
           autoClose: 5000,
           dangerouslyHTMLString: true,
         });
+        console.log(res.data, 'update res')
+        updateUser(res.data)
         return res;
       } else {
         // If API returns an error, set the error state
@@ -70,6 +53,25 @@ export const use_update_profile = () => {
       return Promise.reject(error.value); // Return the error to the calling function
     }
   };
+
+  // Prefill user credentials from localStorage when the component is mounted
+  onMounted(() => {
+    const userData = localStorage.getItem("user");
+
+    if (userData) {
+      try {
+        const parsedUser = JSON.parse(userData);
+        // Update the credential object with data from local storage
+        credential.value.firstName = parsedUser.firstName || "";
+        credential.value.lastName = parsedUser.lastName || "";
+        credential.value.profilePicture = parsedUser.profilePicture || "";
+        credential.value.role = parsedUser.role || "";
+        credential.value.email = parsedUser.email || "";
+      } catch (error) {
+        console.error("Error parsing user data from localStorage:", error);
+      }
+    }
+  });
 
   return { credential, updateProfile, loading, error };
 };

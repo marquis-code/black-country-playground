@@ -143,8 +143,8 @@
                 Settings
               </a>
               <button
-                @click="onConfirm"
-                class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                @click="showBLogoutModal = true"
+                class="group -mx-2 flex w-full gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
               >
                 <img
                   :src="dynamicIcons('logout')"
@@ -242,6 +242,54 @@
   </div>
 </div>
   </CoreModalWithoutCloseBtn>
+
+  <CoreModal
+  :isOpen="showBLogoutModal"
+  @close="showBLogoutModal = false"
+  >
+  <div
+  class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+  @click.self="onCancel"
+>
+  <div class="bg-white rounded-xl p-6 max-w-sm w-full text-center shadow-lg">
+    <!-- Icon -->
+    <div class="flex justify-center items-center bg-yellow-500 rounded-full w-16 h-16 mx-auto mb-4">
+      <svg width="65" height="64" viewBox="0 0 65 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0.921875" width="63.1513" height="64" rx="31.5756" fill="#F3A218"/>
+        <path d="M42.2031 32.375C42.2031 26.8521 37.7259 22.375 32.2031 22.375C26.6803 22.375 22.2031 26.8521 22.2031 32.375C22.2031 37.8978 26.6803 42.375 32.2031 42.375C37.7259 42.375 42.2031 37.8978 42.2031 32.375Z" stroke="white" stroke-width="1.5"/>
+        <path d="M32.4453 37.375V32.375C32.4453 31.9036 32.4453 31.6679 32.2988 31.5214C32.1524 31.375 31.9167 31.375 31.4453 31.375" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M32.1953 28.377H32.2043" stroke="white" stroke-width="3.25" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        
+    </div>
+    
+    <!-- Title -->
+    <h2 class="text-lg font-semibold text-gray-700 mb-2">Logout</h2>
+
+    <!-- Message -->
+    <p class="text-gray-500 mb-6">Are you sure you want to logout?</p>
+
+    <!-- Buttons -->
+    <div class="space-y-3">
+      <button
+        type="button"
+        class="w-full disabled:cursor-not-allowed text-sm disabled:opacity-25 bg-[#292929] text-white py-3.5 rounded-md font-semibold"
+        @click="onConfirm"
+        :disabled="loading"
+      >
+        Yes, log out
+      </button>
+      <button
+        type="button"
+        class="w-full bg-[#EBE5E0] text-gray-700 text-sm py-3.5 rounded-md font-semibold"
+        @click="onCancel"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+  </CoreModal>
 </main>
 </template>
 
@@ -249,6 +297,7 @@
 const showBLogoutModal = ref(false);
 import { dynamicIcons } from "@/utils/assets";
 const router = useRouter();
+const loading = ref(false)
 const onConfirm = () => {
   showBLogoutModal.value = true
   // Logic for logout

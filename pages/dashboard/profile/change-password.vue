@@ -1,5 +1,5 @@
 <template>
-  <Layout class="flex flex-col justify-between h-screen min-h-screen border-4 bg-gray-25 relative">
+  <Layout class="flex flex-col justify-between h-screen min-h-screen bg-gray-25 relative">
     <template #header-content>
       <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6 justify-between">
         <div class="flex items-center gap-x-4">
@@ -20,7 +20,7 @@
            <h2 class="text-xl font-semibold text-gray-700 mb-6">Change password</h2>
      
            <!-- Form Fields -->
-           <form @submit.prevent="change_password" class="space-y-6">
+           <div class="space-y-6">
              <!-- Current Password -->
              <div>
                <label class="block text-gray-600 mb-2">Current password</label>
@@ -69,7 +69,7 @@
              <div>
                <label class="block text-gray-600 mb-2">Confirm password</label>
                <div class="relative">
-                 <input  v-model="credential.confirmPassword.value" type="password" placeholder="Confirm password" class="mt-1 block w-full bg-[#E4E7EC] text-sm px-4 py-4 border-[0.5px] border-gray-100 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
+                 <input  v-model="credential.confirmPassword.value" :type="showConfirmPassword ? 'text' : 'password'" placeholder="Confirm password" class="mt-1 block w-full bg-[#E4E7EC] text-sm px-4 py-4 border-[0.5px] border-gray-100 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
                  <div @click="toggleConfirmShowPassword" class="absolute inset-y-0 right-4 top-6 flex items-center cursor-pointer">
                    <svg class="absolute -top-1 right-3"  v-if="!showConfirmPassword" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                        <path d="M18.3332 6.66669C18.3332 6.66669 14.9998 11.6667 9.99984 11.6667C4.99984 11.6667 1.6665 6.66669 1.6665 6.66669" stroke="#1D2739" stroke-width="2" stroke-linecap="round"/>
@@ -92,7 +92,7 @@
            >
              Passwords do not match.
            </p>
-           </form>
+           </div>
          </div>
        </div>
       </section>
@@ -108,8 +108,8 @@
         >
           Cancel
         </button>
-        <button @click="router.push('/dashboard/profile/password-change-success')" class="text-white font-medium rounded-md px-6 py-3 bg-[#292929]">
-          Save
+        <button @click="change_password" :disabled="disabled"  type="button" class="text-white disabled:cursor-not-allowed disabled:opacity-25 font-medium rounded-md px-6 py-3 bg-[#292929]">
+          {{loading ? 'Processing...' : 'Save'}}
         </button>
       </div>
       </div>

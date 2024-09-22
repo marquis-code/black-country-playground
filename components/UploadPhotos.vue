@@ -13,6 +13,7 @@
               v-for="item in commonAreas"
               :key="item.name"
               :label="item.name"
+              :payload="payload"
               location="common-areas"
             />
           </div>

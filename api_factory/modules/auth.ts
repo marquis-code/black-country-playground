@@ -5,7 +5,11 @@ export const auth_api = {
 		return GATEWAY_ENDPOINT.post(url, credential)
 	},
 	$_update_profile: (payload: any) => {
-		const url = '/tenants/profile'
+		const url = '/admins/profile'
+		return GATEWAY_ENDPOINT.patch(url, payload);
+	},
+	$_change_password: (payload: any) => {
+		const url = '/admins/password'
 		return GATEWAY_ENDPOINT.patch(url, payload);
 	},
 }

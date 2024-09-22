@@ -83,7 +83,7 @@
   </main>
 </template>
 
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { use_create_property } from '@/composables/modules/property/create'
 const {  payload} = use_create_property()
 
@@ -128,6 +128,74 @@ function addOption(index: number) {
   questions.value[index].widgetOptions.push('');
 }
 
+function removeOption(questionIndex: number, optionIndex: number) {
+  if (questions.value[questionIndex].widgetOptions) {
+    questions.value[questionIndex].widgetOptions.splice(optionIndex, 1);
+  }
+}
+</script> -->
+
+<script setup lang="ts">
+import { use_create_property } from '@/composables/modules/property/create';
+
+const { payload } = use_create_property();
+
+// Define the Question interface
+interface Question {
+  question: string;
+  widgetType: string;
+  widgetOptions: string[] | null;
+  metadata: any;
+}
+
+const props = defineProps({
+  payload: {
+    type: Object,
+    default: () => ({ questions: [] }) // Ensure there's a default structure
+  }
+});
+
+const emit = defineEmits<{
+  (event: 'updateQuestions', questions: Question[]): void;
+}>();
+
+// State for the questions
+const questions = ref<Question[]>([
+  { question: '', widgetType: 'input', widgetOptions: null, metadata: {} },
+]);
+
+// Prefill questions on component mounted
+onMounted(() => {
+  console.log(props?.payload?.questions.value, 'qUESTIONS HEREssssss')
+  if (Array.isArray(props?.payload?.questions?.value) && props.payload?.questions?.value?.length > 0) {
+    questions.value = props?.payload?.questions?.value;
+  }
+});
+
+// Watch questions and emit to parent component whenever they change
+watch(
+  questions,
+  (newQuestions: any) => {
+    props.payload.questions.value = newQuestions; // Update the payload object
+    emit('updateQuestions', newQuestions);
+  },
+  { deep: true }
+);
+
+// Add a new question to the list
+function addQuestion() {
+  questions.value.push({ question: '', widgetType: 'input', widgetOptions: null, metadata: {} });
+}
+
+// Add an option to a specific question
+function addOption(index: number) {
+  if (!questions.value[index].widgetOptions) {
+    questions.value[index].widgetOptions = [];
+  }
+  questions.value[index].widgetOptions.push('');
+}
+
+// Remove an option from a specific question
 function removeOption(questionIndex: number, optionIndex: number) {
   if (questions.value[questionIndex].widgetOptions) {
     questions.value[questionIndex].widgetOptions.splice(optionIndex, 1);
