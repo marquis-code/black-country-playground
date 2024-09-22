@@ -1,5 +1,5 @@
 <template>
-  <div class="p-8 bg-white rounded-lg shadow-sm max-w-5xl mx-auto">
+  <div class="bg-white rounded-lg shadow-sm mx-auto">
     <h2 class="text-xl font-semibold mb-6">Rooms</h2>
 
     <div v-for="(room, index) in rooms" :key="index" class="mb-8 border-b pb-6">

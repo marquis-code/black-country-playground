@@ -58,118 +58,6 @@
   </main>
 </template>
 
-<!--   
-  <script setup lang="ts">
-  import { useNuxtApp } from "#app";
-  import { useBatchUploadFile } from '@/composables/core/batchUpload'
-  const { uploadFiles, uploadResponse, loading } = useBatchUploadFile()
-  
-  const fileInput = ref<HTMLInputElement | null>(null)
-  const images = reactive<string[]>([])
-  const dragging = ref(false)
-
-  const props = defineProps({
-    payload: {
-        type: Object,
-        default: () => {}
-    }
-  })
-
-  // Emit event to notify parent component
-const emit = defineEmits(['updateImages']);
-
-// Populate images array when the component is mounted
-onMounted(() => {
-  if (props.payload.images.value && Array.isArray(props.payload.images.value)) {
-    images.push(...props.payload.images.value);
-  }
-});
-
-  
-  // Emit images array whenever it is updated
-  function triggerFileUpload() {
-    if (fileInput.value) {
-      fileInput.value.click()
-    }
-  }
-
-  // Emit images array whenever it is updated
-watch(images, (newImages) => {
-  emit('updateImages', newImages);
-}, { deep: true });
-
-// function triggerFileUpload() {
-//   if (fileInput.value) {
-//     fileInput.value.click();
-//   }
-// }
-
-  
-  async function handleFileUpload(event: Event) {
-    const target = event.target as HTMLInputElement
-    if (target && target.files && target.files.length > 0) {
-      await uploadSelectedFiles(target.files)
-    }
-  }
-  
-  async function handleDrop(event: DragEvent) {
-    if (event.dataTransfer && event.dataTransfer.files.length > 0) {
-      await uploadSelectedFiles(event.dataTransfer.files)
-      dragging.value = false
-    }
-  }
-
-  async function uploadSelectedFiles(fileList: FileList) {
-  try {
-    const files = Array.from(fileList); // Convert FileList to Array
-    await uploadFiles(files); // Upload files using composable
-
-    if (uploadResponse.value.length > 0) {
-      const uploadedUrls = uploadResponse.value.map(response => response.secure_url);
-      images.push(...uploadedUrls); 
-      
-      // Update payload images
-      props.payload.images = [...images];
-    }
-  } catch (error) {
-    useNuxtApp().$toast.error(error.value, {
-      autoClose: 5000,
-      dangerouslyHTMLString: true,
-    });
-  }
-}
-  
-  // async function uploadSelectedFiles(fileList: FileList) {
-  //   try {
-  //     const files = Array.from(fileList) // Convert FileList to Array
-  //     await uploadFiles(files) // Upload files using composable
-  
-  //     if (uploadResponse.value.length > 0) {
-  //       const uploadedUrls = uploadResponse.value.map(response => response.secure_url)
-  //       images.push(...uploadedUrls)
-  //       props.payload.images.value = uploadedUrls
-  //     }
-  //   } catch (error) {
-  //       useNuxtApp().$toast.error(error.value, {
-  //       autoClose: 5000,
-  //       dangerouslyHTMLString: true,
-  //     });
-  //   //   console.error('Error uploading files:', error)
-  //   }
-  // }
-  
-  // function removeImage(index: number) {
-  //   images.splice(index, 1)
-  // }
-
-  function removeImage(index: number) {
-  images.splice(index, 1);
-  
-  // Update payload images
-  props.payload.images = [...images];
-}
-  </script> -->
-
   <script setup lang="ts">
 import { useBatchUploadFile } from '@/composables/core/batchUpload';
 
@@ -236,9 +124,9 @@ async function uploadSelectedFiles(fileList: FileList) {
       
       // Ensure payload.images is treated as an array
       if (Array.isArray(props.payload.images)) {
-        props.payload.images = [...images];
+        props.payload.images.value = [...images];
       } else {
-        props.payload.images = uploadedUrls;
+        props.payload.images.value = uploadedUrls;
       }
     }
   } catch (error) {
@@ -253,8 +141,8 @@ function removeImage(index: number) {
   images.splice(index, 1);
 
   // Update payload images
-  if (Array.isArray(props.payload.images)) {
-    props.payload.images = [...images];
+  if (Array.isArray(props.payload.images.value)) {
+    props.payload.images.value = [...images];
   }
 }
 </script>

@@ -1,34 +1,36 @@
 <template>
   <min>
     <div class="p-4">
-    <!-- Room Tabs -->
-    <div class="flex space-x-2 mb-4">
-      <button
-        v-for="room in rooms"
-        :key="room.id"
-        @click="setActiveRoom(room.name)"
-        :class="{ 'bg-gray-300': activeRoom === room.name, 'bg-white': activeRoom !== room.name }"
-        class="px-4 py-2 border rounded"
-      >
-        {{ room.name }}
-      </button>
+
+    <div class="overflow-hidden">
+      <div class="flex space-x-2 mb-4 overflow-x-auto scrollbar-hide">
+        <button
+          v-for="room in rooms"
+          :key="room.id"
+          @click="setActiveRoom(room.name)"
+          :class="{ 'bg-[#EBE5E0]': activeRoom === room.name, 'bg-white': activeRoom !== room.name }"
+          class="px-4 py-2 border-[0.5px] text-[#1D2739] text-sm rounded-lg flex-shrink-0"
+        >
+          {{ room.name }}
+        </button>
+      </div>
     </div>
 
     <!-- Is the room furnished? -->
-    <div class="mb-4">
+    <div class="mb-4 flex justify-between items-center">
       <h3 class="text-sm">Is the room furnished?</h3>
       <div class="flex space-x-2">
         <button
           @click="setFurnishedStatus(true)"
-          :class="{ 'bg-black text-white': isRoomFurnished, 'bg-white border-gray-300': !isRoomFurnished }"
-          class="px-4 py-2 text-sm rounded-md"
+          :class="{ 'bg-gray-700 text-white': isRoomFurnished, 'bg-white border-gray-300': !isRoomFurnished }"
+          class="px-6 py-2 text-sm rounded-md"
         >
           Yes
         </button>
         <button
           @click="setFurnishedStatus(false)"
-          :class="{ 'bg-black text-white': !isRoomFurnished, 'bg-white border-gray-300': isRoomFurnished }"
-          class="px-4 py-2 text-sm rounded-md"
+          :class="{ 'bg-gray-700 text-white': !isRoomFurnished, 'bg-white border-gray-300': isRoomFurnished }"
+          class="px-6 py-2 text-sm rounded-md"
         >
           No
         </button>
@@ -88,13 +90,13 @@
     <!-- Availability options and other details -->
     <div class="mb-4">
       <h3 class="text-sm">When is the room available?</h3>
-      <div class="flex space-x-2">
+      <div class="flex space-x-2 pt-3">
         <button
           v-for="option in availabilityOptions"
           :key="option.value"
           @click="setAvailability(option.value)"
-          :class="{ 'bg-gray-300': availability === option.value, 'bg-white border-gray-300': availability !== option.value }"
-          class="px-4 py-2 text-sm rounded-md"
+          :class="{ 'border-[#5B8469] border bg-gray-100': availability === option.value, 'border-gray-200 border': availability !== option.value }"
+          class="rounded-lg text-[#1D2739] text-sm px-6 py-2 cursor-pointer"
         >
           {{ option.label }}
         </button>
@@ -439,5 +441,13 @@ const isAnyRoomMaster = computed(() => roomData.value.some((room) => room.isMast
 </script>
 
 <style scoped>
-/* Add any additional styles if necessary */
+/* Custom CSS to hide the scrollbar */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
+}
 </style>

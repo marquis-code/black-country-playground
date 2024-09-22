@@ -1,7 +1,7 @@
 <template>
     <div>
       <div>
-        <h4 class="font- text-[#667185]">Define your rules for potential tenants</h4>
+        <h4 class="font- text-sm text-[#667185]">Define your rules for potential tenants</h4>
         <div class="mt-2 space-y-5">
           <p class="text-[#667185] flex justify-between items-center">Smoking allowed: <spa>{{ rules.smokingAllowed ? 'Yes' : 'No' }}</spa></p>
           <p class="text-[#667185] flex justify-between items-center">Pets allowed: <span>{{ rules.petsAllowed ? 'Yes' : 'No' }}</span></p>

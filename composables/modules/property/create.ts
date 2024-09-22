@@ -80,32 +80,6 @@ export const use_create_property = () => {
   const Router = useRouter();
   const loading = ref(false);
 
-  // const create_property = async () => {
-  //   // Convert specific fields to numbers before creating the final payload
-  //   const finalPayload = Object.keys(runtimePayload).reduce((acc, key) => {
-  //     acc[key] = (['size', 'bedroomCount', 'bathroomCount', 'floorNumber'].includes(key) && runtimePayload[key].value !== null)
-  //       ? Number(runtimePayload[key].value)
-  //       : runtimePayload[key].value;
-  //     return acc;
-  //   }, { isPublished: true });
-  
-  //   console.log(finalPayload);
-  
-  //   loading.value = true;
-  //   try {
-  //     const res = await property_api.$_create(finalPayload);
-  //     if (res.type !== "ERROR") {
-  //       // Property created successfully, reset the payload
-  //       resetPayload();
-  //       Router.push("/dashboard/property/success");
-  //     }
-  //   } catch (error) {
-  //     console.error('Error creating property:', error);
-  //   } finally {
-  //     loading.value = false;
-  //   }
-  // };
-
   const create_property = async () => {
     // Remove rooms that have no features array
     const filteredRooms = runtimePayload.rooms.value

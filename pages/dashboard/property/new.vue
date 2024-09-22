@@ -576,7 +576,8 @@ function resetSubSteps() {
 
 function handleSubmit() {
       // setPropertyData(payload);
-       create_property();
+      router.push('/property/preview')
+      //  create_property();
 }
 
 const incomingData = ref({})

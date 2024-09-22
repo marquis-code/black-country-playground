@@ -1,7 +1,6 @@
 <template>
-    <div class="p-8 bg-white rounded-lg shadow-sm max-w-lg mx-auto">
+    <div class="bg-white rounded-lg">
       <h2 class="text-xl font-semibold mb-6">Finalize listings and edit</h2>
-  
       <div class="mb-6">
         <h3 class="text-lg font-medium text-gray-600">
           Define your rules for potential tenants

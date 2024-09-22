@@ -1,5 +1,5 @@
 <template>
-    <div class="p-8 bg-white rounded-lg shadow-sm max-w-lg mx-auto">
+    <div class="bg-white rounded-lg shadow-sm">
       <form @submit.prevent="submitAnswers">
         <div v-for="(questionObj, index) in questions" :key="index" class="mb-6">
           <label :for="'question-' + index" class="block text-gray-700 text-sm font-medium mb-2">
@@ -32,13 +32,6 @@
               {{ option }}
             </option>
           </select>
-        </div>
-  
-        <!-- Submit Button -->
-        <div class="mt-6">
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-            Submit
-          </button>
         </div>
       </form>
     </div>
