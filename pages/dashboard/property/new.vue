@@ -1,5 +1,6 @@
 <template>
-  <main>
+<div class="flex flex-col h-screen">
+  <main class="flex-grow overflow-y-auto">
     <LayoutWithoutSidebar>
       <template #header-content>
         <header
@@ -178,7 +179,7 @@
                 activeParentStep === 1 && basicPropertyInformationStep === 1
               "
             >
-              <template #action-buttons>
+              <!-- <template #action-buttons>
                 <div class="flex justify-between mt-4">
                   <button
                     @click="handlePreviousStep"
@@ -195,7 +196,7 @@
                     Next
                   </button>
                 </div>
-              </template>
+              </template> -->
             </CreatePropertyForm>
             <CoreMapboxSearch
             class="z-10"
@@ -204,7 +205,7 @@
             activeParentStep === 1 && basicPropertyInformationStep === 2
           "
             >
-              <template #action-buttons>
+              <!-- <template #action-buttons>
                 <div class="flex justify-between mt-4 z-50">
                   <button
                     @click="handlePreviousStep"
@@ -219,7 +220,7 @@
                     Next
                   </button>
                 </div>
-              </template> 
+              </template>  -->
             </CoreMapboxSearch>
             <CoreProgressStepper
               v-if="activeParentStep === 2"
@@ -244,7 +245,7 @@
               :loading="loadingCommonAreas"
               v-if="activeParentStep === 2 && propertyDetailsStep === 1"
             >
-              <template #action-buttons>
+              <!-- <template #action-buttons>
                 <div class="flex justify-between mt-4">
                   <button
                     @click="handlePreviousStep"
@@ -261,7 +262,7 @@
                     Next
                   </button>
                 </div>
-              </template>
+              </template> -->
             </PropertyDetails>
             <RoomDetails
               :interiorAreas="interiorAreas"
@@ -272,7 +273,7 @@
               @emitRoomData="handleRoomData"
               v-if="activeParentStep === 2 && propertyDetailsStep === 2"
             >
-              <template #action-buttons>
+              <!-- <template #action-buttons>
                 <div class="flex justify-between mt-4">
                   <button
                     @click="handlePreviousStep"
@@ -287,7 +288,7 @@
                     Next
                   </button>
                 </div>
-              </template>
+              </template> -->
             </RoomDetails>
             <CoreProgressStepper
               v-if="activeParentStep === 3"
@@ -303,7 +304,7 @@
             :payload="payload"
             v-if="activeParentStep === 3 && visualsStep === 1"
             >
-            <template #action-buttons>
+            <!-- <template #action-buttons>
               <div class="flex justify-between mt-4">
                 <button
                   @click="handlePreviousStep"
@@ -320,13 +321,13 @@
                   Next
                 </button>
               </div>
-            </template>
+            </template> -->
             </UploadPropertyExterior>
             <UploadPhotos
               :payload="payload"
               v-if="activeParentStep === 3 && visualsStep === 2"
             >
-              <template #action-buttons>
+              <!-- <template #action-buttons>
                 <div class="flex justify-between mt-4">
                   <button
                     @click="handlePreviousStep"
@@ -341,13 +342,13 @@
                     Next
                   </button>
                 </div>
-              </template>
+              </template> -->
             </UploadPhotos>
             <AddVideoTours
               :payload="payload"
               v-if="activeParentStep === 3 && visualsStep === 3"
             >
-              <template #action-buttons>
+              <!-- <template #action-buttons>
                 <div class="flex justify-between mt-4">
                   <button
                     @click="handlePreviousStep"
@@ -362,7 +363,7 @@
                     Next
                   </button>
                 </div>
-              </template>
+              </template> -->
             </AddVideoTours>
             <CoreProgressStepper
               v-if="activeParentStep === 4"
@@ -379,7 +380,7 @@
               :payload="payload"
               v-if="activeParentStep === 4 && finalizeStep === 1"
             >
-              <template #action-buttons>
+              <!-- <template #action-buttons>
                 <div class="flex justify-between mt-4">
                   <button
                     @click="handlePreviousStep"
@@ -396,14 +397,14 @@
                     Next
                   </button>
                 </div>
-              </template>
+              </template> -->
             </ReviewDetails>
             <PublishListing
               @updateQuestions="handleQuestions"
               :payload="payload"
               v-if="activeParentStep === 4 && finalizeStep === 2"
             >
-              <template #action-buttons>
+              <!-- <template #action-buttons>
                 <div class="flex justify-between mt-4">
                   <button
                     @click="handlePreviousStep"
@@ -418,7 +419,7 @@
                     Next
                   </button>
                 </div>
-              </template>
+              </template> -->
             </PublishListing>
             <AssignProperty
               :payload="payload"
@@ -426,7 +427,7 @@
               :loading="loadingAgents"
               v-if="activeParentStep === 4 && finalizeStep === 3"
             >
-              <template #action-buttons>
+              <!-- <template #action-buttons>
                 <div class="flex justify-between mt-4">
                   <button
                     @click="handlePreviousStep"
@@ -442,7 +443,7 @@
                     {{ loading ? "processing..." : "Publish" }}
                   </button>
                 </div>
-              </template>
+              </template> -->
             </AssignProperty>
           </div>
         </div>
@@ -457,6 +458,33 @@
       @confirm="handleConfirm"
     />
   </main>
+  <footer
+  class="bg-white border-t border-gray-200 px-4 py-2 w-full fixed bottom-0 flex justify-between items-center"
+>
+<div class="container mx-auto w-full flex justify-between items-center">
+  <!-- <button
+  @click="handlePreviousStep"
+  class="bg-[#EBE5E0] text-[#292929] text-sm font-semibold px-4 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
+>
+  Previous
+</button> -->
+<button
+  @click="handlePreviousParentStep"
+  :disabled="activeParentStep === 1 && basicPropertyInformationStep === 1"
+  class="bg-[#EBE5E0] text-[#292929] text-sm font-semibold px-4 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
+>
+  Previous
+</button>
+<button
+  @click="handleNextStep"
+  :disabled="isNextButtonDisabled"
+  class="bg-[#292929] text-white text-sm font-semibold px-6 py-2.5 rounded-md disabled:opacity-25 disabled:cursor-not-allowed"
+>
+  Next
+</button>
+</div>
+</footer>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -492,6 +520,22 @@ function updateQueryParams() {
           : finalizeStep.value,
     },
   });
+}
+
+
+function handlePreviousParentStep() {
+  if (activeParentStep.value > 1) {
+    activeParentStep.value -= 1;
+    // Reset substeps to the last step of the previous parent step
+    if (activeParentStep.value === 1) {
+      basicPropertyInformationStep.value = 2;
+    } else if (activeParentStep.value === 2) {
+      propertyDetailsStep.value = 2;
+    } else if (activeParentStep.value === 3) {
+      visualsStep.value = 3;
+    }
+    updateQueryParams();
+  }
 }
 
 function handleNextStep() {

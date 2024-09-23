@@ -7,7 +7,7 @@
         </div>
         <!-- Image Upload Sections for Each Room -->
         <section class="mt-3">
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid  lg:grid-cols-2 gap-4">
             <ImageUpload
               @update:images="handleImages"
               v-for="item in commonAreas"
