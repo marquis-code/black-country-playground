@@ -101,13 +101,13 @@
       <main>
         <div class="container mx-auto p-4">
           <!-- Tabs -->
-          <div class="flex space-x-4 mb-4">
+          <div class="flex space-x-2 mb-4 overflow-x-auto scrollbar-hide">
             <button
               v-for="tab in tabs"
               :key="tab"
               @click="activeTab = tab"
               :class="activeTab === tab ? 'bg-[#EBE5E0]' : 'bg-white'"
-              class="px-4 py-2 border-[0.5px] rounded-md text-sm text-[#1D2739]"
+              class="px-4 py-2 border-[0.5px] text-[#1D2739] text-sm rounded-lg flex-shrink-0"
             >
               {{ tab }}
             </button>
@@ -192,6 +192,13 @@
     </script>
     
     <style scoped>
-    /* Add your custom styles here */
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
     </style>
     

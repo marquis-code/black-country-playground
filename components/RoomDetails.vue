@@ -914,7 +914,7 @@ const props = defineProps({
   payload: {
     type: Object,
     required: true,
-    default: () => ({ bedroomCount: 5 })
+    default: () => ({})
   },
   roomFeaturesList: {
     type: Array,
@@ -953,26 +953,59 @@ const isAnyRoomMaster = computed(() => {
 });
 
 // Initialize room data
+// const initializeRoomData = () => {
+//   roomData.value = props.payload.rooms.value.length
+//     ? [...props.payload.rooms.value]
+//     : Array.from({ length: props.payload.bedroomCount.value }, (_, i) => ({
+//         name: `Room ${i + 1}`,
+//         availability: 'available_now',
+//         availableFrom: null,
+//         occupantName: '',
+//         isMaster: false,
+//         rentAmount: '',
+//         rentFrequency: 'monthly',
+//         isFurnished: true,
+//         features: [],
+//         images: []
+//       }));
+//   rooms.value = roomData.value;
+// };
 const initializeRoomData = () => {
-  roomData.value = props.payload.rooms.value.length
-    ? [...props.payload.rooms.value]
-    : Array.from({ length: props.payload.bedroomCount }, (_, i) => ({
-        name: `Room ${i + 1}`,
-        availability: 'available_now',
-        availableFrom: null,
-        occupantName: '',
-        isMaster: false,
-        rentAmount: '',
-        rentFrequency: 'monthly',
-        isFurnished: true,
-        features: [],
-        images: []
-      }));
+  roomData.value = Array.from({ length: props.payload.bedroomCount.value }, (_, i) => ({
+    name: `Room ${i + 1}`,
+    availability: 'available_now',
+    availableFrom: null,
+    occupantName: '',
+    isMaster: false,
+    rentAmount: '',
+    rentFrequency: 'monthly',
+    isFurnished: true,
+    features: [],
+    images: []
+  }));
+
   rooms.value = roomData.value;
 };
 
 // Save room data
-const saveRoomData = (roomName: string) => {
+// const saveRoomData = (roomName: string) => {
+//   const roomIndex = roomData.value.findIndex((room) => room.name === roomName);
+//   if (roomIndex !== -1) {
+//     roomData.value[roomIndex] = {
+//       ...roomData.value[roomIndex],
+//       availability: availability.value,
+//       availableFrom: availabilityDate.value,
+//       occupantName: occupantsName.value,
+//       rentAmount: rentAmount.value,
+//       rentFrequency: rentFrequency.value,
+//       isFurnished: isRoomFurnished.value,
+//       isMaster: setAsMasterBedroom.value,
+//       features: roomFeatures.value
+//     };
+//   }
+//   emit('emitRoomData', roomData.value[roomIndex]);
+// };
+const saveRoomData = (roomName) => {
   const roomIndex = roomData.value.findIndex((room) => room.name === roomName);
   if (roomIndex !== -1) {
     roomData.value[roomIndex] = {
@@ -987,11 +1020,25 @@ const saveRoomData = (roomName: string) => {
       features: roomFeatures.value
     };
   }
-  emit('emitRoomData', roomData.value[roomIndex]);
+  emit('emitRoomData', roomData.value);
 };
 
 // Load room data when switching tabs
-const loadRoomData = (roomName: string) => {
+// const loadRoomData = (roomName: string) => {
+//   const room = roomData.value.find((r) => r.name === roomName);
+//   if (room) {
+//     availability.value = room.availability;
+//     availabilityDate.value = room.availableFrom;
+//     occupantsName.value = room.occupantName;
+//     rentAmount.value = room.rentAmount;
+//     rentFrequency.value = room.rentFrequency;
+//     isRoomFurnished.value = room.isFurnished;
+//     setAsMasterBedroom.value = room.isMaster;
+//     roomFeatures.value = room.features || [];
+//   }
+// };
+
+const loadRoomData = (roomName) => {
   const room = roomData.value.find((r) => r.name === roomName);
   if (room) {
     availability.value = room.availability;
