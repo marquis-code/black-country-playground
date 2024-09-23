@@ -52,7 +52,9 @@
   </template>
   
   <script setup lang="ts">
+  import { useGetProperties } from '@/composables/modules/property/fetchProperties'
   import { dynamicIcons } from '@/utils/assets'; // assuming you have a dynamicIcons function in utils
+  const { loadingProperties, propertiesList } = useGetProperties()
   const router = useRouter()
   const firstSection = ref([
   { icon: 'total-properties', value: '0', label: 'Total Properties', path: '/dashboard/property' },
@@ -76,6 +78,19 @@ const fourthSection = ref([
   { icon: 'total-rooms', value: '0', label: 'Service providers' , path: '#'},
 ])
 
+
+// Watch for changes in propertiesList and update the total properties count
+watch(
+  propertiesList,
+  (newList) => {
+    const totalProperties = newList.length; // Adjust based on how the count should be derived
+    const propertiesItem = firstSection.value.find(item => item.label === 'Total Properties');
+    if (propertiesItem) {
+      propertiesItem.value = totalProperties;
+    }
+  },
+  { immediate: true }
+);
   </script>
   
   <style scoped>

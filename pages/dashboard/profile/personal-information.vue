@@ -67,9 +67,9 @@
       </div>
     </div>
   </main>
-<div class="flex justify-center items-center bg-white ">
-  <div class="flex justify-between p-4 mt-6 max-w-3xl mx-auto  w-full absolute bottom-0">
-    <button @click="goBack" class="text-[#292929] border rounded-md px-4 py-3 hover:bg-gray-100">Cancel</button>
+<div class="flex justify-center items-center">
+  <div class="flex justify-between p-4 mt-6 max-w-3xl mx-auto  w-full">
+    <button @click="router.push('/dashboard/profile')" class="text-[#292929] border rounded-md px-4 py-3 hover:bg-gray-100">Cancel</button>
     <button :disabled="updating" @click="handleSave" class="text-white disabled:opacity-25 disabled:cursor-not-allowed font-medium rounded-md px-6 py-3 bg-[#292929]">{{updating ? 'Processing..' : 'Save'}}</button>
   </div>
 </div>

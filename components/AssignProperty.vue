@@ -80,7 +80,7 @@ onBeforeUnmount(() => {
 });
 </script> -->
 
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 const props = defineProps({
     agents: {
         type: Array,
@@ -136,7 +136,72 @@ onMounted(() => {
 onBeforeUnmount(() => {
     document.removeEventListener('click', handleClickOutside);
 });
+</script> -->
+
+<script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount, defineProps } from 'vue';
+
+const props = defineProps({
+  agents: {
+    type: Array,
+    default: () => []
+  },
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  payload: {
+    type: Object,
+    default: () => ({ agentId: '' }) // Ensure the default payload structure includes agentId
+  }
+});
+
+const selectedUser = ref('');
+const showDropdown = ref(false);
+const dropdownRef = ref<HTMLElement | null>(null);
+
+// Create a computed property that always returns an array
+const agentList = computed(() => Array.isArray(props.agents) ? props.agents : []);
+
+function toggleDropdown() {
+  showDropdown.value = !showDropdown.value;
+}
+
+function selectUser(user: any) {
+  props.payload.agentId = user.id; // Assign the selected user's id directly to payload.agentId
+  selectedUser.value = `${user.firstName} ${user.lastName}`;
+  showDropdown.value = false;
+}
+
+// Handle clicks outside the dropdown to close it
+function handleClickOutside(event: MouseEvent) {
+  const dropdown = dropdownRef.value;
+  if (dropdown && !dropdown.contains(event.target as Node)) {
+    showDropdown.value = false;
+  }
+}
+
+// Prefill the agent data on component mount
+onMounted(() => {
+  console.log(props.agents, 'agents list');
+  console.log(props.payload.agentId, 'already selected agent');
+  
+  // Prefill agent details if `props.payload.agentId` is available
+  if (props.payload.agentId) {
+    const agent = agentList.value.find((user: any) => user.id === props.payload.agentId);
+    if (agent) {
+      selectedUser.value = `${agent.firstName} ${agent.lastName}`;
+    }
+  }
+
+  document.addEventListener('click', handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 </script>
+
 
 
 <style scoped>

@@ -15,14 +15,15 @@
     <!-- Interior Area -->
     <div v-if="currentRoom" class="mb-6">
       <h3 class="text-gray-500 font-medium mb-4">Interior area</h3>
-      <div class="grid grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div
           v-for="(feature, index) in currentRoom.features"
           :key="index"
-          class="flex items-center p-4 border rounded-lg bg-white hover:bg-gray-100 cursor-pointer"
+          class="flex items-center p-4 border rounded-lg bg-white gap-x-2 hover:bg-gray-100 cursor-pointer"
         >
-          <span class="inline-block w-5 h-5 rounded-full bg-gray-200 mr-2"></span>
-          <span class="text-gray-700">{{ feature.name }}</span>
+          <!-- <span class="inline-block w-5 h-5 rounded-full bg-gray-200 mr-2"></span> -->
+          <img :src="dynamicImage('roomBg.png')" alt="Living room" class="w-5 h-5">
+          <span class="text-gray-700 text-sm">{{ feature.name }}</span>
         </div>
         <div @click="addManually" class="flex items-center p-4 border rounded-lg bg-white hover:bg-gray-100 cursor-pointer">
           <span class="text-gray-600 font-medium text-lg">+</span>

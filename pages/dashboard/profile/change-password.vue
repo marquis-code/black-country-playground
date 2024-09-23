@@ -93,27 +93,30 @@
              Passwords do not match.
            </p>
            </div>
+           <div class="w-full">
+            <div
+            class="flex justify-between p-4 mt-6 max-w-2xl mx-auto w-full"
+          >
+            <button
+               @click="router.push('/dashboard/profile')"
+              class="text-[#292929] border rounded-md px-4 py-3 hover:bg-gray-100"
+            >
+              Cancel
+            </button>
+            <button @click="change_password" :disabled="disabled"  type="button" class="text-white disabled:cursor-not-allowed disabled:opacity-25 font-medium rounded-md px-6 py-3 bg-[#292929]">
+              {{loading ? 'Processing...' : 'Save'}}
+            </button>
+          </div>
+          </div>
          </div>
        </div>
+       
       </section>
      </main>
 
-     <div class="flex justify-center items-center">
-      <div class="absolute bottom-0 w-full">
-        <div
-        class="flex justify-between p-4 mt-6 max-w-2xl mx-auto w-full"
-      >
-        <button
-          class="text-[#292929] border rounded-md px-4 py-3 hover:bg-gray-100"
-        >
-          Cancel
-        </button>
-        <button @click="change_password" :disabled="disabled"  type="button" class="text-white disabled:cursor-not-allowed disabled:opacity-25 font-medium rounded-md px-6 py-3 bg-[#292929]">
-          {{loading ? 'Processing...' : 'Save'}}
-        </button>
-      </div>
-      </div>
-    </div>
+     <!-- <div class="flex justify-center items-center">
+    
+    </div> -->
   </Layout>
   </template>
   
@@ -121,10 +124,10 @@
   import Layout from '@/layouts/dashboard.vue';
   import { use_change_password } from '@/composables/auth/changePassword'
   const { change_password, credential, loading, disabled, passwordMismatch } = use_change_password()
-  const router = useRouter()
   const currentPassword = ref(false);
 const newPassword = ref(false);
 const showConfirmPassword = ref(false);
+const router = useRouter()
 
 const toggleNewPassword = () => {
   newPassword.value = !newPassword.value;

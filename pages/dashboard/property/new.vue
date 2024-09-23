@@ -476,25 +476,23 @@ const steps = ref([
   { id: 4, title: "Finalize listing and publish", completed: false },
 ]);
 
-const router = useRouter();
-const openCancelModal = ref(false)
+const route = useRoute();
 
-const handleConfirm = () => {
-  sessionStorage.clear()
-  openCancelModal.value = false
-
+function updateQueryParams() {
+  router.push({
+    query: {
+      parentStep: activeParentStep.value,
+      childStep:
+        activeParentStep.value === 1
+          ? basicPropertyInformationStep.value
+          : activeParentStep.value === 2
+          ? propertyDetailsStep.value
+          : activeParentStep.value === 3
+          ? visualsStep.value
+          : finalizeStep.value,
+    },
+  });
 }
-
-const handleClose = () => {
-  router.push('/dashboard/property')
-  openCancelModal.value = false
-}
-
-const activeParentStep = ref(1);
-const basicPropertyInformationStep = ref(1);
-const propertyDetailsStep = ref(1);
-const visualsStep = ref(1);
-const finalizeStep = ref(1);
 
 function handleNextStep() {
   if (activeParentStep.value === 1) {
@@ -520,26 +518,23 @@ function handleNextStep() {
       finalizeStep.value += 1;
     }
   }
+  updateQueryParams();
 }
 
 function handlePreviousStep() {
-  if (activeParentStep.value === 1) {
-    if (basicPropertyInformationStep.value > 1) {
-      basicPropertyInformationStep.value -= 1;
-    }
-  } else if (activeParentStep.value === 2) {
-    if (propertyDetailsStep.value > 1) {
-      propertyDetailsStep.value -= 1;
-    }
-  } else if (activeParentStep.value === 3) {
-    if (visualsStep.value > 1) {
-      visualsStep.value -= 1;
-    }
-  } else if (activeParentStep.value === 4) {
-    if (finalizeStep.value > 1) {
-      finalizeStep.value -= 1;
-    }
+  if (activeParentStep.value === 1 && basicPropertyInformationStep.value > 1) {
+    basicPropertyInformationStep.value -= 1;
+  } else if (
+    activeParentStep.value === 2 &&
+    propertyDetailsStep.value > 1
+  ) {
+    propertyDetailsStep.value -= 1;
+  } else if (activeParentStep.value === 3 && visualsStep.value > 1) {
+    visualsStep.value -= 1;
+  } else if (activeParentStep.value === 4 && finalizeStep.value > 1) {
+    finalizeStep.value -= 1;
   }
+  updateQueryParams();
 }
 
 function handleNextParentStep() {
@@ -547,14 +542,99 @@ function handleNextParentStep() {
     steps.value[activeParentStep.value - 1].completed = true;
     activeParentStep.value += 1;
     resetSubSteps();
+    updateQueryParams();
   }
 }
 
-function handlePreviousParentStep() {
-  if (activeParentStep.value > 1) {
-    activeParentStep.value -= 1;
-  }
+
+
+// function handlePreviousParentStep() {
+//   if (activeParentStep.value > 1) {
+//     activeParentStep.value -= 1;
+//     updateQueryParams();
+//   }
+// }
+
+
+const router = useRouter();
+const openCancelModal = ref(false)
+
+const handleConfirm = () => {
+  sessionStorage.clear()
+  openCancelModal.value = false
+
 }
+
+const handleClose = () => {
+  router.push('/dashboard/property')
+  openCancelModal.value = false
+}
+
+const activeParentStep = ref(1);
+const basicPropertyInformationStep = ref(1);
+const propertyDetailsStep = ref(1);
+const visualsStep = ref(1);
+const finalizeStep = ref(1);
+
+// function handleNextStep() {
+//   if (activeParentStep.value === 1) {
+//     if (basicPropertyInformationStep.value < 2) {
+//       basicPropertyInformationStep.value += 1;
+//     } else {
+//       handleNextParentStep();
+//     }
+//   } else if (activeParentStep.value === 2) {
+//     if (propertyDetailsStep.value < 2) {
+//       propertyDetailsStep.value += 1;
+//     } else {
+//       handleNextParentStep();
+//     }
+//   } else if (activeParentStep.value === 3) {
+//     if (visualsStep.value < 2) {
+//       visualsStep.value += 1;
+//     } else {
+//       handleNextParentStep();
+//     }
+//   } else if (activeParentStep.value === 4) {
+//     if (finalizeStep.value < 3) {
+//       finalizeStep.value += 1;
+//     }
+//   }
+// }
+
+// function handlePreviousStep() {
+//   if (activeParentStep.value === 1) {
+//     if (basicPropertyInformationStep.value > 1) {
+//       basicPropertyInformationStep.value -= 1;
+//     }
+//   } else if (activeParentStep.value === 2) {
+//     if (propertyDetailsStep.value > 1) {
+//       propertyDetailsStep.value -= 1;
+//     }
+//   } else if (activeParentStep.value === 3) {
+//     if (visualsStep.value > 1) {
+//       visualsStep.value -= 1;
+//     }
+//   } else if (activeParentStep.value === 4) {
+//     if (finalizeStep.value > 1) {
+//       finalizeStep.value -= 1;
+//     }
+//   }
+// }
+
+// function handleNextParentStep() {
+//   if (activeParentStep.value < steps.value.length) {
+//     steps.value[activeParentStep.value - 1].completed = true;
+//     activeParentStep.value += 1;
+//     resetSubSteps();
+//   }
+// }
+
+// function handlePreviousParentStep() {
+//   if (activeParentStep.value > 1) {
+//     activeParentStep.value -= 1;
+//   }
+// }
 
 function handleStepClick(stepId: any) {
   // Only allow navigation to previous steps or the current step
@@ -576,7 +656,7 @@ function resetSubSteps() {
 
 function handleSubmit() {
       // setPropertyData(payload);
-      router.push('/property/preview')
+      router.push('/dashboard/property/preview')
       //  create_property();
 }
 
@@ -778,4 +858,27 @@ const isNextButtonDisabled = computed(() => {
   }
   return false;
 });
+
+
+watch(
+  () => route.query,
+  (newQuery) => {
+    if (newQuery.parentStep) {
+      activeParentStep.value = Number(newQuery.parentStep);
+    }
+    if (newQuery.childStep) {
+      const childStep = Number(newQuery.childStep);
+      if (activeParentStep.value === 1) {
+        basicPropertyInformationStep.value = childStep;
+      } else if (activeParentStep.value === 2) {
+        propertyDetailsStep.value = childStep;
+      } else if (activeParentStep.value === 3) {
+        visualsStep.value = childStep;
+      } else if (activeParentStep.value === 4) {
+        finalizeStep.value = childStep;
+      }
+    }
+  },
+  { immediate: true }
+);
 </script>

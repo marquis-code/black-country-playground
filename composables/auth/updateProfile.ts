@@ -36,6 +36,7 @@ export const use_update_profile = () => {
           dangerouslyHTMLString: true,
         });
         console.log(res.data, 'update res')
+        Router.push('/dashboard/profile')
         updateUser(res.data)
         return res;
       } else {

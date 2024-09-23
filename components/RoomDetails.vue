@@ -254,19 +254,19 @@ const props = defineProps({
 const emit = defineEmits(['emitRoomData']);
 
 // Reactive state
-const activeRoom = ref('Room 1');
-const availability = ref('available_now');
-const availabilityDate = ref('');
-const occupantsName = ref('');
-const rentAmount = ref<number | string>('');
+const activeRoom = ref('Room 1') as any;
+const availability = ref('available_now') as any;
+const availabilityDate = ref('') as any;
+const occupantsName = ref('') as any;
+const rentAmount = ref<number | string>('') as any;
 const isRoomFurnished = ref(true);
 const applyToAllRooms = ref(false);
 const setAsMasterBedroom = ref(false);
-const rentFrequency = ref<string>('monthly');
-const roomFeatures = ref<any[]>([]);
-const rooms = ref<any[]>([]);
-const roomData = ref<any[]>([]);
-const manualInput = ref('');
+const rentFrequency = ref<string>('monthly') as any;
+const roomFeatures = ref<any[]>([]) as any;
+const rooms = ref<any[]>([]) as any;
+const roomData = ref<any[]>([]) as any;
+const manualInput = ref('') as any;
 const showManualInput = ref(false);
 
 const availabilityOptions = [
@@ -293,7 +293,7 @@ const saveRoomData = (roomName: string) => {
     props.payload.rooms.value[roomIndex] = {
       name: roomName,
       availability: availability.value,
-      availableFrom: availability.value === 'available_from_date' ? availabilityDate.value : '',
+      availableFrom: availability.value === 'available_from_date' ? availabilityDate.value : null,
       occupantName: occupantsName.value,
       isMaster: setAsMasterBedroom.value,
       rentAmount: rentAmount.value ? parseInt(rentAmount.value.toString(), 10) : 0,
@@ -334,20 +334,20 @@ watch(
 const initializeRoomData = () => {
   roomData.value = props.payload.rooms.value?.length
     ? [...props.payload.rooms.value]
-    : rooms.value.map((room) => ({
+    : rooms.value.map((room: any) => ({
         name: room.name,
         availability: 'available_now',
-        availableFrom: '',
-        occupantName: '',
+        availableFrom: null,
+        occupantName: null,
         isMaster: false,
-        rentAmount: '',
+        rentAmount: null,
         currencyCode: 'NGN',
         rentFrequency: 'monthly',
         isFurnished: true,
         features: [],
         images: []
-      }));
-};
+      }))
+}
 
 // Component mount lifecycle
 onMounted(() => {
@@ -426,12 +426,12 @@ const setFurnishedStatus = (status: boolean) => {
 const setAvailability = (value: string) => {
   availability.value = value;
   if (value === 'available_now') {
-    occupantsName.value = '';
-    availabilityDate.value = '';
+    occupantsName.value = null;
+    availabilityDate.value = null;
   } else if (value === 'unavailable') {
-    availabilityDate.value = '';
+    availabilityDate.value = null;
   } else if (value === 'available_from_date') {
-    occupantsName.value = '';
+    occupantsName.value = null;
   }
   saveRoomData(activeRoom.value);
 };

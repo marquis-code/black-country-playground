@@ -124,7 +124,11 @@ export const use_create_property = () => {
         Router.push("/dashboard/property/success");
       }
     } catch (error) {
-      console.error('Error creating property:', error);
+      // console.error('Error creating property:', error);
+      useNuxtApp().$toast.error(error || 'An error occurred while creating property.', {
+        autoClose: 5000,
+        dangerouslyHTMLString: true,
+      });
     } finally {
       loading.value = false;
     }

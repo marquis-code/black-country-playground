@@ -42,13 +42,13 @@
       <div>
       </div>
       <div class="space-y-3">
-      <div class="flex justify-between items-center">
+      <!-- <div class="flex justify-between items-center">
         <h3 class="text font-medium text-sm text-[#1D2739]">Finalize listings and edit</h3>
         <button class="text-[#326543] mb-3">Edit</button>
-      </div>
-        <div class="mt-2">
+      </div> -->
+        <!-- <div class="mt-2">
           <PreviewFinalizeListing :rules="payload.rules.value" />
-        </div>
+        </div> -->
       </div>
        <PreviewCommonArea :commonAreas="payload.commonAreas.value" />
       <PreviewRoomSelection :rooms="payload.rooms.value" />
