@@ -14,7 +14,7 @@
             <span class="text-lg font-semibold">BlackCountry</span>
           </div>
           <div class="flex space-x-4 items-center">
-            <button @click="router.push('/dashboard/property/preview')" class="text-[#326543] text-sm hover:text-[#326543]">
+            <button @click="router.push('/dashboard/property/review-progress')" class="text-[#326543] text-sm hover:text-[#326543]">
               Preview
             </button>
             <button
@@ -469,7 +469,7 @@
   Previous
 </button> -->
 <button
-  @click="handlePreviousParentStep"
+  @click="handlePreviousStep"
   :disabled="activeParentStep === 1 && basicPropertyInformationStep === 1"
   class="bg-[#EBE5E0] text-[#292929] text-sm font-semibold px-4 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
 >
@@ -538,6 +538,33 @@ function handlePreviousParentStep() {
   }
 }
 
+// function handleNextStep() {
+//   if (activeParentStep.value === 1) {
+//     if (basicPropertyInformationStep.value < 2) {
+//       basicPropertyInformationStep.value += 1;
+//     } else {
+//       handleNextParentStep();
+//     }
+//   } else if (activeParentStep.value === 2) {
+//     if (propertyDetailsStep.value < 2) {
+//       propertyDetailsStep.value += 1;
+//     } else {
+//       handleNextParentStep();
+//     }
+//   } else if (activeParentStep.value === 3) {
+//     if (visualsStep.value < 2) {
+//       visualsStep.value += 1;
+//     } else {
+//       handleNextParentStep();
+//     }
+//   } else if (activeParentStep.value === 4) {
+//     if (finalizeStep.value < 3) {
+//       finalizeStep.value += 1;
+//     }
+//   }
+//   updateQueryParams();
+// }
+
 function handleNextStep() {
   if (activeParentStep.value === 1) {
     if (basicPropertyInformationStep.value < 2) {
@@ -552,7 +579,7 @@ function handleNextStep() {
       handleNextParentStep();
     }
   } else if (activeParentStep.value === 3) {
-    if (visualsStep.value < 2) {
+    if (visualsStep.value < 3) { // Ensure this is correctly checking for up to step 3
       visualsStep.value += 1;
     } else {
       handleNextParentStep();
@@ -568,18 +595,47 @@ function handleNextStep() {
 function handlePreviousStep() {
   if (activeParentStep.value === 1 && basicPropertyInformationStep.value > 1) {
     basicPropertyInformationStep.value -= 1;
-  } else if (
-    activeParentStep.value === 2 &&
-    propertyDetailsStep.value > 1
-  ) {
+  } else if (activeParentStep.value === 2 && propertyDetailsStep.value > 1) {
     propertyDetailsStep.value -= 1;
   } else if (activeParentStep.value === 3 && visualsStep.value > 1) {
     visualsStep.value -= 1;
   } else if (activeParentStep.value === 4 && finalizeStep.value > 1) {
     finalizeStep.value -= 1;
+  } else {
+    // Move back to the previous parent step if at the first child step
+    if (activeParentStep.value > 1) {
+      activeParentStep.value -= 1;
+      
+      // Ensure we land on the last child step of the previous parent step
+      if (activeParentStep.value === 1) {
+        basicPropertyInformationStep.value = 2;
+      } else if (activeParentStep.value === 2) {
+        propertyDetailsStep.value = 2;
+      } else if (activeParentStep.value === 3) {
+        visualsStep.value = 3; // Set this to 3 to avoid skipping the step
+      } else if (activeParentStep.value === 4) {
+        finalizeStep.value = 3;
+      }
+    }
   }
   updateQueryParams();
 }
+
+// function handlePreviousStep() {
+//   if (activeParentStep.value === 1 && basicPropertyInformationStep.value > 1) {
+//     basicPropertyInformationStep.value -= 1;
+//   } else if (
+//     activeParentStep.value === 2 &&
+//     propertyDetailsStep.value > 1
+//   ) {
+//     propertyDetailsStep.value -= 1;
+//   } else if (activeParentStep.value === 3 && visualsStep.value > 1) {
+//     visualsStep.value -= 1;
+//   } else if (activeParentStep.value === 4 && finalizeStep.value > 1) {
+//     finalizeStep.value -= 1;
+//   }
+//   updateQueryParams();
+// }
 
 function handleNextParentStep() {
   if (activeParentStep.value < steps.value.length) {

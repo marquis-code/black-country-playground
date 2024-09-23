@@ -2,7 +2,6 @@
   <div class="w-full h-full bg-[#EBE5E0] border rounded-lg p-4 flex flex-col items-center justify-center">
     <div v-if="images.length === 0" class="flex flex-col h-64 bg-[#EBE5E0] rounded-lg p-4 w-full relative">
       <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 rounded-lg">
-        <!-- Spinner -->
         <div class="loader"></div>
       </div>
       <div v-if="!loading" class="flex justify-center items-center flex-grow">
