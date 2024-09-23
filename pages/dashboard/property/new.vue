@@ -40,7 +40,7 @@
         >
           <aside
             id="first-part"
-            class="space-y-3 lg:max-w-xs w-full px-5 lg:px-0 relative"
+            class="space-y-3 cursor-pointer lg:max-w-xs w-full px-5 lg:px-0 relative"
           >
             <div
               v-for="step in steps"
@@ -587,10 +587,43 @@ function handleNextStep() {
   } else if (activeParentStep.value === 4) {
     if (finalizeStep.value < 3) {
       finalizeStep.value += 1;
+    } else {
+      // This means we've reached the last step of the final stage
+      router.push('/dashboard/property/preview'); // Adjust the route name/path as needed
+      return;
     }
   }
+
   updateQueryParams();
 }
+
+
+// function handleNextStep() {
+//   if (activeParentStep.value === 1) {
+//     if (basicPropertyInformationStep.value < 2) {
+//       basicPropertyInformationStep.value += 1;
+//     } else {
+//       handleNextParentStep();
+//     }
+//   } else if (activeParentStep.value === 2) {
+//     if (propertyDetailsStep.value < 2) {
+//       propertyDetailsStep.value += 1;
+//     } else {
+//       handleNextParentStep();
+//     }
+//   } else if (activeParentStep.value === 3) {
+//     if (visualsStep.value < 3) { // Ensure this is correctly checking for up to step 3
+//       visualsStep.value += 1;
+//     } else {
+//       handleNextParentStep();
+//     }
+//   } else if (activeParentStep.value === 4) {
+//     if (finalizeStep.value < 3) {
+//       finalizeStep.value += 1;
+//     }
+//   }
+//   updateQueryParams();
+// }
 
 function handlePreviousStep() {
   if (activeParentStep.value === 1 && basicPropertyInformationStep.value > 1) {
@@ -847,7 +880,7 @@ const roomsArray = ref([]) as any
 const handleRoomData = (room: any) => {
   console.log("Room data received:", room);
   // Push or update the received room data in the array
-  const roomIndex = roomsArray.value.findIndex(r => r.name === room.name);
+  const roomIndex = roomsArray.value.findIndex(r => r?.name === room?.name);
   if (roomIndex !== -1) {
     roomsArray.value[roomIndex] = room;
   } else {

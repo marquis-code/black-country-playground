@@ -6,7 +6,7 @@
           <!-- <p>{{ property.name }}</p> -->
           <p>{{payload.name.value}}</p>
         </div>
-        <button class="text-green-600">Edit</button>
+        <button @click="router.push('/dashboard/propery')" class="text-green-600">Edit</button>
       </div>
       <div class="mt-4">
         <h4 class="font-light text-[#667185]">Brief description</h4>
@@ -43,6 +43,7 @@
   </template>
   
   <script setup lang="ts">
+  const router = useRouter()
     import { use_create_property } from '@/composables/modules/property/create'
   const { payload, create_property, loading } = use_create_property()
   interface Property {

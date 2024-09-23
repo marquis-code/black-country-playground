@@ -366,15 +366,6 @@ const groupedAmenities = computed(() => {
   }
 });
 
-
-// Sample list of amenities (replace or modify this as needed)
-const amenities = ref([
-  'Bedframe', 'Mattress', 'Desk & chair', 
-  'Shelves/bookcases', 'Wardrobe/closet', 'Bathroom', 
-  'Window coverings', 'Air conditioning', 'Ceiling fan', 
-  'Water heating'
-]);
-
 // Method to handle 'View more' click
 const viewMore = () => {
   alert('Displaying more amenities...');
