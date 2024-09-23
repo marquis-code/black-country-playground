@@ -33,7 +33,7 @@ const runtimePayload = {
   houseTypeId: ref(null),
   flooringTypeId: ref(null),
   size: ref(null), // Remove `Number` here, keep it as `ref`
-  sizeUnit: ref(null),
+  sizeUnit: ref('sq ft'),
   bedroomCount: ref(null), // Remove `Number` here, keep it as `ref`
   bathroomCount: ref(null), // Remove `Number` here, keep it as `ref`
   floorNumber: ref(null), // Remove `Number` here, keep it as `ref`
