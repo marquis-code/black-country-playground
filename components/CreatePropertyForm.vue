@@ -90,8 +90,8 @@
               -
             </button>
             <input
-            type="tel"
-            name="floor-number"
+              type="tel"
+              name="floor-number"
               id="floor-number"
               class="text-center bg-[#292929] text-white w-16 px-4 py-2 border rounded-lg"
               v-model.number="payload.floorNumber.value"
@@ -167,9 +167,12 @@
 <script setup lang="ts">
 import { useGetPropertyTypes } from '@/composables/modules/property/fetchPropertyTypes'
 import { useGetFloorings } from '@/composables/modules/property/fetchFloorings'
+import { use_create_property } from '@/composables/modules/property/create'
 const { propertyTypesList } = useGetPropertyTypes()
 const { flooringsList } = useGetFloorings()
 const props = defineProps<{ payload: any }>()
+
+const { floorObj, propertyObj } = use_create_property()
 
 
 const emit = defineEmits<{
@@ -199,8 +202,8 @@ const emit = defineEmits<{
 // )
 
 const handleFloorNumberDecrease = () => {
-  if(props.payload.value.floorNumber === 0) return 
-  props.payload.value.floorNumber --
+  if(props.payload.floorNumber.value === 0) return 
+  props.payload.floorNumber.value --
 }
 
 const handleBedroomNumberDecrease = () => {
@@ -227,5 +230,9 @@ const propertyUnits = [
   "section",
   "perch"
 ];
+
+const computedFloor = computed(() => {
+  return flooringsList.value.find((item) => item.id === props.payload.flooringTypeId.value)
+})
 
 </script>

@@ -15,7 +15,7 @@
         Preview
       </button>
       <button
-        @click="router.push('/dashboard/property/create-steps')"
+      @click="openCancelModal = true"
         class="bg-white border text-sm border-gray-300 text-gray-700 px-4 py-3 rounded-md hover:bg-gray-100"
       >
         Cancel
@@ -37,9 +37,18 @@
     <section class="fixed bottom-0 left-0 right-0 bg-white py-3 border-t shadow-md z-50 px-6">
       <div class="flex justify-between items-center container mx-auto">
         <button @click="router.back()" class="text-[#292929] bg-[#EBE5E0] px-6 py-3 rounded-md">Previous</button>
-        <button @click="handlePublish" class="bg-[#292929] text-white text-sm px-6 py-3 rounded-md">Publish</button>
+        <button :disabled="loading" @click="handlePublish" class="bg-[#292929] disabled:opacity-25 disabled:cursor-not-allowed text-white text-sm px-6 py-3 rounded-md">{{loading ? 'Processing...' : 'Publish'}}</button>
       </div>
     </section>
+
+    <CoreReusableModal
+    :isOpen="openCancelModal"
+    message="By cancelling, you will loose progress of your property upload"
+    confirmButtonText="No, Continue uploading"
+    cancelButtonText="Yes, Cancel"
+    @close="handleClose"
+    @confirm="handleConfirm"
+  />
   </LayoutWithoutSidebar>
 </template>
 
@@ -51,6 +60,23 @@ const { payload, create_property, loading } = use_create_property();
 import { useGlobalModal } from '@/composables/core/useGlobalModal';
 
 const { openModal } = useGlobalModal();
+// editProperty();
+definePageMeta({
+     middleware: 'auth'
+})
+
+const openCancelModal = ref(false)
+
+const handleConfirm = () => {
+  sessionStorage.clear()
+  openCancelModal.value = false
+
+}
+
+const handleClose = () => {
+  router.push('/dashboard/property')
+  openCancelModal.value = false
+}
 
 const handleSaveAndExit = () => {
   create_property();

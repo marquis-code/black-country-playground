@@ -48,6 +48,10 @@
   export default {
     name: "RentalHistory",
   };
+
+  definePageMeta({
+     middleware: 'auth'
+})
   </script>
   
   <style scoped>

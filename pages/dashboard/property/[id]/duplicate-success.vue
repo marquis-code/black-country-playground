@@ -33,6 +33,10 @@
   <script setup lang="ts">
   const route = useRoute()
   const router = useRouter()
+
+  definePageMeta({
+     middleware: 'auth'
+})
   // No additional logic needed for this static component
   </script>
   

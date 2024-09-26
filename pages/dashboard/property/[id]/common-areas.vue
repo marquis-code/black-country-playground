@@ -92,6 +92,10 @@ onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
 });
 
+definePageMeta({
+     middleware: 'auth'
+})
+
 
 const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })

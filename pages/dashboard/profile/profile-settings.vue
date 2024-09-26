@@ -176,6 +176,10 @@ const onFileSelected = async (event: Event) => {
       path: "/profile/login-security",
     },
   ]);
+
+  definePageMeta({
+     middleware: 'auth'
+})
   </script>
   
   <style scoped></style>

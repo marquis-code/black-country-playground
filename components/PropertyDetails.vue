@@ -28,7 +28,7 @@
         </div>
       </div>
       <div>
-        <h3 class="text-lg text-[#1D2739] mb-4">Interior area</h3>
+        <h3 class="text-lg text-[#1D2739] mb-4">Interior areaasdsdsa</h3>
         <fieldset>
           <legend class="sr-only">Interior Checkboxes</legend>
 
@@ -87,7 +87,7 @@
           </div>
           <div v-if="!isFurnishedCommonArea" class="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
             <label
-              v-for="(item, index) in interiorFurnishedAreasList"
+              v-for="(item, index) in interiorUnFurnishedAreasList"
               :key="item.name"
               :for="item.name"
               class="flex cursor-pointer items-start gap-4 rounded-lg p-4 border transition"
@@ -155,7 +155,7 @@
             v-model="newInteriorItem"
             type="text"
             placeholder="e.g. Basement"
-            class="flex-1 border-2 border-[#5B8469] rounded-md px-4 outline-none py-3 text-sm text-[#1D2739] placeholder-[#667185] focus:outline-none focus:ring-2 focus:ring-[#5B8469]"
+            class="flex-1 border border-[#5B8469] rounded-md px-4 outline-none py-3 text-sm text-[#1D2739] placeholder-[#667185]"
           />
           <button class="text-sm text-[#5B8469]" @click="addInteriorItem">Add</button>
         </div>
@@ -290,7 +290,7 @@
             v-model="newExteriorItem"
             type="text"
             placeholder="e.g. Rooftop terrace"
-            class="flex-1 border-2 border-[#5B8469] rounded-md px-4 py-2 text-sm text-[#1D2739] placeholder-[#667185] focus:outline-none focus:ring-2 focus:ring-[#5B8469]"
+            class="flex-1 border border-[#5B8469] rounded-md outline-none px-4 py-3 text-sm text-[#1D2739] placeholder-[#667185]"
           />
           <button class="text-sm text-[#5B8469]" @click="addExteriorItem">Add</button>
         </div>
@@ -368,14 +368,20 @@ const addInteriorItem = () => {
   if (newInteriorItem.value.trim()) {
     const newItem = {
       name: newInteriorItem.value.trim(),
-      id: `${newInteriorItem.value.trim()}_${Date.now()}`, // Generating a unique ID
+      // id: `${newInteriorItem.value.trim()}_${Date.now()}`, // Generating a unique ID
       type: "interior",
-      canBeFurnished: isFurnishedCommonArea.value,
+      canBeFurnished: props.payload.isFurnishedCommonArea.value,
       images: []
     };
     
     // Push the new item to the interior furnished areas list (UI list)
-    props.interiorFurnishedAreasList.push(newItem);
+    if(props.payload.isFurnishedCommonArea.value){
+      props.interiorFurnishedAreasList.push(newItem);
+    }
+
+    if(!props.payload.isFurnishedCommonArea.value){
+      props.interiorUnFurnishedAreasList.push(newItem);
+    }
     
     // Push to the selected areas (common areas)
     commonAreas.value.push(newItem);
@@ -395,13 +401,22 @@ const addExteriorItem = () => {
   if (newExteriorItem.value.trim()) {
     const newItem = {
       name: newExteriorItem.value.trim(),
-      id: `${newExteriorItem.value.trim()}_${Date.now()}`, // Generating a unique ID
+      canBeFurnished: props.payload.isFurnishedCommonArea.value,
+      // id: `${newExteriorItem.value.trim()}_${Date.now()}`, // Generating a unique ID
       type: "exterior",
       images: []
     };
 
     // Push the new item to the exterior furnished areas list (UI list)
-    props.exteriorFurnishedAreasList.push(newItem);
+    // props.exteriorFurnishedAreasList.push(newItem);
+     // Push the new item to the interior furnished areas list (UI list)
+     if(props.payload.isFurnishedCommonArea.value){
+      props.exteriorFurnishedAreasList.push(newItem);
+    }
+
+    if(!props.payload.isFurnishedCommonArea.value){
+      props.exteriorUnFurnishedAreasList.push(newItem);
+    }
     
     // Push to the selected areas (common areas)
     commonAreas.value.push(newItem);
@@ -444,10 +459,10 @@ const toggleSelection = (item: string, type: string) => {
 };
 
 // Handle furnished status
-const isFurnishedCommonArea = ref(true);
+const isFurnishedCommonArea = ref(props?.payload?.isFurnishedCommonArea.value);
 
 onMounted(() => {
-  isFurnishedCommonArea.value = props?.payload?.isFurnishedCommonArea;
+  isFurnishedCommonArea.value = props?.payload?.isFurnishedCommonArea.value;
 });
 
 

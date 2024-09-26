@@ -123,17 +123,17 @@
     <PropertyRentalComponent v-if="activeTab === 'rental-applications'" />
 
     <!-- Reusable Modal for Delete Property -->
-    <CoreReusableModal :isOpen="deleteModal" @close="deleteModal = false" @confirm="handleDeleteConfirm"
+    <CoreReusableModal :loading="deleting" :isOpen="deleteModal" @close="deleteModal = false" @confirm="handleDeleteConfirm"
       title="Delete Property" :message="`By deleting ${selectedObj.name} Co-Living Space, you will permanently remove the listing from the platform. Are you sure you want to proceed?`" confirmButtonText="Yes, delete"
       cancelButtonText="Cancel" />
 
     <!-- Reusable Modal for Deactivate Property -->
-    <CoreReusableModal :isOpen="deactivateModal" @close="deactivateModal = false" @confirm="handleDeactivateConfirm"
+    <CoreReusableModal :loading="deactivating" :isOpen="deactivateModal" @close="deactivateModal = false" @confirm="handleDeactivateConfirm"
       title="Deactivate Property" message="Deactivating this property will make it unavailable for new inquiries and listings. You can reactivate it at any time."
       confirmButtonText="Yes, deactivate" cancelButtonText="Cancel" />
 
     <!-- Reusable Modal for Duplicate Property -->
-    <CoreReusableModal :isOpen="duplicateModal" @close="duplicateModal = false" @confirm="handleDuplicateConfirm"
+    <CoreReusableModal :loading="duplicating" :isOpen="duplicateModal" @close="duplicateModal = false" @confirm="handleDuplicateConfirm"
       title="Duplicate Property" :message="`Are you sure you want to duplicate this property, ${selectedObj.name} co-living space ? This will create a new copy of the property, you will retain current information, you can rename it and you can make edits after duplication.`"
       confirmButtonText="Yes, duplicate" cancelButtonText="Cancel" />
 
@@ -147,7 +147,7 @@ import { useDeleteProperty } from '@/composables/modules/property/delete'
 import { usePropertyDeactivate } from '@/composables/modules/property/deactivate'
 import { useDuplicateProperty } from '@/composables/modules/property/duplicate'
 const { deleteProperty, loading: deleting } = useDeleteProperty()
-const {  deactivateProperty, loading, getProperties } = usePropertyDeactivate()
+const {  deactivateProperty, loading: deactivating, getProperties } = usePropertyDeactivate()
 const {  duplicateProperty, loading: duplicating } = useDuplicateProperty()
 import { useUserInitials } from '@/composables/core/useUserInitials'
 import { useUser } from '@/composables/auth/user'
@@ -155,6 +155,10 @@ const { user } = useUser()
 const route = useRoute()
 const router = useRouter()
 const selectedObj = ref({}) as any
+
+definePageMeta({
+     middleware: 'auth'
+})
 
 
 const isMobileMenuOpen = ref(false);
@@ -208,27 +212,34 @@ const openDuplicateModal = (data: any) => {
 };
 
 const handleDeleteConfirm = async () => {
-  // Handle delete logic
   if (selectedObj.value.id) {                                
     console.log('Property deleted');
-    await deleteProperty(selectedObj.value.id)
-    deleteModal.value = false;
-    router.push(`/dashboard/property/${selectedObj.value.id}/deactivate-success`)
+    await deleteProperty(selectedObj.value.id).then(() => {
+      deleteModal.value = false;
+     router.push(`/dashboard/property/${selectedObj.value.id}/delete-success`)
+    })
   }
 };
 
 const handleDeactivateConfirm = async () => {
-  // Handle deactivate logic
-  console.log('Property deactivated', selectedObj.value);
-  await deactivateProperty(selectedObj.value.id)
-  deactivateModal.value = false;
-  router.push(`/dashboard/property/${selectedObj.value.id}/deactivate-success`)
+  try {
+    await deactivateProperty(selectedObj.value.id); // Wait for the deactivation to complete
+    deactivateModal.value = false; // Update the modal state
+    router.push(`/dashboard/property/${selectedObj.value.id}/deactivate-success`); // Navigate to the success page
+  } catch (error) {
+    useNuxtApp().$toast.error("YError deactivating property:", {
+      autoClose: 5000,
+      dangerouslyHTMLString: true,
+    });
+  }
 };
 
+
 const handleDuplicateConfirm = async () => {
-  await duplicateProperty(selectedObj.value.id)
-  duplicateModal.value = false;
-  router.push(`/dashboard/property/${selectedObj.value.id}/duplicate-success`)
+  await duplicateProperty(selectedObj.value.id).then(() => {
+    duplicateModal.value = false;
+    router.push(`/dashboard/property/${selectedObj.value.id}/duplicate-success`)
+  })
 };
 </script>
 

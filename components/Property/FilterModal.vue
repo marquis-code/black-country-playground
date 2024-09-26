@@ -58,6 +58,24 @@
               </div>
           </div>
           </div>
+          <div class="space-y-1">
+            <label class="block text-sm font-medium text-[#1D2739]">Property Status</label>
+            <div class="mt-1 relative">
+              <input type="text" readonly placeholder="Single property status" v-model="selectedStatusText"
+                  @click="toggleStatusDropdown"
+                  class="w-full bg-[#F0F2F5] text-sm py-3 px-4 border-[0.5px] outline-none border-gray-100 rounded-md cursor-pointer" />
+              <div v-if="showStatusDropdown" ref="dropdown"
+                  class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1">
+                  <ul>
+                      <li v-for="status in propertyStatusList" :key="status.code" @click="selectStatus(status)"
+                          class="px-4 py-3 text-sm border-b-[0.5px] last:border-b-0 hover:bg-gray-50 cursor-pointer">
+                          {{ status.label }}
+                      </li>
+                  </ul>
+                </div>
+          </div>
+          </div>
+
         </div>
         <div class="mt-10 flex justify-between gap-x-6 pt-20">
           <button class="bg-[#EBE5E0] font-semibold text-[#292929] w-full px-4 py-3 text-sm rounded-md" @click="resetFilters">Reset</button>
@@ -95,8 +113,25 @@ const resetFilters = () => {
   toDate.value = '';
   propertyName.value = '';
   agentId.value = '';
+  selectedStatusText.value = 'All Properties'
   applyFilters();
 }
+
+
+const propertyStatusList = ref([
+  {
+    label: 'All Properties',
+    code: 'all'
+  },
+  {
+    label: 'Published',
+    code: 'published'
+  },
+  {
+    label: 'Draft',
+    code: 'draft'
+  }
+])
 
 const applyFilters = () => {
   // Emit the filters to the parent component
@@ -105,6 +140,7 @@ const applyFilters = () => {
     toDate: toDate.value,
     searchQuery: propertyName.value,
     agentId: agentId.value,
+    isPublished: selectedStatusText.value === 'Published' ? true : selectedStatusText.value === 'Draft' ? false : null
   });
   closeModal();
 }
@@ -113,7 +149,9 @@ const selectedUser = ref({});
 const selectedProperty = ref({})
 const selectedPropertyName = ref('')
 const selectedUserText = ref('');
+const selectedStatusText = ref('');
 const showDropdown = ref(false)
+const showStatusDropdown = ref(false)
 const showPropertyDropdown = ref(false)
 function toggleDropdown() {
     showDropdown.value = !showDropdown.value;
@@ -122,6 +160,11 @@ function toggleDropdown() {
 function togglePropertyDropdown() {
     showPropertyDropdown.value = !showPropertyDropdown.value;
 }
+
+function toggleStatusDropdown() {
+    showStatusDropdown.value = !showStatusDropdown.value;
+}
+
 
 
 function selectUser(user: any) {
@@ -135,6 +178,11 @@ function selectProperty(property: any) {
   selectedProperty.value = property
   selectedPropertyName.value = property.name
   showPropertyDropdown.value = false;
+}
+
+function selectStatus(item: any) {
+  selectedStatusText.value = item.label;
+  showStatusDropdown.value = false;
 }
 
 const propertyDropdownRef = ref<HTMLElement | null>(null);

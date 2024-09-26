@@ -85,6 +85,10 @@ import LayoutWithoutSidebar from '@/layouts/dashboardWithoutSidebar.vue'
 const { goBack } = useGoBack()
 const router = useRouter()
 
+definePageMeta({
+     middleware: 'auth'
+})
+
 const handleConfirm = () => {
    router.push('/dashboard/property/new')
    openCancelModal.value = false

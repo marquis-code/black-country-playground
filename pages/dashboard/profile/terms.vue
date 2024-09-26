@@ -63,6 +63,10 @@
   export default {
     name: 'TermsAndConditions'
   }
+
+  definePageMeta({
+     middleware: 'auth'
+})
   </script>
   
   <style scoped></style>

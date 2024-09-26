@@ -76,6 +76,10 @@
 <script setup lang="ts">
 import Layout from '@/layouts/dashboard.vue';
 const router = useRouter()
+
+definePageMeta({
+     middleware: 'auth'
+})
 </script>
 
 <style scoped></style>

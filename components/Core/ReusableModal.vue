@@ -27,10 +27,11 @@
         <div class="space-y-3 mt-4">
           <button
             type="button"
-            class="w-full text-sm bg-[#292929] text-white py-3.5 rounded-md font-semibold"
+            :disabled="loading"
+            class="w-full disabled:cursor-not-allowed disabled:opacity-25 text-sm bg-[#292929] text-white py-3.5 rounded-md font-semibold"
             @click="confirmAction"
           >
-            {{ confirmButtonText }}
+            {{  loading ? 'processing...' : `${confirmButtonText}` }}
           </button>
           <button
             type="button"
@@ -73,6 +74,10 @@
       type: Boolean,
       default: true, // Set to true if you want the default icon to show
     },
+    loading: {
+      type: Boolean,
+      default: false, // Set to true if you want the default icon to show
+    }
   });
   
   // Emit events

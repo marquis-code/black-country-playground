@@ -10,6 +10,13 @@ export default {
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         { name: "format-detection", content: "telephone=no" },
       ],
+      // script: [
+      //   {
+      //     src: `https://maps.googleapis.com/maps/api/js?key=AIzaSyCTBVK36LVNlXs_qBOC4RywX_Ihf765lDg&libraries=places`, // Add your API key
+      //     async: true,
+      //     defer: true,
+      //   },
+      // ],
       link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.svg" }],
     },
   },
@@ -22,7 +29,17 @@ export default {
     // Axios options here
     timeout: 10000, // Example: set timeout to 10 seconds
   },
+  runtimeConfig: {
+    // public: {
+    //   googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY // Ensure to set this environment variable
+    // },
+  },
   plugins: [],
+  vite: {
+    optimizeDeps: {
+      include: ['fast-deep-equal']
+    }
+  }
   // buildModules: [
   //   '@nuxtjs/moment'
   // ]

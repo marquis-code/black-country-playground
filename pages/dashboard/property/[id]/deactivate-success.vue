@@ -14,7 +14,7 @@
         <!-- Duplication Message -->
         <h2 class="text-xl font-semibold mb-2 text-[#1D2739]">Deactivation successful</h2>
         <p class="text-[#667185] mb-6">
-          The property has been duplicated successfully. Would you like to start editing now or save for later?
+          The property has been deactivated successfully.
         </p>
   
         <!-- Action Buttons -->
@@ -30,6 +30,10 @@
   <script setup lang="ts">
   const route = useRoute()
   const router = useRouter()
+
+  definePageMeta({
+     middleware: 'auth'
+})
   // No additional logic needed for this static component
   </script>
   

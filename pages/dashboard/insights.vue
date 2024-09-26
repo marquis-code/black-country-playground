@@ -147,4 +147,8 @@ const selectedTenants = ref('All Tenants')
 const startDate = ref('')
 const endDate = ref('')
 
+definePageMeta({
+     middleware: 'auth'
+})
+
 </script>

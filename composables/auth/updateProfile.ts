@@ -3,10 +3,13 @@ import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 import { useNuxtApp } from "#app"; // Use this to show toast notifications
 import { useUser } from '@/composables/auth/user'
+import { use_admin_profile } from '@/composables/auth/getProfile';
+const { profileObj} = use_admin_profile();
 
 export const use_update_profile = () => {
   const Router = useRouter();
   const { updateUser } = useUser()
+  
 
   // Initialize the credential object with default values
   const credential = ref({
@@ -57,6 +60,7 @@ export const use_update_profile = () => {
 
   // Prefill user credentials from localStorage when the component is mounted
   onMounted(() => {
+    console.log(profileObj.value, 'from here')
     const userData = localStorage.getItem("user");
 
     if (userData) {

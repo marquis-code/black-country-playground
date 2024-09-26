@@ -64,6 +64,10 @@ const columns = ref([
   { label: 'Agents/Property Managers', key: 'agent.firstName', visible: false },
 ])
 
+definePageMeta({
+     middleware: 'auth'
+})
+
 // Sample data for the table from the backend
 const properties = ref([
   {

@@ -25,6 +25,9 @@
   <script setup lang="ts">
   import AuthLayout from '@/layouts/auth.vue'
   const router = useRouter()
+  definePageMeta({
+     middleware: 'auth'
+})
   // No additional setup is needed for this component
   </script>
   

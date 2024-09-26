@@ -29,33 +29,31 @@
                 </div>
         
                 <!-- Co-living with -->
-                <h2 class="text-sm font-medium text-[#667185] mt-6 border-[0.5px] py-3 px-3 rounded-lg border-gray-50">Co-living with <span class="text-[#1D2739]">2 Persons</span></h2>
-                <table class="w-full mt-2 table-fixed text-sm">
-                  <thead>
-                    <tr class="bg-[#F9FAFB] rounded-lg">
-                      <th class="text-left text-sm py-3 pl-6 font-medium text-[#1D2739]">Occupants</th>
-                      <th class="text-left text-sm py-3 font-medium text-[#1D2739]">Room occupied</th>
-                      <th class="text-left text-sm py-3 font-medium text-[#1D2739]">Available from</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="text-[#1D2739] pl-6">Rita</td>
-                      <td class="text-[#1D2739]">1</td>
-                      <td class="text-[#1D2739]">24/05/2024</td>
-                    </tr>
-                    <tr class="">
-                      <td class="text-[#1D2739] pl-6">Maxwell</td>
-                      <td class="text-[#1D2739]">2</td>
-                      <td class="text-[#1D2739]">Not available</td>
-                    </tr>
-                  </tbody>
-                </table>
+                  <h2 class="text-sm font-medium text-[#667185] mt-6 border-[0.5px] py-3 px-3 rounded-lg border-gray-50 text-sm text-[#1D2739] font-medium bg-white border-[0.5px] px-3 py-3 rounded-sm border-gray-100">Co-living with <span class="text-[#1D2739]">{{property.bedroomCount - 1}} Persons</span></h2>
+
+                <div>
+                  <table class="w-full mt-2 table-fixed text-sm">
+                    <thead>
+                      <tr class="bg-[#F9FAFB] rounded-lg">
+                        <th class="text-left text-sm py-3 pl-6 font-medium text-[#1D2739]">Occupants</th>
+                        <th class="text-left text-sm py-3 font-medium text-[#1D2739]">Room occupied</th>
+                        <th class="text-left text-sm py-3 font-medium text-[#1D2739]">Available from</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(room, index) in formattedRoomData" :key="index">
+                        <td class="text-[#1D2739] py-3 pl-6">{{ room.occupant }}</td>
+                        <td class="text-[#1D2739] py-3">{{ room.roomOccupied }}</td>
+                        <td class="text-[#1D2739] py-3">{{ room.availableFrom }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
         
               <!-- Property Visitation -->
-              <h2 class="text-sm font-medium text-[#667185] mt-6 border-[0.5px] py-3 px-3 rounded-lg border-gray-50">Property visitation</h2>
-              <div class="rounded-md border-[0.5px] border-gray-50 bg-white">
+              <h2 v-if="property?.visitations?.length" class="text-sm font-medium text-[#667185] mt-6 border-[0.5px] py-3 px-3 rounded-lg border-gray-50">Property visitation</h2>
+              <div v-if="property?.visitations?.length"  class="rounded-md border-[0.5px] border-gray-50 bg-white">
                 <table class="w-full mt-2 table-fixed text-sm">
                   <thead>
                     <tr class="bg-[#F9FAFB] rounded-lg">
@@ -84,7 +82,7 @@
               </div>
         
               <!-- House Rules -->
-              <h2 class="text-sm font-medium text-[#1D2739] mt-6 border-[0.5px] py-3 px-3 rounded-lg border-gray-50">House Rules</h2>
+              <h2 v-if="property?.rules?.length" class="text-sm font-medium text-[#1D2739] mt-6 border-[0.5px] py-3 px-3 rounded-lg border-gray-50">House Rules</h2>
               <div class="">
                 <ul v-if="property?.rules?.length" class="space-y-1">
                   <p class="border-[0.5px] rounded-lg border-gray-50 py-3 text-sm pl-4">{{property?.rules[0]?.rule }}</p>
@@ -123,4 +121,25 @@ const props = defineProps({
       return props.property.rules.slice(2)
     }
   })
+
+
+  console.log(props.property.rooms)
+
+
+  // Computed property to format room data
+const formattedRoomData = computed(() => {
+if(props.property.rooms){
+  return props.property.rooms.map(room => {
+    return {
+      occupant: room.occupantName || "No occupant",
+      roomOccupied: room.name,
+      availableFrom: room.availability === "available_now"
+        ? "Available now"
+        : room.availableFrom
+          ? new Date(room.availableFrom).toLocaleDateString()
+          : "Not available"
+    };
+  });
+}
+});
 </script>

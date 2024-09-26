@@ -1,97 +1,5 @@
 <template>
   <main>
-    <!-- <section class="">
-      <div class="">
-        <div
-          class="lg:flex justify-between items-center mb-6 space-y-4 lg:space-y-0 w-full"
-        >
-          <div class="flex space-x-4 w-full lg:w-2/3">
-            <button
-              @click="propertyFilterModal = true"
-              class="flex items-center gap-x-2 px-4 py-2 text-sm bg-white border-[0.5px] border-gray-300 rounded-md text-[#1D2739]"
-            >
-              Filter
-              <img :src="dynamicIcons('gray-filter')" />
-            </button>
-            <div class="relative w-full">
-              <input
-                v-model="filters.searchQuery"
-                placeholder="Search properties..."
-                type="text"
-                class="px-4 text-sm py-3 w-full outline-none pl-10 border-[0.5px] border-gray-300 text-[#667185] rounded-md"
-              />
-              <img
-                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500"
-                :src="dynamicIcons('gray-search')"
-              />
-            </div>
-          </div>
-          <div class="flex justify-end items-end space-x-4 lg:w-1/3">
-            <button
-            @click="showModal = true"
-              class="px-4 py-3 bg-white flex items-center gap-x-3 text-[#292929] border-[0.5px] text-sm border-gray-300 rounded-md"
-            >
-              <img :src="dynamicIcons('gray-settings')" />
-              Configure table
-            </button>
-            <section class="relative">
-              <button
-                @click="toggleDownloadDropdown"
-                class="px-4 py-3 bg-white border-[0.5px] text-sm flex items-center gap-x-3 border-gray-300 rounded-md text-gray-70"
-              >
-                <img :src="dynamicIcons('gray-download')" />
-                Export
-              </button>
-              <div
-                v-if="downloadDropdown"
-                class="absolute right-4 z-50 mt-2 bg-white border border-gray-200 w-44 rounded-lg shadow-lg"
-              >
-                <ul
-                  class="py-1 text-sm text-gray-700 divide-gray-100 divide-y-[0.5px]"
-                >
-                  <li>
-                    <a
-                      @click="handleExport('pdf')"
-                      href="#"
-                      class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
-                    >
-                      <img :src="dynamicIcons('gray-pdf')" />
-                      PDF</a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      @click="handleExport('excel')"
-                      href="#"
-                      class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
-                    >
-                      <img :src="dynamicIcons('gray-excel')" />
-                      Excel/Spreadsheet</a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      @click="handleExport('csv')"
-                      href="#"
-                      class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
-                    >
-                      <img :src="dynamicIcons('gray-csv')" />
-                      CSV</a
-                    >
-                  </li>
-                </ul>
-              </div>
-            </section>
-            <button
-              @click="router.push('/dashboard/property/create-steps')"
-              class="px-4 py-3 flex text-sm items-center gap-x-3 bg-[#292929] text-white rounded-md hover:bg-gray-800"
-            >
-              <img :src="dynamicIcons('white-add')" /> New Property
-            </button>
-          </div>
-        </div>
-      </div>
-    </section> -->
     <section class="px-4 sm:px-6 lg:px-8">
       <div class="">
         <div class="lg:flex justify-between items-center mb-6 space-y-4 lg:space-y-0 w-full">
@@ -106,7 +14,7 @@
             <div class="relative w-full">
               <input
                 v-model="filters.searchQuery"
-                placeholder="Search properties..."
+                placeholder="Search properties by name..."
                 type="text"
                 class="px-4 text-sm py-3 w-full outline-none pl-10 border-[0.5px] border-gray-300 text-[#667185] rounded-md"
               />
@@ -139,7 +47,7 @@
                 <ul class="py-1 text-sm text-gray-700 divide-gray-100 divide-y-[0.5px]">
                   <li>
                     <a
-                      @click="handleExport('pdf')"
+                      @click="downloadData('pdf')"
                       href="#"
                       class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
                     >
@@ -149,7 +57,7 @@
                   </li>
                   <li>
                     <a
-                      @click="handleExport('excel')"
+                      @click="downloadData('excel')"
                       href="#"
                       class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
                     >
@@ -159,7 +67,7 @@
                   </li>
                   <li>
                     <a
-                      @click="handleExport('csv')"
+                      @click="downloadData('csv')"
                       href="#"
                       class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
                     >
@@ -215,7 +123,9 @@
                 :key="column.key"
                 class="py-5 px-5 whitespace-nowrap text-sm text-[#667185] font-semibold relative"
               >
-                {{ getPropertyValue(property, column.key) }}
+                <p v-if="column.key !== 'isPublished'">{{ getPropertyValue(property, column.key) }}</p>
+                <p class="absolute left-0 top-0" v-if="column.key === 'name'"> <span class="bg-[#F7D394] text-[#1D2739] text-xs px-2 py-1" v-if="!property.isPublished">Draft</span></p>
+                <p v-if="column.key === 'isPublished'">{{property.isPublished ? 'Published' : 'Draft'}}</p>
               </td>
               <td class="py-5 px-5 whitespace-nowrap text-sm text-right">
                 <button
@@ -330,6 +240,7 @@
           class="fixed inset-0 z-40 bg-black opacity-25"
         ></div>
         <CorePagination
+          v-if="!loadingProperties && propertiesList.length > 0"
           :total="metadata.total"
           :page="metadata.page"
           :perPage="metadata.perPage"
@@ -343,7 +254,7 @@
       ></div>
       <div
         v-if="!loadingProperties && propertiesList.length === 0"
-        class="flex justify-center items-center flex-col"
+        class="flex justify-center items-center flex-col my-20"
       >
         <div class="flex justify-center items-center">
           <svg
@@ -430,11 +341,19 @@
           class="flex items-center mb-2"
         >
           <span class="flex-1 text-sm text-[#1D2739]">{{ column.label }}</span>
-          <label :for="column.label" class="inline-flex items-center space-x-4 cursor-pointer dark:text-gray-100">
+          <!-- <label :for="column.label" class="inline-flex items-center space-x-4 cursor-pointer dark:text-gray-100">
             <span class="relative">
               <input :id="column.label" type="checkbox" v-model="column.visible" class="hidden peer toggle">
               <div class="w-10 h-6 rounded-full shadow-inner dark:bg-[#F0F2F5] peer-checked:dark:bg-[#099137]"></div>
               <div class="absolute inset-y-0 left-0 w-4 h-4 m-1 rounded-full shadow peer-checked:right-0 peer-checked:left-auto dark:bg-[#FFFFFF]"></div>
+            </span>
+          </label> -->
+          <label :for="column.label" class="inline-flex items-center space-x-4 cursor-pointer dark:text-gray-100">
+            <span class="relative">
+              <input :id="column.label" type="checkbox" v-model="column.visible" class="hidden peer toggle">
+              <div class="w-10 h-6 rounded-full shadow-inner bg-gray-300 dark:bg-[#F0F2F5] peer-checked:bg-green-500 peer-checked:dark:bg-[#099137]">
+              </div>
+              <div class="absolute inset-y-0 left-0 w-4 h-4 m-1 rounded-full shadow bg-white peer-checked:right-0 peer-checked:left-auto dark:bg-[#FFFFFF]"></div>
             </span>
           </label>
         </div>
@@ -458,10 +377,19 @@
 </template>
 
 <script lang="ts" setup>
+import { usePaginatedFetchAndDownload } from '@/composables/core/exportData';
 import { useGetProperties } from "@/composables/modules/property/fetchProperties";
 import { dynamicIcons } from "@/utils/assets";
 import { exportData } from "@/composables/core/exportData";
+import {  downloadableColumns } from '@/composables/core/exportData'
 import { useRouter, useRoute } from "vue-router";
+const { exportPaginatedData, isDownloading }  = usePaginatedFetchAndDownload()
+
+// Define the method to handle the download
+const downloadData = (exportType: any) => {
+  // Call the export function with the desired format (csv, pdf, or excel)
+  exportPaginatedData('/houses', exportType, 'house_data_export');
+}
 const route = useRoute();
 const router = useRouter();
 const testConfigModal = ref(true);
@@ -583,6 +511,7 @@ const columns = ref([
   { label: "Rooms Occupied", key: "availableRoomsCount", visible: false },
   { label: "Rooms Count", key: "bedroomCount", visible: true },
   { label: "Bathroom Count", key: "bathroomCount", visible: false },
+  { label: "Status", key: "isPublished", visible: false },
   { label: "Agents/Property Managers", key: "agent.firstName", visible: false },
 ]);
 
@@ -590,6 +519,8 @@ const columns = ref([
 const visibleColumns = computed(() => {
   return columns.value.filter((column) => column.visible);
 });
+
+downloadableColumns.value = columns.value
 
 // Function to extract nested properties
 const getPropertyValue = (property: any, key: string) => {

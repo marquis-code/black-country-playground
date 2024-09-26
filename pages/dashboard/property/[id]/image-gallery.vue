@@ -91,6 +91,10 @@ const { propertyObj, loading } = useFetchProperty();
 const router = useRouter()
 const { user } = useUser()
 
+definePageMeta({
+     middleware: 'auth'
+})
+
 const initials = ref('') as any
 
 onMounted(() => {

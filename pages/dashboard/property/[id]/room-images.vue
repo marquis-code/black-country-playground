@@ -76,6 +76,11 @@
   }
   const showScrollToTop = ref(false);
 
+  definePageMeta({
+     middleware: 'auth'
+})
+
+
 const handleScroll = () => {
   showScrollToTop.value = window.scrollY > 300;
 };

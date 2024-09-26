@@ -766,7 +766,7 @@ const isAnyRoomMaster = computed(() => roomData.value.some((room) => room.isMast
       <!-- Conditional Fields Based on Availability -->
       <div v-if="availability === 'available_now'" class="mt-4 space-y-4">
         <div class="w-full mt-4">
-          <label class="block text-sm font-medium mb-2">Set price</label>
+          <label class="block text-sm font-medium mb-2">Set pricesdfghjk</label>
           <div class="flex items-center bg-[#E4E7EC] border-[0.5px] border-gray-50 rounded-md px-3 py-2">
             <select
               v-model="rentFrequency"
@@ -777,8 +777,8 @@ const isAnyRoomMaster = computed(() => roomData.value.some((room) => room.isMast
               <option value="weekly">Weekly</option>
             </select>
             <input
-              type="text"
-              v-model="rentAmount"
+              type="number"
+              v-model.number="rentAmount"
               placeholder="e.g 1000"
               class="bg-transparent text-sm outline-none flex-grow"
             />
@@ -791,12 +791,17 @@ const isAnyRoomMaster = computed(() => roomData.value.some((room) => room.isMast
             @change="applyResponsesToAllRooms"
             v-model="applyToAllRooms"
           />
-          <CoreToggleSwitch
+          <!-- <CoreToggleSwitch
             v-if="(!isAnyRoomMaster || setAsMasterBedroom)" 
             id="masterBedroom"
             label="Set as master's bedroom"
             v-model="setAsMasterBedroom"
-          />
+          /> -->
+          <CoreToggleSwitch
+          id="masterBedroom"
+          label="Set as master's bedroom"
+          v-model="setAsMasterBedroom"
+        />
         </div>
       </div>
 
@@ -823,8 +828,8 @@ const isAnyRoomMaster = computed(() => roomData.value.some((room) => room.isMast
               <option value="weekly">Weekly</option>
             </select>
             <input
-              type="text"
-              v-model="rentAmount"
+              type="number"
+              v-model.number="rentAmount"
               placeholder="e.g 1000"
               class="bg-transparent text-sm outline-none flex-grow"
             />
@@ -838,8 +843,13 @@ const isAnyRoomMaster = computed(() => roomData.value.some((room) => room.isMast
             @change="applyResponsesToAllRooms"
             v-model="applyToAllRooms"
           />
-          <CoreToggleSwitch
+          <!-- <CoreToggleSwitch
           v-if="(!isAnyRoomMaster || setAsMasterBedroom)" 
+            id="masterBedroom"
+            label="Set as master's bedroom"
+            v-model="setAsMasterBedroom"
+          /> -->
+          <CoreToggleSwitch
             id="masterBedroom"
             label="Set as master's bedroom"
             v-model="setAsMasterBedroom"
@@ -877,8 +887,8 @@ const isAnyRoomMaster = computed(() => roomData.value.some((room) => room.isMast
               <option value="weekly">Weekly</option>
             </select>
             <input
-              type="text"
-              v-model="rentAmount"
+              type="number"
+              v-model.number="rentAmount"
               placeholder="e.g 1000"
               class="bg-transparent text-sm outline-none flex-grow"
             />
@@ -932,7 +942,7 @@ const isRoomFurnished = ref(true);
 const availability = ref('available_now');
 const availabilityDate = ref('');
 const occupantsName = ref('');
-const rentAmount = ref<number | string>('');
+const rentAmount = ref<number | null>(null);
 const rentFrequency = ref<string>('monthly');
 const roomFeatures = ref([]);
 const setAsMasterBedroom = ref(false);
@@ -1005,23 +1015,54 @@ const initializeRoomData = () => {
 //   }
 //   emit('emitRoomData', roomData.value[roomIndex]);
 // };
+// const saveRoomData = (roomName) => {
+//   const roomIndex = roomData.value.findIndex((room) => room.name === roomName);
+//   if (roomIndex !== -1) {
+//     roomData.value[roomIndex] = {
+//       ...roomData.value[roomIndex],
+//       availability: availability.value,
+//       availableFrom: availabilityDate.value,
+//       occupantName: occupantsName.value,
+//       // rentAmount: rentAmount.value,
+//       rentAmount: parseInt(rentAmount.value, 10) || 0, // Convert to integer
+//       rentFrequency: rentFrequency.value,
+//       isFurnished: isRoomFurnished.value,
+//       isMaster: setAsMasterBedroom.value,
+//       features: roomFeatures.value
+//     };
+//   }
+//   emit('emitRoomData', roomData.value);
+// };
+
 const saveRoomData = (roomName) => {
-  const roomIndex = roomData.value.findIndex((room) => room.name === roomName);
+  const roomIndex = roomData.value.findIndex((room) => room?.name === roomName);
+
   if (roomIndex !== -1) {
+    // If the current room is set as the master bedroom, unset all other rooms as master
+    if (setAsMasterBedroom.value) {
+      roomData.value = roomData.value.map((room, index) => ({
+        ...room,
+        isMaster: index === roomIndex, // Only the current room is set as the master
+      }));
+    }
+
+    // Update the room data for the current room
     roomData.value[roomIndex] = {
       ...roomData.value[roomIndex],
       availability: availability.value,
       availableFrom: availabilityDate.value,
       occupantName: occupantsName.value,
-      rentAmount: rentAmount.value,
+      rentAmount: parseInt(rentAmount.value, 10) || 0, // Convert to integer
       rentFrequency: rentFrequency.value,
       isFurnished: isRoomFurnished.value,
-      isMaster: setAsMasterBedroom.value,
-      features: roomFeatures.value
+      isMaster: setAsMasterBedroom.value, // Already set correctly above
+      features: roomFeatures.value,
     };
   }
+
   emit('emitRoomData', roomData.value);
 };
+
 
 // Load room data when switching tabs
 // const loadRoomData = (roomName: string) => {
@@ -1113,7 +1154,7 @@ const applyResponsesToAllRooms = () => {
         availability: availability.value,
         availableFrom: availabilityDate.value,
         occupantName: occupantsName.value,
-        rentAmount: rentAmount.value,
+        rentAmount: Number(rentAmount.value),
         rentFrequency: rentFrequency.value,
         isFurnished: isRoomFurnished.value,
         features: [...roomFeatures.value],

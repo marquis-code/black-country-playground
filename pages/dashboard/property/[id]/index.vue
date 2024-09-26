@@ -64,7 +64,7 @@
   <main>
 
   <PropertyDetailsHeader v-if="!loading" :propertyObj="propertyObj" />
-  <PropertyImageGallery :images="propertyObj?.images" class="mt-6" />
+  <PropertyImageGallery v-if="propertyObj?.images" :propertyObj="propertyObj" :images="propertyObj?.images" class="mt-6" />
  <section v-if="!loading">
   <div class="pt-4 pb-8">
     <PropertyInfo :propertyObj="propertyObj" :loading="loading" />
@@ -343,6 +343,11 @@ const secondaryImage1 = ref("property1.png");
 const secondaryImage2 = ref("property1.png");
 const secondaryImage3 = ref("property1.png");
 const secondaryImage4 = ref("property1.png");
+
+
+definePageMeta({
+     middleware: 'auth'
+})
 
 const showShareModal = ref(false);
 // const showBookingModal = ref(true);

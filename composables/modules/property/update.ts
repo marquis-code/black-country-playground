@@ -1,33 +1,51 @@
 import { property_api } from "@/api_factory/modules/property";
+import { useStorage } from '@vueuse/core';
+import { ref, onMounted, watch } from "vue";
 import { useFetchProperty } from "@/composables/modules/property/fetchProperty";
-import { use_create_property } from "@/composables/modules/property/create";
-import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 export const useEditProperty = () => {
+  // Persistent form fields using useStorage
+  const payload = {
+    name: useStorage('property_name', null),
+    description: useStorage('property_description', null),
+    houseTypeId: useStorage('property_houseTypeId', null),
+    flooringTypeId: useStorage('property_flooringTypeId', null),
+    size: useStorage('property_size', null),
+    sizeUnit: useStorage('property_sizeUnit', 'sq ft'),
+    bedroomCount: useStorage('property_bedroomCount', null),
+    bathroomCount: useStorage('property_bathroomCount', null),
+    floorNumber: useStorage('property_floorNumber', null),
+    longitude: useStorage('property_longitude', null),
+    latitude: useStorage('property_latitude', null),
+    images: useStorage('property_images', []),
+    address: useStorage('property_address', null),
+    isFurnishedCommonArea: useStorage('property_isFurnishedCommonArea', false),
+    commonAreas: useStorage('property_commonAreas', []),
+    neighbouringLandmarks: useStorage('property_neighbouringLandmarks', []),
+    rooms: useStorage('property_rooms', []),
+    agentId: useStorage('property_agentId', null),
+    rules: useStorage('property_rules', []),
+    questions: useStorage('property_questions', []),
+  };
+
   const { propertyObj, getProperty, loading: fetchingProperty } = useFetchProperty();
-  const { payload } = use_create_property();
-  const route = useRoute(); // Access the current route
+  const route = useRoute();
   const router = useRouter();
-
-  // Get the property ID from the route parameter
   const queryId = ref(route.params.id as string || "");
-
   const loading = ref(false);
+  const saving = ref(false)
   const { $_update_property } = property_api;
 
-  // Initialize the form on component mount
+  // Initialize form data when component is mounted
   onMounted(async () => {
     await initForm();
   });
 
   const initForm = async () => {
     loading.value = true;
-    await getProperty(queryId.value); // Fetch the property using queryId
-
-    // Populate the form with the fetched property data
-    populateForm(propertyObj.value);
-
+    await getProperty(queryId.value);
+    populateForm(propertyObj.value); // Populate form with fetched data
     loading.value = false;
   };
 
@@ -41,50 +59,88 @@ export const useEditProperty = () => {
     payload.bedroomCount.value = data.bedroomCount || "";
     payload.bathroomCount.value = data.bathroomCount || "";
     payload.floorNumber.value = data.floorNumber || "";
-    payload.longitude.value = data.longitude || "";
-    payload.latitude.value = data.latitude || "";
+    payload.longitude.value = data.coordinates.coordinates[0] || "";
+    payload.latitude.value = data.coordinates.coordinates[1] || "";
     payload.images.value = data.images || [];
     payload.address.value = data.address || "";
     payload.isFurnishedCommonArea.value = data.isFurnishedCommonArea || false;
     payload.commonAreas.value = data.commonAreas || [];
     payload.neighbouringLandmarks.value = data.neighbouringLandmarks || [];
     payload.rooms.value = data.rooms || [];
-    payload.agentId.value = data.agentId || "";
+    payload.agentId.value = data.agent.id || "";
     payload.rules.value = data.rules || [];
     payload.questions.value = data.questions || [];
   };
 
-  const finalPayload = () => ({
-    name: payload.name.value,
-    description: payload.description.value,
-    houseTypeId: payload.houseTypeId.value,
-    flooringTypeId: payload.flooringTypeId.value,
-    size: Number(payload.size.value),
-    sizeUnit: payload.sizeUnit.value,
-    bedroomCount: payload.bedroomCount.value,
-    bathroomCount: payload.bathroomCount.value,
-    floorNumber: payload.floorNumber.value,
-    longitude: payload.longitude.value,
-    latitude: payload.latitude.value,
-    images: payload.images.value,
-    address: payload.address.value,
-    isFurnishedCommonArea: payload.isFurnishedCommonArea.value,
-    commonAreas: payload.commonAreas.value,
-    neighbouringLandmarks: payload.neighbouringLandmarks.value,
-    rooms: payload.rooms.value,
-    agentId: payload.agentId.value,
-    rules: payload.rules.value,
-    questions: payload.questions.value,
-  });
+  // Function to clean and filter rooms and payload data
+  const filterRooms = (rooms: any[]) => {
+    return rooms
+      .filter((room) => Array.isArray(room.features) && room.features.length > 0) // Remove rooms without features array
+      .map((room) => {
+        // Remove empty fields from each room
+        return Object.keys(room).reduce((acc, key) => {
+          const value = room[key];
 
+          // Include only non-empty values
+          if (
+            value !== null &&
+            value !== "" &&
+            !(Array.isArray(value) && value.length === 0)
+          ) {
+            acc[key] = value;
+          }
+
+          return acc;
+        }, {});
+      });
+  };
+
+  const finalPayload = () => {
+    const filteredRooms = filterRooms(payload.rooms.value); // Apply room filtering
+
+    return {
+      name: payload.name.value,
+      description: payload.description.value,
+      houseTypeId: payload.houseTypeId.value,
+      flooringTypeId: payload.flooringTypeId.value,
+      size: Number(payload.size.value),
+      sizeUnit: payload.sizeUnit.value,
+      bedroomCount: Number(payload.bedroomCount.value),
+      bathroomCount: Number(payload.bathroomCount.value),
+      floorNumber: Number(payload.floorNumber.value),
+      longitude: payload.longitude.value,
+      latitude: payload.latitude.value,
+      images: payload.images.value,
+      address: payload.address.value,
+      isFurnishedCommonArea: payload.isFurnishedCommonArea.value,
+      commonAreas: payload.commonAreas.value,
+      neighbouringLandmarks: payload.neighbouringLandmarks.value,
+      rooms: filteredRooms, // Use the cleaned and filtered rooms
+      agentId: payload.agentId.value,
+      rules: payload.rules.value,
+      questions: payload.questions.value,
+    };
+  };
+
+  // Edit Property function
   const editProperty = async () => {
     loading.value = true;
-    const res = await $_update_property(queryId.value, finalPayload()); // Pass queryId.value
+    const res = await $_update_property(queryId.value, finalPayload());
     if (res.type !== "ERROR") {
       router.push("/dashboard/property/success");
     }
     loading.value = false;
   };
 
-  return { editProperty, payload, loading, initForm, fetchingProperty };
+  const savingProperty = async () => {
+    saving.value = true;
+    const res = await $_update_property(queryId.value, finalPayload());
+    if (res.type !== "ERROR") {
+      router.push("/dashboard/property/success");
+    }
+    saving.value = false;
+  };
+
+  return { editProperty, payload, loading, initForm, fetchingProperty, saving, savingProperty };
 };
+

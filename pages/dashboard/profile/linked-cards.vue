@@ -123,6 +123,10 @@
 <script setup lang="ts">
 const router = useRouter()
 const cards = ref(['credit', 'debit'])
+
+definePageMeta({
+     middleware: 'auth'
+})
 </script>
 
 <style scoped></style>

@@ -120,6 +120,9 @@
 
 <script setup lang="ts">
 const router = useRouter()
+definePageMeta({
+     middleware: 'auth'
+})
 </script>
 
 <style scoped></style>

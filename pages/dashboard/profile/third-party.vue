@@ -54,6 +54,10 @@
   export default {
     name: "ThirdPartyLicense",
   };
+
+  definePageMeta({
+     middleware: 'auth'
+})
   </script>
   
   <style scoped></style>

@@ -1,4 +1,6 @@
 import { auth_api } from '@/api_factory/modules/auth'
+import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
 
 export const use_change_password = () => {
 	const Router = useRouter();
@@ -10,18 +12,45 @@ export const use_change_password = () => {
 
 	const loading = ref(false);
 
+	const passwordMismatch = computed(() => {
+		return credential.newPassword.value !== credential.confirmPassword.value;
+	});
+
+	const currentPasswordSameAsNew = computed(() => {
+		return credential.currentPassword.value === credential.newPassword.value;
+	});
+
+	const errorMessage = computed(() => {
+		if (loading.value) {
+			return 'Processing your request...';
+		}
+		if (!credential.currentPassword.value) {
+			return 'Current password is required.';
+		}
+		if (!credential.newPassword.value) {
+			return 'New password is required.';
+		}
+		if (!credential.confirmPassword.value) {
+			return 'Please confirm your new password.';
+		}
+		if (passwordMismatch.value) {
+			return 'New password and confirmation do not match.';
+		}
+		if (currentPasswordSameAsNew.value) {
+			return 'New password cannot be the same as the current password.';
+		}
+		return ''; // No error
+	});
+
 	const disabled = computed(() => {
 		return (
 			loading.value ||
 			!credential.currentPassword.value ||
 			!credential.newPassword.value ||
-			!credential.confirmPassword.value
+			!credential.confirmPassword.value ||
+			passwordMismatch.value ||  // Check for password mismatch
+			currentPasswordSameAsNew.value // Check if current password is the same as new password
 		);
-	});
-
-	// Computed properties for validation
-	const passwordMismatch = computed(() => {
-		return credential.newPassword.value !== credential.confirmPassword.value;
 	});
 
 	const change_password = async () => {
@@ -42,7 +71,6 @@ export const use_change_password = () => {
 				localStorage.clear();
 				Router.push('/dashboard/profile/password-change-success');
 			} else {
-				// Handle specific error response from the API
 				useNuxtApp().$toast.error(res?.data?.error || 'An error occurred while changing the password.', {
 					autoClose: 5000,
 					dangerouslyHTMLString: true,
@@ -50,7 +78,6 @@ export const use_change_password = () => {
 			}
 		} catch (error: any) {
 			loading.value = false;
-			// Display a general error message for unexpected errors
 			useNuxtApp().$toast.error(error.response?.data?.message || 'An unexpected error occurred. Please try again.', {
 				autoClose: 5000,
 				dangerouslyHTMLString: true,
@@ -58,5 +85,5 @@ export const use_change_password = () => {
 		}
 	};
 
-	return { credential, change_password, loading, disabled, passwordMismatch };
+	return { credential, change_password, loading, disabled, errorMessage };
 };

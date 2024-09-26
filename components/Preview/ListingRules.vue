@@ -1,8 +1,8 @@
 <template>
     <div class="bg-white rounded-lg">
-      <h2 class="text-xl font-semibold mb-6">Finalize listings and edit</h2>
+      <h2 class="text font-medium mb-6">Finalize listings and edit</h2>
       <div class="mb-6">
-        <h3 class="text-lg font-medium text-gray-600">
+        <h3 class="text font-medium text-gray-600">
           Define your rules for potential tenants
         </h3>
         <div class="mt-4">

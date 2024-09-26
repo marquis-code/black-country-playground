@@ -52,32 +52,6 @@
             placeholder="Enter custom rule"
             class="w-full p-3 border-[0.5px] bg-[#F0F2F5] border-gray-300 outline-none text-sm rounded-md"
           />
-          <!-- <button
-            @click="addCustomRule"
-            class="mt-4 text-[#1D2739] font-medium bg-[#F0F2F5] border py-2.5 flex justify-between items-center gap-x-3 text-sm px-3 rounded-lg"
-          >
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 12 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M6 2V10"
-                stroke="#1D2739"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M2 6H10"
-                stroke="#1D2739"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            Add rule
-          </button> -->
         </div>
   
         <!-- Custom Rules List -->
@@ -132,108 +106,15 @@
       <slot name="action-buttons"></slot>
     </main>
   </template>
-  
-  <!-- <script setup lang="ts">
-  import { ref, watch, defineEmits } from 'vue'
-  
-  // Define the emit function to pass data to the parent
-  const emit = defineEmits(['updateRules'])
-  
-  // States for predefined rules
-  const smokingAllowed = ref(false)
-  const petsAllowed = ref(false)
-  
-  // State for new custom rule input
-  const newCustomRule = ref<string>('')
-  
-  // State for rules list (both predefined and custom rules)
-  const rules = ref<{ rule: string, options?: string[], answer?: string }[]>([
-    {
-      rule: 'Smoking Allowed',
-      options: ['Yes', 'No'],
-      answer: 'No',
-    },
-    {
-      rule: 'Pets Allowed',
-      options: ['Yes', 'No'],
-      answer: 'Yes',
-    },
-  ])
 
-  const props = defineProps({
-    payload: {
-      type: Object,
-      default: () => {}
-    }
-  })
-  
-  // Emit the updated rules whenever the rules array changes
-  watch(rules, () => {
-    props.payload.rules.value = rules.value
-    emit('updateRules', rules.value)
-  }, { deep: true })
-  
-  // Toggle function to set the answer for predefined rules
-  function setAnswer(ruleName: string, answer: string) {
-    const rule = rules.value.find((r) => r.rule === ruleName)
-    if (rule) {
-      rule.answer = answer
-      if (ruleName === 'Smoking Allowed') {
-        smokingAllowed.value = answer === 'Yes'
-      }
-      if (ruleName === 'Pets Allowed') {
-        petsAllowed.value = answer === 'Yes'
-      }
-    }
-  }
-  
-  // Function to add a new custom rule
-  function addCustomRule() {
-    if (newCustomRule.value.trim()) {
-      rules.value.push({ rule: newCustomRule.value.trim() })
-      newCustomRule.value = ''
-    }
-  }
-  
-  // Function to remove a rule by index
-  function removeRule(index: number) {
-    rules.value.splice(index, 1)
-  }
-  
-  // Tailwind CSS classes
-  const activeClass = 'bg-black text-white'
-  const inactiveClass = 'bg-white text-black'
-  </script>
-  
-  <style scoped>
-  /* Additional styles can be added if needed */
-  </style>
-   -->
-
-   <script setup lang="ts">
-// Define the emit function to pass data to the parent
+   <!-- <script setup lang="ts">
 const emit = defineEmits(['updateRules']);
-
-// States for predefined rules
 const smokingAllowed = ref(false);
 const petsAllowed = ref(false);
-
-// State for new custom rule input
 const newCustomRule = ref<string>('');
 
 // State for rules list (both predefined and custom rules)
-const rules = ref<{ rule: string; options?: string[]; answer?: string }[]>([
-  {
-    rule: 'Smoking Allowed',
-    options: ['Yes', 'No'],
-    answer: 'No',
-  },
-  {
-    rule: 'Pets Allowed',
-    options: ['Yes', 'No'],
-    answer: 'Yes',
-  },
-]);
+const rules = ref<{ rule: string; options?: string[]; answer?: string }[]>([]);
 
 const props = defineProps({
   payload: {
@@ -283,6 +164,92 @@ function setAnswer(ruleName: string, answer: string) {
     if (ruleName === 'Pets Allowed') {
       petsAllowed.value = answer === 'Yes';
     }
+  }
+}
+
+// Function to add a new custom rule
+function addCustomRule() {
+  if (newCustomRule.value.trim()) {
+    rules.value.push({ rule: newCustomRule.value.trim() });
+    newCustomRule.value = '';
+  }
+}
+
+// Function to remove a rule by index
+function removeRule(index: number) {
+  rules.value.splice(index, 1);
+}
+
+// Tailwind CSS classes
+const activeClass = 'bg-black text-white';
+const inactiveClass = 'bg-white text-black';
+</script> -->
+
+<script setup lang="ts">
+const emit = defineEmits(['updateRules']);
+const smokingAllowed = ref(false);
+const petsAllowed = ref(false);
+const newCustomRule = ref<string>('');
+
+// State for rules list (both predefined and custom rules)
+const rules = ref<{ rule: string; options?: string[]; answer?: string }[]>([]);
+
+const props = defineProps({
+  payload: {
+    type: Object,
+    default: () => ({ rules: [] }),
+  },
+});
+
+// Prefill rules on component mounted
+onMounted(() => {
+  console.log(props.payload.rules, 'rules here');
+  
+  // Check if there are existing rules in the payload and prefill the rules array
+  if (Array.isArray(props.payload.rules) && props.payload.rules.length > 0) {
+    rules.value = props.payload.rules;
+
+    // Update the states of `smokingAllowed` and `petsAllowed` based on the prefilled values
+    const smokingRule = rules.value.find((r) => r.rule === 'Smoking Allowed');
+    if (smokingRule) {
+      smokingAllowed.value = smokingRule.answer === 'Yes';
+    }
+
+    const petsRule = rules.value.find((r) => r.rule === 'Pets Allowed');
+    if (petsRule) {
+      petsAllowed.value = petsRule.answer === 'Yes';
+    }
+  }
+});
+
+// Emit the updated rules whenever the rules array changes
+watch(
+  rules,
+  () => {
+    emit('updateRules', rules.value);
+  },
+  { deep: true }
+);
+
+// Toggle function to set the answer for predefined rules
+function setAnswer(ruleName: string, answer: string) {
+  const rule = rules.value.find((r) => r.rule === ruleName);
+  if (rule) {
+    rule.answer = answer;
+  } else {
+    // If the rule doesn't exist, create it
+    rules.value.push({
+      rule: ruleName,
+      options: ['Yes', 'No'],
+      answer,
+    });
+  }
+
+  // Update the local state of `smokingAllowed` or `petsAllowed`
+  if (ruleName === 'Smoking Allowed') {
+    smokingAllowed.value = answer === 'Yes';
+  } else if (ruleName === 'Pets Allowed') {
+    petsAllowed.value = answer === 'Yes';
   }
 }
 

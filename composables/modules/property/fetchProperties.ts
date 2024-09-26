@@ -35,30 +35,13 @@ export const useGetProperties = () => {
     // Filters including dates and agentId
     const filters = ref({
         searchQuery: null,
-        isPublished: true,
+        isPublished: null,
         fromDate: null,
         toDate: null,
         agentId: null,
     });
 
     const { $_fetch_properties } = property_api;
-
-    // const getProperties = async () => {
-    //     loadingProperties.value = true;
-    //     try {
-    //         const res = await $_fetch_properties(metadata.value, filters.value) as any;
-
-    //         if (res.type !== 'ERROR') {
-    //             propertiesList.value = res?.data?.result ?? [];
-    //             metadata.value = res?.data?.metadata;
-    //         }
-    //     } catch (error) {
-    //         console.error('Error fetching properties:', error);
-    //     } finally {
-    //         loadingProperties.value = false;
-    //     }
-    // };
-
     const getProperties = async () => {
         loadingProperties.value = true;
         try {

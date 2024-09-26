@@ -25,10 +25,10 @@
             </button>
             <button
               @click="handleSaveAndExit"
-              :disabled="loading"
+              :disabled="saving"
               class="bg-gray-900 disabled:cursor-not-allowed disabled:opacity-25 text-sm text-white px-4 py-2 rounded-md hover:bg-gray-800"
             >
-              {{ loading ? "saving..." : "Save & exit" }}
+              {{ saving ? "saving..." : "Save & exit" }}
             </button>
           </div>
         </header>
@@ -166,7 +166,7 @@
               v-if="activeParentStep === 1"
               :titles="[
                 'Let’s start with the basics',
-                'Details and Preferences',
+                'What’s the location of the property?',
               ]"
               :totalSteps="2"
               :currentStep="basicPropertyInformationStep"
@@ -197,7 +197,11 @@
                 </div>
               </template>
             </CreatePropertyForm>
-            <CoreMapboxSearch
+            <CoreGoogleMapSearch
+            class="z-10"
+            :payload="payload"
+            v-if="activeParentStep === 1 && basicPropertyInformationStep === 2"></CoreGoogleMapSearch>
+            <!-- <CoreMapboxSearch
             class="z-10"
             :payload="payload"
             v-if="
@@ -220,7 +224,7 @@
                   </button>
                 </div>
               </template> 
-            </CoreMapboxSearch>
+            </CoreMapboxSearch> -->
             <!-- <MapSection
               class="z-10"
               :payload="payload"
@@ -520,7 +524,11 @@ const steps = ref([
   { id: 4, title: "Finalize listing and publish", completed: false },
 ]);
 
-const { editProperty, payload, loading, fetchingProperty }  = useEditProperty()
+definePageMeta({
+     middleware: 'auth'
+})
+
+const { editProperty, payload, loading, fetchingProperty, saving, savingProperty }  = useEditProperty()
 
 const router = useRouter();
 const openCancelModal = ref(false)
@@ -746,7 +754,7 @@ payload.rules.value = updatedRules
 
 
 const handleSaveAndExit = async () => {
- await editProperty()
+ await savingProperty()
 }
 
 

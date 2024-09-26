@@ -1,5 +1,5 @@
 <template>
-  <Layout class="flex flex-col justify-between h-screen min-h-screen border-4 bg-gray-25 relative">
+  <Layout class="flex flex-col justify-between h-screen min-h-screen bg-gray-25 relative">
     <template #header-content>
       <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6 justify-between">
         <div class="flex items-center gap-x-4">
@@ -114,6 +114,10 @@ const options = ref({
   maintenanceUpdates: true,
   securityAlerts: false,
 });
+
+definePageMeta({
+     middleware: 'auth'
+})
 </script>
 
 <style scoped>

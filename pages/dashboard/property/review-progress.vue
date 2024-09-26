@@ -66,7 +66,7 @@
         </div> -->
       </div>
   
-      <main class="flex space-x-6">
+      <main class="lg:flex lg:space-x-6 space-y-6 lg:space-y-0">
         <section class="lg:w-7/12 space-y-6">
           <div class="max-w-5xl mx-auto bg-white">
             <!-- Breadcrumb & Share Icon -->
@@ -115,7 +115,7 @@
               <h2  class="text-sm text-[#1D2739] font-medium bg-white border-[0.5px] py-3 px-3 rounded-sm border-gray-50">Property Description</h2>
               <div class="pt-4 bg-white rounded-lg border-gray-50 p-3 border-[0.5px] text-sm">
                 <p class="text-[#1D2739] mt-2  leading-snug text-sm">
-                  {{payload.description ?? 'Nil'}}
+                  {{payload.description.value ?? 'Nil'}}
                   <a v-if="payload?.description?.length > 50" href="#" class="text-blue-500">View more</a>
                 </p>
               </div>
@@ -125,14 +125,14 @@
               <div class="">
                 <div class="gap-4 space-y-6 bg-white rounded-lg border-gray-50 p-3 border-[0.5px] text-sm">
               <div class="flex justify-between items-center">
-                  <div class="text-[#667185]">Property size <span class="font-medium text-[#1D2739]">{{payload?.size ?? 'Nil'}} {{payload?.sizeUnit ?? 'Nil'}}</span></div>
-                  <div class="text-[#667185]">Flooring type <span class="font-medium text-[#1D2739]">{{property?.flooringType?.name ?? 'Nil'}}</span></div>
+                  <div class="text-[#667185]">Property size <span class="font-medium text-[#1D2739]">{{payload?.size.value ?? 'Nil'}} {{payload?.sizeUnit.value ?? 'Nil'}}</span></div>
+                  <div class="text-[#667185]">Flooring type <span class="font-medium text-[#1D2739]">{{property?.flooringType?.name.value ?? 'Nil'}}</span></div>
               </div>
             <div class="flex justify-between items-center">
-              <div class="text-[#667185]">Number of bedrooms <span class="font-medium text-[#1D2739]">{{payload?.bedroomCount ?? 'Nil'}}</span></div>
-              <div class="text-[#667185]">Number of bathrooms <span class="font-medium text-[#1D2739]d">{{payload?.bathroomCount ?? 'Nil'}}</span></div>
+              <div class="text-[#667185]">Number of bedrooms <span class="font-medium text-[#1D2739]">{{payload?.bedroomCount.value ?? 'Nil'}}</span></div>
+              <div class="text-[#667185]">Number of bathrooms <span class="font-medium text-[#1D2739]d">{{payload?.bathroomCount.value ?? 'Nil'}}</span></div>
             </div>
-                  <div class="text-[#667185]">Floor number <span class="font-medium text-[#1D2739]">{{payload?.floorNumber ?? 'Nil'}}</span></div>
+                  <div class="text-[#667185]">Floor number <span class="font-medium text-[#1D2739]">{{payload?.floorNumber.value ?? 'Nil'}}</span></div>
             <div class="flex justify-between items-center">
               <div class="text-[#667185]">Architecture <span class="font-medium text-[#1D2739]">Apartment</span></div>
               <div class="text-[#667185]">{{payload?.availableRoomsCount ?? 'Nil'}} rooms available <span class="text-[#326543]">Now</span></div>
@@ -140,7 +140,7 @@
                 </div>
         
                 <!-- Co-living with -->
-                <h2 class="text-sm font-medium text-[#667185] mt-6 border-[0.5px] py-3 px-3 rounded-lg border-gray-50">Co-living with <span class="text-[#1D2739]">2 Persons</span></h2>
+                <h2 class="text-sm font-medium text-[#667185] mt-6 border-[0.5px] py-3 px-3 rounded-lg border-gray-50">Co-living with <span class="text-[#1D2739]">{{payload?.bedroomCount.value - 1}} Persons</span></h2>
                 <table class="w-full mt-2 table-fixed text-sm">
                   <thead>
                     <tr class="bg-[#F9FAFB] rounded-lg">
@@ -542,6 +542,9 @@
   import { use_create_property } from '@/composables/modules/property/create';
   const { payload } = use_create_property();
   const router = useRouter()
+  definePageMeta({
+     middleware: 'auth'
+})
   
   // Dummy data
   const manager = {
@@ -602,11 +605,11 @@ const groupedAmenities = computed(() => {
   const dynamicImage = (img: string) => `https://via.placeholder.com/150?text=${img}`;
 
   const exteriorCommonAreas = computed(() => {
-     return payload.commonAreas.vale.filter((item: any) => item.type === 'exterior')
+     return payload.commonAreas.value.filter((item: any) => item.type === 'exterior')
   })
 
   const interiorCommonAreas = computed(() => {
-    return payload.commonAreas.vale.filter((item: any) => item.type === 'interior')
+    return payload?.commonAreas?.value.filter((item: any) => item.type === 'interior')
   })
 
 

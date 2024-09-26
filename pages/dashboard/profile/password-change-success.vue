@@ -26,4 +26,8 @@
       window.location.href = "/login"
 			Router.push('/login')
    }
+
+   definePageMeta({
+     middleware: 'auth'
+})
   </script>

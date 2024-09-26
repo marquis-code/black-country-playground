@@ -14,7 +14,7 @@ export const property_api = {
     }
   
     // Add other filters to the URL
-    if (filters.isPublished !== undefined) {
+    if (filters.isPublished !== null) { // Check if isPublished is not null
       url += `&isPublished=${filters.isPublished}`;
     }
     if (filters.fromDate) {
@@ -29,6 +29,7 @@ export const property_api = {
   
     return GATEWAY_ENDPOINT.get(url);
   },
+  
 
   $_fetch_single_property: (id: string | number) => {
     const url = `/houses/${id}`;

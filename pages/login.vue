@@ -2,8 +2,8 @@
 <template>
     <div>
       <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img class="mx-auto h-32 w-auto" src="@/assets/icons/logo.svg" alt="Your Company" />
-        <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-[#1D2739] max-w-sm mx-auto">Welcome back admin@blackcountry.com</h2>
+        <img class="mx-auto h-16 w-auto" src="@/assets/icons/logo.svg" alt="Your Company" />
+        <h2 class="mt-4 text-center text-2xl font-bold leading-9 tracking-tight text-[#1D2739] max-w-sm mx-auto">Welcome back admin@blackcountry.com</h2>
       </div>
   
       <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">

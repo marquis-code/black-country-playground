@@ -59,10 +59,10 @@
  </main>
   </template>
   
-  <script lang="ts">
-  export default {
-    name: 'PrivacyPolicy'
-  }
+  <script setup lang="ts">
+  definePageMeta({
+     middleware: 'auth'
+})
   </script>
   
   <style scoped></style>

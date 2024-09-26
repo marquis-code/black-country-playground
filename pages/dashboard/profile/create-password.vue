@@ -64,7 +64,7 @@
  </main>
   </template>
   
-  <script setup lang="ts">
+<script setup lang="ts">
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
 
@@ -75,4 +75,8 @@ const toggleShowPassword = () => {
 const toggleConfirmShowPassword = () => {
   showConfirmPassword.value = !showConfirmPassword.value;
 };
+
+definePageMeta({
+     middleware: 'auth'
+})
   </script>

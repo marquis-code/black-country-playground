@@ -12,4 +12,8 @@ export const auth_api = {
 		const url = '/admins/password'
 		return GATEWAY_ENDPOINT.patch(url, payload);
 	},
+	$_get_profile: () => {
+		const url = '/admins/profile'
+		return GATEWAY_ENDPOINT.get(url);
+	},
 }

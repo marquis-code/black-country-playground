@@ -6,6 +6,8 @@
         <header
           class="bg-white px-4 flex items-center justify-between container mx-auto"
         >
+        <!-- {{payload}} -->
+        <!-- {{isEmpty}} -->
           <div
             @click="router.push('/dashboard')"
             class="flex items-center space-x-2"
@@ -26,10 +28,10 @@
             </button>
             <button
               @click="handleSaveAndExit"
-              :disabled="loading"
+              :disabled="saving"
               class="bg-gray-900 disabled:cursor-not-allowed disabled:opacity-25 text-sm text-white px-4 py-2 rounded-md hover:bg-gray-800"
             >
-              {{ loading ? "saving..." : "Save & exit" }}
+              {{ saving ? "saving..." : "Save & exit" }}
             </button>
           </div>
         </header>
@@ -167,7 +169,7 @@
               v-if="activeParentStep === 1"
               :titles="[
                 'Let’s start with the basics',
-                'Details and Preferences',
+                'What’s the location of the property?',
               ]"
               :totalSteps="2"
               :currentStep="basicPropertyInformationStep"
@@ -179,49 +181,19 @@
                 activeParentStep === 1 && basicPropertyInformationStep === 1
               "
             >
-              <!-- <template #action-buttons>
-                <div class="flex justify-between mt-4">
-                  <button
-                    @click="handlePreviousStep"
-                    :disabled="basicPropertyInformationStep === 1"
-                    class="bg-[#EBE5E0] text-[#292929] text-sm font-semibold px-4 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                  >
-                    Previous
-                  </button>
-                  <button
-                    @click="handleNextStep"
-                    :disabled="isNextButtonDisabled"
-                    class="bg-[#292929] text-white text-sm font-semibold px-6 disabled:opacity-25 disabled:cursor-not-allowed py-2.5 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                  >
-                    Next
-                  </button>
-                </div>
-              </template> -->
             </CreatePropertyForm>
-            <CoreMapboxSearch
+            <!-- <CoreMapboxSearch
             class="z-10"
             :payload="payload"
             v-if="
             activeParentStep === 1 && basicPropertyInformationStep === 2
           "
             >
-              <!-- <template #action-buttons>
-                <div class="flex justify-between mt-4 z-50">
-                  <button
-                    @click="handlePreviousStep"
-                    class="bg-[#EBE5E0] text-[#292929] text-sm font-semibold px-4 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                  >
-                    Previous
-                  </button>
-                  <button
-                    @click="handleNextParentStep"
-                    class="bg-[#292929] text-white text-sm font-semibold px-6 disabled:opacity-25 disabled:cursor-not-allowed py-2.5 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                  >
-                    Next
-                  </button>
-                </div>
-              </template>  -->
-            </CoreMapboxSearch>
+            </CoreMapboxSearch> -->
+            <CoreGoogleMapSearch
+            class="z-10"
+            :payload="payload"
+            v-if="activeParentStep === 1 && basicPropertyInformationStep === 2"></CoreGoogleMapSearch>
             <CoreProgressStepper
               v-if="activeParentStep === 2"
               :titles="[
@@ -493,7 +465,8 @@ import { useGetCommonAreas } from '@/composables/modules/property/fetchCommonAre
 import { use_create_property } from '@/composables/modules/property/create'
 import LayoutWithoutSidebar from "@/layouts/dashboardWithoutSidebar.vue";
 import { useFetchAgents } from '@/composables/modules/agents/fetch'
-const { payload, create_property, loading } = use_create_property()
+import { useIsEmptyObject } from '@/composables/core/useIsEmptyObject'
+const { payload, resetPayload, loading, saving, save_property } = use_create_property()
 const { agentsList, loading: loadingAgents } = useFetchAgents()
 const { loading: loadingCommonAreas, commonAreasList, interiorAreas, exteriorAreas, exteriorFurnishedAreasList, exteriorUnFurnishedAreasList, interiorFurnishedAreasList, interiorUnFurnishedAreasList } = useGetCommonAreas()
 const { loading: loadingRoomFeatures, roomFeaturesList } = useGetRoomFeatures()
@@ -503,6 +476,14 @@ const steps = ref([
   { id: 3, title: "Add Visuals", completed: false },
   { id: 4, title: "Finalize listing and publish", completed: false },
 ]);
+
+// const myObject = {}
+
+const { isEmpty } = useIsEmptyObject(payload)
+
+definePageMeta({
+     middleware: 'auth'
+})
 
 const route = useRoute();
 
@@ -693,13 +674,13 @@ const router = useRouter();
 const openCancelModal = ref(false)
 
 const handleConfirm = () => {
-  sessionStorage.clear()
   openCancelModal.value = false
 
 }
 
 const handleClose = () => {
   router.push('/dashboard/property')
+  resetPayload()
   openCancelModal.value = false
 }
 
@@ -915,11 +896,9 @@ payload.rules.value = updatedRules
 
 
 const handleSaveAndExit = async () => {
-  const storedData = sessionStorage.getItem('property')
- let propertyData = storedData ? JSON.parse(storedData) : {}
-//  setPropertyData({...propertyData, isPublished: false})
-// setPropertyData(payload);
- await create_property()
+ await save_property().then(() => {
+  router.push('/dashboard/property/draft-success')
+ })
 }
 
 
