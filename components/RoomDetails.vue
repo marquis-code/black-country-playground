@@ -963,23 +963,6 @@ const isAnyRoomMaster = computed(() => {
 });
 
 // Initialize room data
-// const initializeRoomData = () => {
-//   roomData.value = props.payload.rooms.value.length
-//     ? [...props.payload.rooms.value]
-//     : Array.from({ length: props.payload.bedroomCount.value }, (_, i) => ({
-//         name: `Room ${i + 1}`,
-//         availability: 'available_now',
-//         availableFrom: null,
-//         occupantName: '',
-//         isMaster: false,
-//         rentAmount: '',
-//         rentFrequency: 'monthly',
-//         isFurnished: true,
-//         features: [],
-//         images: []
-//       }));
-//   rooms.value = roomData.value;
-// };
 const initializeRoomData = () => {
   roomData.value = Array.from({ length: props.payload.bedroomCount.value }, (_, i) => ({
     name: `Room ${i + 1}`,
@@ -996,43 +979,6 @@ const initializeRoomData = () => {
 
   rooms.value = roomData.value;
 };
-
-// Save room data
-// const saveRoomData = (roomName: string) => {
-//   const roomIndex = roomData.value.findIndex((room) => room.name === roomName);
-//   if (roomIndex !== -1) {
-//     roomData.value[roomIndex] = {
-//       ...roomData.value[roomIndex],
-//       availability: availability.value,
-//       availableFrom: availabilityDate.value,
-//       occupantName: occupantsName.value,
-//       rentAmount: rentAmount.value,
-//       rentFrequency: rentFrequency.value,
-//       isFurnished: isRoomFurnished.value,
-//       isMaster: setAsMasterBedroom.value,
-//       features: roomFeatures.value
-//     };
-//   }
-//   emit('emitRoomData', roomData.value[roomIndex]);
-// };
-// const saveRoomData = (roomName) => {
-//   const roomIndex = roomData.value.findIndex((room) => room.name === roomName);
-//   if (roomIndex !== -1) {
-//     roomData.value[roomIndex] = {
-//       ...roomData.value[roomIndex],
-//       availability: availability.value,
-//       availableFrom: availabilityDate.value,
-//       occupantName: occupantsName.value,
-//       // rentAmount: rentAmount.value,
-//       rentAmount: parseInt(rentAmount.value, 10) || 0, // Convert to integer
-//       rentFrequency: rentFrequency.value,
-//       isFurnished: isRoomFurnished.value,
-//       isMaster: setAsMasterBedroom.value,
-//       features: roomFeatures.value
-//     };
-//   }
-//   emit('emitRoomData', roomData.value);
-// };
 
 const saveRoomData = (roomName) => {
   const roomIndex = roomData.value.findIndex((room) => room?.name === roomName);
@@ -1058,26 +1004,13 @@ const saveRoomData = (roomName) => {
       isMaster: setAsMasterBedroom.value, // Already set correctly above
       features: roomFeatures.value,
     };
+
+     // Persist the updated room data back to the payload
+     props.payload.rooms.value = [...roomData.value];
   }
 
   emit('emitRoomData', roomData.value);
 };
-
-
-// Load room data when switching tabs
-// const loadRoomData = (roomName: string) => {
-//   const room = roomData.value.find((r) => r.name === roomName);
-//   if (room) {
-//     availability.value = room.availability;
-//     availabilityDate.value = room.availableFrom;
-//     occupantsName.value = room.occupantName;
-//     rentAmount.value = room.rentAmount;
-//     rentFrequency.value = room.rentFrequency;
-//     isRoomFurnished.value = room.isFurnished;
-//     setAsMasterBedroom.value = room.isMaster;
-//     roomFeatures.value = room.features || [];
-//   }
-// };
 
 const loadRoomData = (roomName) => {
   const room = roomData.value.find((r) => r.name === roomName);
@@ -1122,8 +1055,13 @@ const toggleSelection = (item: string) => {
 const isSelected = (item: string) => roomFeatures.value.some((feature) => feature.name === item);
 
 // Watch changes to roomData and update the payload
+// watch(roomData, (newData) => {
+//   props.payload.rooms.value = newData;
+// }, { deep: true });
+
 watch(roomData, (newData) => {
-  props.payload.rooms.value = newData;
+  props.payload.rooms.value = [...newData];
+  emit('emitRoomData', roomData.value);
 }, { deep: true });
 
 // Set furnished status
