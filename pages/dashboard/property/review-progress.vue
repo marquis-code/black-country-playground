@@ -137,22 +137,17 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td class="text-[#1D2739] pl-6">Rita</td>
-                      <td class="text-[#1D2739]">1</td>
-                      <td class="text-[#1D2739]">24/05/2024</td>
-                    </tr>
-                    <tr class="">
-                      <td class="text-[#1D2739] pl-6">Maxwell</td>
-                      <td class="text-[#1D2739]">2</td>
-                      <td class="text-[#1D2739]">Not available</td>
+                    <tr v-for="(room, index) in formattedRoomData" :key="index">
+                      <td class="text-[#1D2739] py-3 pl-6">{{ room.occupant }}</td>
+                      <td class="text-[#1D2739] py-3">{{ room.roomOccupied }}</td>
+                      <td class="text-[#1D2739] py-3">{{ room.availableFrom }}</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
         
               <!-- Property Visitation -->
-              <h2 class="text-sm font-medium text-[#667185] mt-6 border-[0.5px] py-3 px-3 rounded-lg border-gray-50">Property visitation</h2>
+              <!-- <h2 class="text-sm font-medium text-[#667185] mt-6 border-[0.5px] py-3 px-3 rounded-lg border-gray-50">Property visitation</h2>
               <div class="rounded-md border-[0.5px] border-gray-50 bg-white">
                 <table class="w-full mt-2 table-fixed text-sm">
                   <thead>
@@ -176,7 +171,7 @@
                     </tr>
                   </tbody>
                 </table>
-              </div>
+              </div> -->
         
               <!-- House Rules -->
               <h2 class="text-sm font-medium text-[#1D2739] mt-6 border-[0.5px] py-3 px-3 rounded-lg border-gray-50">House Rules</h2>
@@ -396,56 +391,24 @@
     >
       Neighborhood Amenities
     </h3>
-    <!-- <div class="bg-white p-3 border-[0.5px] border-gray-50 rounded-md">
-        <div class="mt-2 flex space-x-2">
-          <button class="2d">Hospital</button>
-          <button class="py-2 text-xs px-4 bg-white text-[#344054] border border-gray-300 rounded-md">Schools</button>
-          <button class="py-2 text-xs px-4 bg-white text-[#344054] border border-gray-300 rounded-md">Market/Shopping Plaza</button>
-          <button class="py-2 text-xs px-4 bg-white text-[#344054] border border-gray-300 rounded-md">Police Station</button>
-        </div>
   
-        <div class="mt-6 space-y-2">
-          <div v-for="itm in 2" :key="itm" class="flex bg-white justify-between border-b-[0.5px] pb-3 last:border-b-0">
-  <div class="flex items-center gap-x-3">
-  <div class="flex items-center">
-      <svg width="50" height="49" viewBox="0 0 50 49" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="1" y="0.5" width="48" height="48" rx="24" fill="white"/>
-          <rect x="1" y="0.5" width="48" height="48" rx="24" stroke="#F9FAFB"/>
-          <rect x="3" y="2.5" width="44" height="44" rx="22" fill="#F4F4F4"/>
-          <path d="M22.917 27C22.1549 27.1715 21.667 27.4351 21.667 27.7307C21.667 28.2476 23.1594 28.6667 25.0003 28.6667C26.8413 28.6667 28.3337 28.2476 28.3337 27.7307C28.3337 27.4351 27.8457 27.1715 27.0837 27" stroke="#1D2739" stroke-linecap="round"/>
-          <path d="M26.0413 23.2497C26.0413 23.825 25.575 24.2913 24.9997 24.2913C24.4244 24.2913 23.958 23.825 23.958 23.2497C23.958 22.6744 24.4244 22.208 24.9997 22.208C25.575 22.208 26.0413 22.6744 26.0413 23.2497Z" fill="white" stroke="#1D2739"/>
-          <path d="M25.5236 26.7887C25.383 26.924 25.1952 26.9997 24.9998 26.9997C24.8043 26.9997 24.6164 26.924 24.4759 26.7887C23.189 25.5417 21.4643 24.1486 22.3054 22.1262C22.7601 21.0327 23.8517 20.333 24.9998 20.333C26.1478 20.333 27.2393 21.0327 27.6941 22.1262C28.5341 24.1461 26.8137 25.546 25.5236 26.7887Z" stroke="#1D2739"/>
-          </svg>
-    </div>
-                  
-            <div class="text-sm space-y-0.5">
-              <p class="font-xs text-[#1D2739] font-medium">Glory International Prim/Sec School</p>
-              <p class="text-sm text-[#667185]">10521 Veterans Ademola way</p>
-              <p class="text-xs text-[#667185]">Public school</p>
-            </div>
-  </div>
-            <p class="text-sm text-[#171717]">20 min drive</p>
-          </div>
+      <!-- <div class="mb-4 overflow-x-auto scrollbar-hidden">
+        <div class="flex space-x-2">
+          <button
+            v-for="type in amenityTypes"
+            :key="type"
+            @click="toggleVisibility(type)"
+            :class="[
+              'px-4 rounded text-sm',
+              visibleType === type
+                ? 'bg-gray-300 text-[#344054]'
+                : 'bg-gray-200',
+            ]"
+          >
+            {{ type }}
+          </button>
         </div>
-      </div> -->
-      <!-- Render buttons for each type -->
-      <div class="mb-4 flex space-x-2">
-        <button
-          v-for="type in amenityTypes"
-          :key="type"
-          @click="toggleVisibility(type)"
-          :class="[
-            'px-4 py-2 rounded text-sm',
-            visibleType === type
-              ? 'bg-gray-300 text-[#344054]'
-              : 'bg-gray-200',
-          ]"
-        >
-          {{ type }}
-        </button>
       </div>
-  
-      <!-- Render amenities based on selected type -->
       <div
         v-for="type in amenityTypes"
         :key="type"
@@ -511,6 +474,122 @@
             <p class="text-sm text-[#667185]">{{ amenity.address }}</p>
           </div>
         </div>
+      </div> -->
+
+      <!-- <div class="mb-4 flex space-x-2">
+        <button
+          v-for="type in amenityTypes"
+          :key="type"
+          @click="toggleVisibility(type)"
+          :class="[
+            'px-4 py-2 rounded text-sm',
+            visibleType === type
+              ? 'bg-[#EBE5E0] text-[#344054]'
+              : 'bg-[#F0F2F5]',
+          ]"
+        >
+          {{ type }}
+        </button>
+      </div> -->
+      <!-- {{payload?.neighbouringLandmarks.value}} -->
+      <!-- <AmenitiesGrouping :propertyObj="payload" /> -->
+      <div class="mb-4 overflow-x-auto scrollbar-hidden">
+        <!-- <div class="flex space-x-2">
+          <button
+            v-for="type in amenityTypes"
+            :key="type"
+            @click="toggleVisibility(type)"
+            :class="[
+              'px-4 py-2 rounded text-sm',
+              visibleType === type
+                ? 'bg-[#EBE5E0] text-[#344054]'
+                : 'bg-[#F0F2F5]',
+            ]"
+          >
+            {{ type }}
+          </button>
+        </div> -->
+        <div class="flex space-x-2">
+          <button
+            v-for="type in amenityTypes"
+            :key="type"
+            @click="toggleVisibility(type)"
+            :class="[
+              'flex-1 px-4 py-2 rounded text-sm text-center', // Added 'flex-1' for equal width and 'text-center'
+              visibleType === type
+                ? 'bg-[#EBE5E0] text-[#344054]'
+                : 'bg-[#F0F2F5]',
+            ]"
+          >
+            {{ type }}
+          </button>
+        </div>
+      </div>
+      <div
+        v-for="type in amenityTypes"
+        :key="type"
+        v-show="visibleType === type"
+      >
+        <div
+          v-for="amenity in groupedAmenities[type]"
+          :key="amenity.id"
+          class="px-4 py-2 mb-2 border-[0.5px] rounded-lg flex items-center gap-x-2"
+        >
+          <div class="flex items-center">
+            <svg
+              width="50"
+              height="49"
+              viewBox="0 0 50 49"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                x="1"
+                y="0.5"
+                width="48"
+                height="48"
+                rx="24"
+                fill="white"
+              />
+              <rect
+                x="1"
+                y="0.5"
+                width="48"
+                height="48"
+                rx="24"
+                stroke="#F9FAFB"
+              />
+              <rect
+                x="3"
+                y="2.5"
+                width="44"
+                height="44"
+                rx="22"
+                fill="#F4F4F4"
+              />
+              <path
+                d="M22.917 27C22.1549 27.1715 21.667 27.4351 21.667 27.7307C21.667 28.2476 23.1594 28.6667 25.0003 28.6667C26.8413 28.6667 28.3337 28.2476 28.3337 27.7307C28.3337 27.4351 27.8457 27.1715 27.0837 27"
+                stroke="#1D2739"
+                stroke-linecap="round"
+              />
+              <path
+                d="M26.0413 23.2497C26.0413 23.825 25.575 24.2913 24.9997 24.2913C24.4244 24.2913 23.958 23.825 23.958 23.2497C23.958 22.6744 24.4244 22.208 24.9997 22.208C25.575 22.208 26.0413 22.6744 26.0413 23.2497Z"
+                fill="white"
+                stroke="#1D2739"
+              />
+              <path
+                d="M25.5236 26.7887C25.383 26.924 25.1952 26.9997 24.9998 26.9997C24.8043 26.9997 24.6164 26.924 24.4759 26.7887C23.189 25.5417 21.4643 24.1486 22.3054 22.1262C22.7601 21.0327 23.8517 20.333 24.9998 20.333C26.1478 20.333 27.2393 21.0327 27.6941 22.1262C28.5341 24.1461 26.8137 25.546 25.5236 26.7887Z"
+                stroke="#1D2739"
+              />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-sm text-[#1D2739]">
+              {{ amenity.description }}
+            </h3>
+            <p class="text-sm text-[#667185]">{{ amenity.address }}</p>
+          </div>
+        </div>
       </div>
   
         </section>
@@ -521,7 +600,7 @@
 </Layout>
   </template>
   
-  <script setup lang="ts">
+  <!-- <script setup lang="ts">
   import Layout from '@/layouts/dashboardWithoutSidebar'
   const propertyManagerImage = ref("shape.png");
   import { dynamicImage, dynamicIcons } from '@/utils/assets/dynamicIcons'
@@ -529,6 +608,8 @@
   import { use_create_property } from '@/composables/modules/property/create';
   const { payload } = use_create_property();
   const router = useRouter()
+
+  const visibleType = ref(null) as any;
   definePageMeta({
      middleware: 'auth'
   })
@@ -541,14 +622,6 @@
   
   // Generate tabs based on bedroom count
   const bedroomCount = payload?.bedroomCount?.value ?? 1; // Assuming bedroomCount is fetched from payload
-  
-  // const tabs = Array.from({ length: bedroomCount }, (_, index) => ({
-  //   id: index + 1,
-  //   bedSize: 'Queen Size', // Example data
-  //   furniture: 'Wardrobe, Study Table',
-  //   view: index % 2 === 0 ? 'City View' : 'Garden View'
-  // }));
-
   // Computed property to group amenities by type
 const groupedAmenities = computed(() => {
   if (payload) {
@@ -630,6 +703,22 @@ const toggleVisibility = (type: any) => {
   visibleType.value = visibleType.value === type ? null : type;
 };
 
+const formattedRoomData = computed(() => {
+if(payload?.rooms?.value){
+  return payload?.rooms?.value.map(room => {
+    return {
+      occupant: room?.occupantName || "No occupant",
+      roomOccupied: room?.name,
+      availableFrom: room?.availability === "available_now"
+        ? "Available now"
+        : room?.availableFrom
+          ? new Date(room?.availableFrom).toLocaleDateString()
+          : "Not available"
+    };
+  });
+}
+});
+
   </script>
   
 
@@ -642,5 +731,141 @@ const toggleVisibility = (type: any) => {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Chrome, Safari, and Opera */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
+}
+
+.scrollbar-hidden {
+  -ms-overflow-style: none; /* Hide scrollbar for Internet Explorer and Edge */
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+</style> -->
+
+<script setup lang="ts">
+import Layout from '@/layouts/dashboardWithoutSidebar';
+import { use_create_property } from '@/composables/modules/property/create';
+
+const { payload } = use_create_property();
+const router = useRouter();
+
+const visibleType = ref(null); // Changed type to `any` removed
+definePageMeta({
+  middleware: 'auth'
+});
+
+// Generate tabs based on bedroom count
+const bedroomCount = payload?.bedroomCount?.value ?? 1;
+
+// Computed property to group amenities by type
+const groupedAmenities = computed(() => {
+  if (payload) {
+    return payload?.neighbouringLandmarks.value?.reduce((acc, amenity) => {
+      const { type } = amenity;
+      if (!acc[type]) {
+        acc[type] = [];
+      }
+      acc[type].push(amenity);
+      return acc;
+    }, {});
+  }
+});
+
+// Tabs for rooms
+const tabs = payload?.rooms?.value?.map((room: any, index: number) => ({
+  id: index + 1,
+  name: `Room ${index + 1}`,
+  details: room,
+}));
+
+const activeTab = ref("property-overview");
+const selectedRoomObj = ref({});
+
+// Handling tab switch
+const handleSelectedTab = (item: any, itemType: string | null = null) => {
+  if (itemType === 'dynamic') {
+    console.log(selectedRoomObj.value, 'room obj jee', item);
+    activeTab.value = item.name;
+    selectedRoomObj.value = item.details;
+  } else {
+    activeTab.value = item;
+  }
+};
+
+// Method to handle 'View more' click
+const viewMore = () => {
+  alert('Displaying more amenities...');
+};
+
+const phoneNumber = "+1234567890"; // Replace with a dynamic number if needed
+
+const makeCall = () => {
+  window.location.href = `tel:${phoneNumber}`;
+};
+
+const sendSms = () => {
+  window.location.href = `sms:${phoneNumber}`;
+};
+
+// Get all unique amenity types
+const amenityTypes = computed(() => {
+  if (groupedAmenities.value) {
+    return Object.keys(groupedAmenities?.value);
+  }
+});
+
+// Method to toggle visibility of amenity lists
+const toggleVisibility = (type: any) => {
+  visibleType.value = visibleType.value === type ? null : type;
+};
+
+onMounted(() => {
+  console.log('Amenity Types:', amenityTypes.value); // Log amenity types
+  if (amenityTypes?.value?.length > 0) {
+    visibleType.value = amenityTypes.value[0];
+  }
+});
+
+const formattedRoomData = computed(() => {
+  if (payload?.rooms?.value) {
+    return payload?.rooms?.value.map(room => {
+      return {
+        occupant: room?.occupantName || "No occupant",
+        roomOccupied: room?.name,
+        availableFrom: room?.availability === "available_now"
+          ? "Available now"
+          : room?.availableFrom
+            ? new Date(room?.availableFrom).toLocaleDateString()
+            : "Not available"
+      };
+    });
+  }
+});
+
+</script>
+
+<style scoped>
+
+button {
+  min-height: 48px; /* Ensures all buttons have the same height */
+}
+/* Custom scrollbar hide */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
+}
+
+.scrollbar-hidden {
+  -ms-overflow-style: none; /* Hide scrollbar for Internet Explorer and Edge */
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
 }
 </style>

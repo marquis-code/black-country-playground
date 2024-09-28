@@ -5,6 +5,8 @@
         <div class="mt-4">
           <h3 class="text font-medium text-[#1D2739]">Basic property information</h3>
           <div class="mt-2">
+            <!-- {{payload}}  -->
+            <!-- <PreviewPropertyDetails :property="payload" v-if="route.path === '/dashboard/property/edit-preview'" /> -->
             <PreviewPropertyDetails :property="property" />
           </div>
         </div>
@@ -57,6 +59,7 @@
   </template>
   
   <script setup lang="ts">  
+  const route = useRoute()
 const props = defineProps({
   payload: {
     type: Object,

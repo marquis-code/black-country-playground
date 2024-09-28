@@ -38,33 +38,35 @@
     <div class="mb-4">
       <h3 class="mb-2">Interior area</h3>
 
-      <div class="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+      <div class="space-y-2 text-sm">
+       <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
         <label
-          v-for="item in roomFeaturesList"
-          type="checkbox" 
-          :key="item.name"
-          :for="item.name"
-          class="flex text-sm cursor-pointer pl-3 py-3 items-start gap-4 rounded-lg border transition"
-          :class="{
-            'bg-green-50 border-green-500': isSelected(item.name, 'interior'),
-            'border-gray-200': !isSelected(item.name, 'interior')
-          }"
-        >
-          <div class="flex items-center py-3">
-            <input
-              type="checkbox"
-              class="hidden rounded py-3 border-gray-300"
-              :id="item.name"
-              :checked="isSelected(item.name, 'interior')"
-              @change="toggleSelection(item.name, 'interior')"
-            />
-          </div>
-          <div>
-            <strong class="font-medium py-3 text-sm text-[#171717]">
-              {{ item.name }}
-            </strong>
-          </div>
-        </label>
+        v-for="item in roomFeaturesList"
+        type="checkbox" 
+        :key="item.name"
+        :for="item.name"
+        class="flex text-sm cursor-pointer pl-3 h-12 justify-start items-center py-3 gap-4 rounded-lg border transition"
+        :class="{
+          'bg-green-50 border-[#5B8469]': isSelected(item.name, 'interior'),
+          'border-gray-200': !isSelected(item.name, 'interior')
+        }"
+      >
+        <div class="flex items-center py-3">
+          <input
+            type="checkbox"
+            class="hidden rounded py-3 border-gray-300"
+            :id="item.name"
+            :checked="isSelected(item.name, 'interior')"
+            @change="toggleSelection(item.name, 'interior')"
+          />
+        </div>
+        <div>
+          <strong class="font-medium py-3 text-sm text-[#171717]">
+            {{ item.name }}
+          </strong>
+        </div>
+      </label>
+       </div>
       </div>
     </div>
     

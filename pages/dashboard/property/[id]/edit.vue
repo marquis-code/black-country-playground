@@ -1,5 +1,6 @@
 <template>
-  <main>
+  <main class="flex flex-col h-screen">
+   <main>
     <LayoutWithoutSidebar>
       <template #header-content>
         <header
@@ -178,7 +179,7 @@
                 activeParentStep === 1 && basicPropertyInformationStep === 1
               "
             >
-              <template #action-buttons>
+              <!-- <template #action-buttons>
                 <div class="flex justify-between mt-4">
                   <button
                     @click="handlePreviousStep"
@@ -195,12 +196,14 @@
                     Next
                   </button>
                 </div>
-              </template>
+              </template> -->
             </CreatePropertyForm>
             <CoreGoogleMapSearch
             class="z-10"
             :payload="payload"
-            v-if="activeParentStep === 1 && basicPropertyInformationStep === 2"></CoreGoogleMapSearch>
+            v-if="activeParentStep === 1 && basicPropertyInformationStep === 2">
+          
+          </CoreGoogleMapSearch>
             <!-- <CoreMapboxSearch
             class="z-10"
             :payload="payload"
@@ -274,7 +277,7 @@
               :loading="loadingCommonAreas"
               v-if="activeParentStep === 2 && propertyDetailsStep === 1"
             >
-              <template #action-buttons>
+              <!-- <template #action-buttons>
                 <div class="flex justify-between mt-4">
                   <button
                     @click="handlePreviousStep"
@@ -291,7 +294,7 @@
                     Next
                   </button>
                 </div>
-              </template>
+              </template> -->
             </PropertyDetails>
             <RoomDetails
               :interiorAreas="interiorAreas"
@@ -302,7 +305,7 @@
               @emitRoomData="handleRoomData"
               v-if="activeParentStep === 2 && propertyDetailsStep === 2"
             >
-              <template #action-buttons>
+              <!-- <template #action-buttons>
                 <div class="flex justify-between mt-4">
                   <button
                     @click="handlePreviousStep"
@@ -317,7 +320,7 @@
                     Next
                   </button>
                 </div>
-              </template>
+              </template> -->
             </RoomDetails>
             <CoreProgressStepper
               v-if="activeParentStep === 3"
@@ -333,7 +336,7 @@
             :payload="payload"
             v-if="activeParentStep === 3 && visualsStep === 1"
             >
-            <template #action-buttons>
+            <!-- <template #action-buttons>
               <div class="flex justify-between mt-4">
                 <button
                   @click="handlePreviousStep"
@@ -350,13 +353,13 @@
                   Next
                 </button>
               </div>
-            </template>
+            </template> -->
             </UploadPropertyExterior>
             <UploadPhotos
               :payload="payload"
               v-if="activeParentStep === 3 && visualsStep === 2"
             >
-              <template #action-buttons>
+              <!-- <template #action-buttons>
                 <div class="flex justify-between mt-4">
                   <button
                     @click="handlePreviousStep"
@@ -371,13 +374,13 @@
                     Next
                   </button>
                 </div>
-              </template>
+              </template> -->
             </UploadPhotos>
             <AddVideoTours
               :payload="payload"
               v-if="activeParentStep === 3 && visualsStep === 3"
             >
-              <template #action-buttons>
+              <!-- <template #action-buttons>
                 <div class="flex justify-between mt-4">
                   <button
                     @click="handlePreviousStep"
@@ -392,7 +395,7 @@
                     Next
                   </button>
                 </div>
-              </template>
+              </template> -->
             </AddVideoTours>
             <CoreProgressStepper
               v-if="activeParentStep === 4"
@@ -409,7 +412,7 @@
               :payload="payload"
               v-if="activeParentStep === 4 && finalizeStep === 1"
             >
-              <template #action-buttons>
+              <!-- <template #action-buttons>
                 <div class="flex justify-between mt-4">
                   <button
                     @click="handlePreviousStep"
@@ -426,14 +429,14 @@
                     Next
                   </button>
                 </div>
-              </template>
+              </template> -->
             </ReviewDetails>
             <PublishListing
               @updateQuestions="handleQuestions"
               :payload="payload"
               v-if="activeParentStep === 4 && finalizeStep === 2"
             >
-              <template #action-buttons>
+              <!-- <template #action-buttons>
                 <div class="flex justify-between mt-4">
                   <button
                     @click="handlePreviousStep"
@@ -448,7 +451,7 @@
                     Next
                   </button>
                 </div>
-              </template>
+              </template> -->
             </PublishListing>
             <AssignProperty
               :payload="payload"
@@ -456,7 +459,7 @@
               :loading="loadingAgents"
               v-if="activeParentStep === 4 && finalizeStep === 3"
             >
-              <template #action-buttons>
+              <!-- <template #action-buttons>
                 <div class="flex justify-between mt-4">
                   <button
                     @click="handlePreviousStep"
@@ -472,7 +475,7 @@
                     {{ loading ? "processing..." : "Publish" }}
                   </button>
                 </div>
-              </template>
+              </template> -->
             </AssignProperty>
           </div>
         </div>
@@ -503,6 +506,27 @@
       @close="handleClose"
       @confirm="handleConfirm"
     />
+   </main>
+   <footer
+   class="bg-white border-t border-gray-200 px-4 py-2 w-full fixed bottom-0 flex justify-between items-center"
+ >
+ <div class="container mx-auto w-full flex justify-between items-center">
+ <button
+   @click="handlePreviousStep"
+   :disabled="activeParentStep === 1 && basicPropertyInformationStep === 1"
+   class="bg-[#EBE5E0] text-[#292929] text-sm font-semibold px-4 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
+ >
+   Previous
+ </button>
+ <button
+   @click="handleNextStep"
+   :disabled="isNextButtonDisabled"
+   class="bg-[#292929] text-white text-sm font-semibold px-6 py-2.5 rounded-md disabled:opacity-25 disabled:cursor-not-allowed"
+ >
+   Next
+ </button>
+ </div>
+ </footer>
   </main>
 </template>
 
@@ -524,6 +548,8 @@ const steps = ref([
   { id: 4, title: "Finalize listing and publish", completed: false },
 ]);
 
+const route = useRoute()
+
 definePageMeta({
      middleware: 'auth'
 })
@@ -542,6 +568,22 @@ const handleConfirm = () => {
 const handleClose = () => {
   router.push('/dashboard/property')
   openCancelModal.value = false
+}
+
+function updateQueryParams() {
+  router.push({
+    query: {
+      parentStep: activeParentStep.value,
+      childStep:
+        activeParentStep.value === 1
+          ? basicPropertyInformationStep.value
+          : activeParentStep.value === 2
+          ? propertyDetailsStep.value
+          : activeParentStep.value === 3
+          ? visualsStep.value
+          : finalizeStep.value,
+    },
+  });
 }
 
 const activeParentStep = ref(1);
@@ -564,7 +606,7 @@ function handleNextStep() {
       handleNextParentStep();
     }
   } else if (activeParentStep.value === 3) {
-    if (visualsStep.value < 2) {
+    if (visualsStep.value < 3) { // Ensure this is correctly checking for up to step 3
       visualsStep.value += 1;
     } else {
       handleNextParentStep();
@@ -572,29 +614,122 @@ function handleNextStep() {
   } else if (activeParentStep.value === 4) {
     if (finalizeStep.value < 3) {
       finalizeStep.value += 1;
+    } else {
+      // This means we've reached the last step of the final stage
+      router.push(`/dashboard/property/${route?.params?.id}/edit-preview`); // Adjust the route name/path as needed
+      return;
     }
   }
+
+  updateQueryParams();
 }
 
+// function handleNextStep() {
+//   if (activeParentStep.value === 1) {
+//     if (basicPropertyInformationStep.value < 2) {
+//       basicPropertyInformationStep.value += 1;
+//     } else {
+//       handleNextParentStep();
+//     }
+//   } else if (activeParentStep.value === 2) {
+//     if (propertyDetailsStep.value < 2) {
+//       propertyDetailsStep.value += 1;
+//     } else {
+//       handleNextParentStep();
+//     }
+//   } else if (activeParentStep.value === 3) {
+//     if (visualsStep.value < 2) {
+//       visualsStep.value += 1;
+//     } else {
+//       handleNextParentStep();
+//     }
+//   } else if (activeParentStep.value === 4) {
+//     if (finalizeStep.value < 3) {
+//       finalizeStep.value += 1;
+//     }
+//   }
+// }
+
+// // function handleNextStep() {
+// //   if (activeParentStep.value === 1) {
+// //     if (basicPropertyInformationStep.value < 2) {
+// //       basicPropertyInformationStep.value += 1;
+// //     } else {
+// //       handleNextParentStep();
+// //     }
+// //   } else if (activeParentStep.value === 2) {
+// //     if (propertyDetailsStep.value < 2) {
+// //       propertyDetailsStep.value += 1;
+// //     } else {
+// //       handleNextParentStep();
+// //     }
+// //   } else if (activeParentStep.value === 3) {
+// //     if (visualsStep.value < 3) { // Ensure this is correctly checking for up to step 3
+// //       visualsStep.value += 1;
+// //     } else {
+// //       handleNextParentStep();
+// //     }
+// //   } else if (activeParentStep.value === 4) {
+// //     if (finalizeStep.value < 3) {
+// //       finalizeStep.value += 1;
+// //     } else {
+// //       // This means we've reached the last step of the final stage
+// //       router.push('/dashboard/property/preview'); // Adjust the route name/path as needed
+// //       return;
+// //     }
+// //   }
+
+// //   updateQueryParams();
+// // }
+
 function handlePreviousStep() {
-  if (activeParentStep.value === 1) {
-    if (basicPropertyInformationStep.value > 1) {
-      basicPropertyInformationStep.value -= 1;
-    }
-  } else if (activeParentStep.value === 2) {
-    if (propertyDetailsStep.value > 1) {
-      propertyDetailsStep.value -= 1;
-    }
-  } else if (activeParentStep.value === 3) {
-    if (visualsStep.value > 1) {
-      visualsStep.value -= 1;
-    }
-  } else if (activeParentStep.value === 4) {
-    if (finalizeStep.value > 1) {
-      finalizeStep.value -= 1;
+  if (activeParentStep.value === 1 && basicPropertyInformationStep.value > 1) {
+    basicPropertyInformationStep.value -= 1;
+  } else if (activeParentStep.value === 2 && propertyDetailsStep.value > 1) {
+    propertyDetailsStep.value -= 1;
+  } else if (activeParentStep.value === 3 && visualsStep.value > 1) {
+    visualsStep.value -= 1;
+  } else if (activeParentStep.value === 4 && finalizeStep.value > 1) {
+    finalizeStep.value -= 1;
+  } else {
+    // Move back to the previous parent step if at the first child step
+    if (activeParentStep.value > 1) {
+      activeParentStep.value -= 1;
+      
+      // Ensure we land on the last child step of the previous parent step
+      if (activeParentStep.value === 1) {
+        basicPropertyInformationStep.value = 2;
+      } else if (activeParentStep.value === 2) {
+        propertyDetailsStep.value = 2;
+      } else if (activeParentStep.value === 3) {
+        visualsStep.value = 3; // Set this to 3 to avoid skipping the step
+      } else if (activeParentStep.value === 4) {
+        finalizeStep.value = 3;
+      }
     }
   }
+  updateQueryParams();
 }
+
+// function handlePreviousStep() {
+//   if (activeParentStep.value === 1) {
+//     if (basicPropertyInformationStep.value > 1) {
+//       basicPropertyInformationStep.value -= 1;
+//     }
+//   } else if (activeParentStep.value === 2) {
+//     if (propertyDetailsStep.value > 1) {
+//       propertyDetailsStep.value -= 1;
+//     }
+//   } else if (activeParentStep.value === 3) {
+//     if (visualsStep.value > 1) {
+//       visualsStep.value -= 1;
+//     }
+//   } else if (activeParentStep.value === 4) {
+//     if (finalizeStep.value > 1) {
+//       finalizeStep.value -= 1;
+//     }
+//   }
+// }
 
 function handleNextParentStep() {
   if (activeParentStep.value < steps.value.length) {
