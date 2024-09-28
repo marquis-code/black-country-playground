@@ -1,13 +1,12 @@
 <template>
     <div class="bg-white rounded-lg shadow-sm">
+      <p class="pb-3">Pre-screening questions</p>
       <form @submit.prevent="submitAnswers">
         <div v-for="(questionObj, index) in questions" :key="index" class="mb-6">
           <label :for="'question-' + index" class="block text-gray-700 text-sm font-medium mb-2">
             {{ questionObj.question }}
           </label>
-  
-          <!-- Render Input Field -->
-          <input
+          <!-- <input
             v-if="questionObj.widgetType === 'input'"
             v-model="answers[index]"
             :type="questionObj.metadata?.responseType === 'long-response' ? 'text' : 'text'"
@@ -15,8 +14,6 @@
             :id="'question-' + index"
             class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:border-blue-300"
           />
-  
-          <!-- Render Select Dropdown -->
           <select
             v-else-if="questionObj.widgetType === 'select'"
             v-model="answers[index]"
@@ -31,7 +28,7 @@
             >
               {{ option }}
             </option>
-          </select>
+          </select> -->
         </div>
       </form>
     </div>

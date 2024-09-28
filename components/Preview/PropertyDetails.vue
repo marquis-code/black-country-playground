@@ -3,10 +3,9 @@
       <div class="flex justify-between items-center">
         <div>
           <h4 class="font-light text-[#667185]">Property name</h4>
-          <!-- <p>{{ property.name }}</p> -->
           <p>{{payload?.name?.value}}</p>
         </div>
-        <button @click="router.push('/dashboard/propery')" class="text-green-600">Edit</button>
+        <button @click="router.push('/dashboard/property/new')" class="text-green-600 font-semibold">Edit</button>
       </div>
       <div class="mt-4">
         <h4 class="font-light text-[#667185]">Brief description</h4>

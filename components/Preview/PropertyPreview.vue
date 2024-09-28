@@ -1,6 +1,5 @@
 <template>
     <div class="bg-white p-6 rounded-lg shadow border-[0.5px] space-y-10">
-      {{property}}
       <div>
         <h2 class="text-xl font-semibold">Review property details and proceed to publish to the public</h2>
         <div class="mt-4">
@@ -19,8 +18,8 @@
         </div>
       </div>
 
-      <div>        
-        <!-- Display images if the payload has images -->
+      <div>    
+        <p class="font-medium pb-3">Property Cover Images</p>    
         <section v-if="Array.isArray(payload.images.value) && payload.images.value.length" class="grid grid-cols-2 gap-6">
           <div v-for="(item, index) in payload.images.value" :key="index" class="border p-2">
             <img 

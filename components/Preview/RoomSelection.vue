@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-lg shadow-sm p-4">
+  <div class="bg-white rounded-lg shadow-sm">
     <div class="flex space-x-4 mb-6">
       <!-- Room Tabs -->
       <button
@@ -15,19 +15,19 @@
     <!-- Interior Area -->
     <div v-if="currentRoom" class="mb-6">
       <h3 class="text-gray-500 font-medium mb-4">Interior area</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4">
         <div
           v-for="(feature, index) in currentRoom.features"
           :key="index"
-          class="flex items-center p-4 border rounded-lg bg-white gap-x-2 hover:bg-gray-100 cursor-pointer"
+          class="flex items-center px-4 py-2.5 border rounded-lg bg-white gap-x-2 hover:bg-gray-100 cursor-pointer"
         >
           <!-- <span class="inline-block w-5 h-5 rounded-full bg-gray-200 mr-2"></span> -->
           <img :src="dynamicImage('roomBg.png')" alt="Living room" class="w-5 h-5">
-          <span class="text-gray-700 text-sm">{{ feature.name }}</span>
+          <span class="text-gray-700 text-xs">{{ feature.name }}</span>
         </div>
-        <div @click="addManually" class="flex items-center p-4 border rounded-lg bg-white hover:bg-gray-100 cursor-pointer">
+        <div @click="addManually" class="flex items-center px-4 py-2.5 border rounded-lg bg-white hover:bg-gray-100 cursor-pointer">
           <span class="text-gray-600 font-medium text-lg">+</span>
-          <span class="ml-2 text-gray-700">Add manually</span>
+          <span class="ml-2 text-gray-700 text-sm">Add manually</span>
         </div>
       </div>
     </div>
@@ -36,15 +36,15 @@
     <div v-if="currentRoom" class="mt-8 pt-4 border-t border-gray-200">
       <div class="flex justify-between items-center mb-4">
         <div>
-          <p class="text-gray-500 font-medium">When is the room available?</p>
-          <p class="text-gray-800">{{ currentRoom.availability === 'available_now' ? 'Available Now' : currentRoom.availableFrom }}</p>
+          <p class="text-gray-500 text-sm font-medium">When is the room available?</p>
+          <p class="text-gray-800 text-sm">{{ currentRoom.availability === 'available_now' ? 'Available Now' : currentRoom.availableFrom }}</p>
         </div>
         <div>
-          <p class="text-gray-500 font-medium">Price</p>
-          <p class="text-gray-800">{{ currentRoom.rentAmount ? currentRoom.rentAmount.toLocaleString() : '0' }} per {{ currentRoom.rentFrequency }}</p>
+          <p class="text-gray-500 font-medium text-sm">Price</p>
+          <p class="text-gray-800 text-sm">{{ currentRoom.rentAmount ? currentRoom.rentAmount.toLocaleString() : '0' }} per {{ currentRoom.rentFrequency }}</p>
         </div>
       </div>
-      <p class="text-gray-800">{{ currentRoom.isMaster ? 'Master\'s bedroom' : '' }}</p>
+      <p class="text-gray-800 text-sm">{{ currentRoom.isMaster ? 'Master\'s bedroom' : '' }}</p>
     </div>
   </div>
 </template>

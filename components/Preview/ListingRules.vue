@@ -7,27 +7,22 @@
         </h3>
         <div class="mt-4">
           <div v-for="(ruleObj, index) in rules" :key="index" class="flex justify-between py-2">
-            <!-- If the rule has options, display it as a select dropdown -->
             <div v-if="ruleObj.options" class="flex-1 mr-4">
               <label class="block text-gray-700 text-sm font-medium mb-1">
                 {{ ruleObj.rule }}
               </label>
-              <select
+              <!-- <select
                 v-model="answers[index]"
                 class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:border-blue-300"
               >
                 <option v-for="(option, optIndex) in ruleObj.options" :key="optIndex" :value="option">
                   {{ option }}
                 </option>
-              </select>
+              </select> -->
             </div>
-            
-            <!-- Display custom rules without options -->
             <div v-else class="flex-1">
               <span class="block text-gray-700">{{ ruleObj.rule }}</span>
             </div>
-  
-            <!-- Display the answer (if available) or placeholder text -->
             <div v-if="ruleObj.answer" class="ml-4 text-gray-900 font-medium">
               {{ ruleObj.answer }}
             </div>

@@ -1,10 +1,10 @@
 <template>
   <div class="bg-white rounded-lg shadow-sm mx-auto">
-    <h2 class="text-xl font-semibold mb-6">Rooms</h2>
+    <h2 class="text-lg font-semibold mb-6">Rooms</h2>
 
     <div v-for="(room, index) in rooms" :key="index" class="mb-8 border-b pb-6">
       <!-- Room Name and Occupant Information -->
-      <h3 class="text-lg font-semibold mb-2">{{ room?.name }} <span v-if="room?.isMaster" class="text-sm font-light">(Master Room)</span></h3>
+      <h3 class="text- font-semibold mb-2">{{ room?.name }} <span v-if="room?.isMaster" class="text-sm font-light">(Master Room)</span></h3>
       <p class="text-gray-600 mb-2">Occupant: {{ room?.occupantName }}</p>
       
       <!-- Availability Information -->
@@ -17,16 +17,14 @@
       <p class="text-gray-600 mb-2">Furnished: {{ room?.isFurnished ? 'Yes' : 'No' }}</p>
 
       <!-- Room Images Carousel -->
-      <div class="relative rounded-lg overflow-hidden shadow-md bg-white border mb-4">
+      <!-- <div class="relative rounded-lg overflow-hidden shadow-md bg-white border mb-4">
         <div class="relative w-full h-64 flex items-center justify-center overflow-hidden">
           <img
-           v-if="room?.images?.length > 1"
+            v-if="room?.images?.length > 1"
             :src="room?.images[currentRoomImage[index]]"
             alt="room image"
             class="w-full h-full object-cover transition-opacity"
           />
-          
-          <!-- Previous and Next buttons for carousel -->
           <button
             v-if="room?.images?.length > 1"
             @click="prevRoomImage(index)"
@@ -47,29 +45,12 @@
             </svg>
           </button>
         </div>
-      </div>
-
-      <!-- Features Display -->
-      <!-- <div class="mt-4">
-        <h3 class="text-gray-500 font-medium mb-2">Interior Area</h3>
-        <div class="grid grid-cols-2 gap-4">
-          <div v-for="(feature, fIndex) in room?.features" :key="fIndex" class="relative rounded-lg overflow-hidden shadow-md bg-white border">
-            <div class="relative w-full h-32 flex items-center justify-center overflow-hidden">
-              <img
-                :src="feature.images[0]"
-                alt="feature image"
-                class="w-full h-full object-cover transition-opacity"
-              />
-            </div>
-            <p class="absolute bottom-0 left-0 w-full bg-gray-700 bg-opacity-70 text-white p-2 text-sm">
-              {{ feature.name }}
-            </p>
-          </div>
-        </div>
       </div> -->
+
+
       <div class="mt-4">
         <h3 class="text-gray-500 font-medium mb-2">Interior Area</h3>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div
             v-for="(feature, fIndex) in room?.features || []"
             :key="fIndex"
