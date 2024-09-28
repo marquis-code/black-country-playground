@@ -223,9 +223,18 @@ onMounted(() => {
 });
 
 // Emit the updated rules whenever the rules array changes
+// watch(
+//   rules,
+//   () => {
+//     emit('updateRules', rules.value);
+//   },
+//   { deep: true }
+// );
+
 watch(
   rules,
   () => {
+    props.payload.rules.value = rules.value; // Update the payload object
     emit('updateRules', rules.value);
   },
   { deep: true }

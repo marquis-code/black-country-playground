@@ -31,14 +31,14 @@
           icon: userIcon 
         }" 
       />
-      <Marker
+      <!-- <Marker
         v-for="(marker, index) in markers"
         :key="index"
         :options="{
           position: marker.location, 
           icon: amenityIcon 
         }"
-      />
+      /> -->
     </GoogleMap>
   </div>
 </template>

@@ -69,18 +69,6 @@
       <main class="lg:flex lg:space-x-6 space-y-6 lg:space-y-0">
         <section class="lg:w-7/12 space-y-6">
           <div class="max-w-5xl mx-auto bg-white">
-            <!-- Breadcrumb & Share Icon -->
-            <!-- <div class="flex justify-between items-center mb-6">
-              <div class="text-sm text-gray-600">Listings | <span class="font-semibold">{{ payload.name ?? 'Nil' }}</span></div>
-              <div class="flex space-x-2">
-                <button class="p-2 rounded-full hover:bg-gray-100">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5 text-gray-600">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                </button>
-              </div>
-            </div> -->
-      
             <!-- Dynamic Tabs -->
             <div class="mt-4 flex space-x-2 overflow-x-auto hide-scrollbar scrollbar-hide">
               <button
@@ -107,8 +95,7 @@
                 {{ room.name }}
               </button>
             </div>
-      
-            <!-- Content Based on Active Tab -->
+
             <div v-if="activeTab === 'property-overview'" class="">
               
               <!-- <p class="text-sm text-gray-600">{{ payload.description.value ?? 'No description available' }}</p> -->
@@ -544,7 +531,7 @@
   const router = useRouter()
   definePageMeta({
      middleware: 'auth'
-})
+  })
   
   // Dummy data
   const manager = {
@@ -577,9 +564,6 @@ const groupedAmenities = computed(() => {
 });
   
   // const activeTab = ref(tabs[0]);
-
-
-    
   const activeTab = ref("property-overview");
   const selectedRoomObj = ref({});
   

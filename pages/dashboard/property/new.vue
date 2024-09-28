@@ -6,8 +6,6 @@
         <header
           class="bg-white px-4 flex items-center justify-between container mx-auto"
         >
-        <!-- {{payload}} -->
-        <!-- {{isEmpty}} -->
           <div
             @click="router.push('/dashboard')"
             class="flex items-center space-x-2"
@@ -153,12 +151,6 @@
               >
                 {{ step.title }}
               </h3>
-              <!-- <div  v-if="step.completed">
-              <svg class="absolute right-0 top-5" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M14.166 2.7816C12.9403 2.07256 11.5172 1.66675 9.99935 1.66675C5.39697 1.66675 1.66602 5.39771 1.66602 10.0001C1.66602 14.6024 5.39697 18.3334 9.99935 18.3334C14.6017 18.3334 18.3327 14.6024 18.3327 10.0001C18.3327 9.42933 18.2753 8.87192 18.166 8.33342" stroke="#5B8469" stroke-width="2" stroke-linecap="round"/>
-                <path d="M6.66602 10.4167C6.66602 10.4167 7.91602 10.4167 9.58268 13.3334C9.58268 13.3334 14.215 5.69452 18.3327 4.16675" stroke="#5B8469" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div> -->
             </div>
           </aside>
           <div
@@ -182,14 +174,6 @@
               "
             >
             </CreatePropertyForm>
-            <!-- <CoreMapboxSearch
-            class="z-10"
-            :payload="payload"
-            v-if="
-            activeParentStep === 1 && basicPropertyInformationStep === 2
-          "
-            >
-            </CoreMapboxSearch> -->
             <CoreGoogleMapSearch
             class="z-10"
             :payload="payload"
@@ -217,24 +201,6 @@
               :loading="loadingCommonAreas"
               v-if="activeParentStep === 2 && propertyDetailsStep === 1"
             >
-              <!-- <template #action-buttons>
-                <div class="flex justify-between mt-4">
-                  <button
-                    @click="handlePreviousStep"
-                    :disabled="propertyDetailsStep === 1"
-                    class="bg-[#EBE5E0] text-[#292929] text-sm font-semibold px-4 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                  >
-                    Previous
-                  </button>
-                  <button
-                    @click="handleNextStep"
-                    :disabled="propertyDetailsStep === Number(2)"
-                    class="bg-[#292929] text-white text-sm font-semibold px-6 py-2.5 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                  >
-                    Next
-                  </button>
-                </div>
-              </template> -->
             </PropertyDetails>
             <RoomDetails
               :interiorAreas="interiorAreas"
@@ -245,22 +211,6 @@
               @emitRoomData="handleRoomData"
               v-if="activeParentStep === 2 && propertyDetailsStep === 2"
             >
-              <!-- <template #action-buttons>
-                <div class="flex justify-between mt-4">
-                  <button
-                    @click="handlePreviousStep"
-                    class="bg-[#EBE5E0] text-[#292929] text-sm font-semibold px-4 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                  >
-                    Previous
-                  </button>
-                  <button
-                    @click="handleNextParentStep"
-                    class="bg-[#292929] text-white text-sm font-semibold px-6 py-2.5 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                  >
-                    Next
-                  </button>
-                </div>
-              </template> -->
             </RoomDetails>
             <CoreProgressStepper
               v-if="activeParentStep === 3"
@@ -276,66 +226,16 @@
             :payload="payload"
             v-if="activeParentStep === 3 && visualsStep === 1"
             >
-            <!-- <template #action-buttons>
-              <div class="flex justify-between mt-4">
-                <button
-                  @click="handlePreviousStep"
-                  :disabled="visualsStep === Number(1)"
-                  class="bg-[#EBE5E0] text-[#292929] text-sm font-semibold px-4 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                >
-                  Previous
-                </button>
-                <button
-                  @click="handleNextStep"
-                  :disabled="visualsStep === Number(3)" 
-                  class="bg-[#292929] text-white text-sm font-semibold px-6 py-2.5 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                >
-                  Next
-                </button>
-              </div>
-            </template> -->
             </UploadPropertyExterior>
             <UploadPhotos
               :payload="payload"
               v-if="activeParentStep === 3 && visualsStep === 2"
             >
-              <!-- <template #action-buttons>
-                <div class="flex justify-between mt-4">
-                  <button
-                    @click="handlePreviousStep"
-                    class="bg-[#EBE5E0] text-[#292929] text-sm font-semibold px-4 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                  >
-                    Previous
-                  </button>
-                  <button
-                    @click="handleNextStep"
-                    class="bg-[#292929] text-white text-sm font-semibold px-6 py-2.5 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                  >
-                    Next
-                  </button>
-                </div>
-              </template> -->
             </UploadPhotos>
             <AddVideoTours
               :payload="payload"
               v-if="activeParentStep === 3 && visualsStep === 3"
             >
-              <!-- <template #action-buttons>
-                <div class="flex justify-between mt-4">
-                  <button
-                    @click="handlePreviousStep"
-                    class="bg-[#EBE5E0] text-[#292929] text-sm font-semibold px-4 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                  >
-                    Previous
-                  </button>
-                  <button
-                    @click="handleNextParentStep"
-                    class="bg-[#292929] text-white text-sm font-semibold px-6 py-2.5 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                  >
-                    Next
-                  </button>
-                </div>
-              </template> -->
             </AddVideoTours>
             <CoreProgressStepper
               v-if="activeParentStep === 4"
@@ -352,46 +252,12 @@
               :payload="payload"
               v-if="activeParentStep === 4 && finalizeStep === 1"
             >
-              <!-- <template #action-buttons>
-                <div class="flex justify-between mt-4">
-                  <button
-                    @click="handlePreviousStep"
-                    :disabled="finalizeStep === 1"
-                    class="bg-[#EBE5E0] text-[#292929] text-sm font-semibold px-4 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                  >
-                    Previous
-                  </button>
-                  <button
-                    @click="handleNextStep"
-                    :disabled="finalizeStep === Number(3)"
-                    class="bg-[#292929] text-white text-sm font-semibold px-6 py-2.5 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                  >
-                    Next
-                  </button>
-                </div>
-              </template> -->
             </ReviewDetails>
             <PublishListing
               @updateQuestions="handleQuestions"
               :payload="payload"
               v-if="activeParentStep === 4 && finalizeStep === 2"
             >
-              <!-- <template #action-buttons>
-                <div class="flex justify-between mt-4">
-                  <button
-                    @click="handlePreviousStep"
-                    class="bg-[#EBE5E0] text-[#292929] text-sm font-semibold px-4 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                  >
-                    Previous
-                  </button>
-                  <button
-                    @click="handleNextStep"
-                    class="bg-[#292929] text-white text-sm font-semibold px-6 py-2.5 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                  >
-                    Next
-                  </button>
-                </div>
-              </template> -->
             </PublishListing>
             <AssignProperty
               :payload="payload"
@@ -399,23 +265,6 @@
               :loading="loadingAgents"
               v-if="activeParentStep === 4 && finalizeStep === 3"
             >
-              <!-- <template #action-buttons>
-                <div class="flex justify-between mt-4">
-                  <button
-                    @click="handlePreviousStep"
-                    class="bg-[#EBE5E0] text-[#292929] text-sm font-semibold px-4 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                  >
-                    Previous
-                  </button>
-                  <button
-                    @click="handleSubmit"
-                    :disabled="loading"
-                    class="bg-[#292929] disabled:cursor-not-allowed disabled:opacity-25 text-white text-sm font-semibold px-6 py-2.5 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
-                  >
-                    {{ loading ? "processing..." : "Publish" }}
-                  </button>
-                </div>
-              </template> -->
             </AssignProperty>
           </div>
         </div>
@@ -434,12 +283,6 @@
   class="bg-white border-t border-gray-200 px-4 py-2 w-full fixed bottom-0 flex justify-between items-center"
 >
 <div class="container mx-auto w-full flex justify-between items-center">
-  <!-- <button
-  @click="handlePreviousStep"
-  class="bg-[#EBE5E0] text-[#292929] text-sm font-semibold px-4 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-500"
->
-  Previous
-</button> -->
 <button
   @click="handlePreviousStep"
   :disabled="activeParentStep === 1 && basicPropertyInformationStep === 1"
@@ -861,26 +704,13 @@ const roomsArray = ref([]) as any
 const handleRoomData = (room: any) => {
   console.log("Room data received:", room);
   // Push or update the received room data in the array
+  payload.rooms.value = room
   const roomIndex = roomsArray.value.findIndex(r => r?.name === room?.name);
   if (roomIndex !== -1) {
     roomsArray.value[roomIndex] = room;
   } else {
     roomsArray.value.push(room);
   }
-
-  // console.log(roomsArray.value, 'room array')
-
-//   const storedData = sessionStorage.getItem('property')
-// let propertyData = storedData ? JSON.parse(storedData) : {}
-
-// // Update the session storage with new location data
-// propertyData = {
-//   ...propertyData, // merge with existing data
-//   rooms: roomsArray.value
-// }
-
-// // Store the updated data back to session storage
-// sessionStorage.setItem('property', JSON.stringify(propertyData))
 
 payload.rooms.value = roomsArray.value
 };
