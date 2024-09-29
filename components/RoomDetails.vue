@@ -103,7 +103,7 @@
 
 
     <div v-if="availability === 'available_now'" class="mt-4 space-y-4">
-      <div class="w-full mt-4">
+      <!-- <div class="w-full mt-4">
         <label class="block text-sm font-medium mb-2">Set price</label>
         <div class="flex items-center bg-[#E4E7EC] border-[0.5px] border-gray-50 rounded-md px-3 py-2">
           <select
@@ -119,6 +119,23 @@
             v-model="rentAmount"
             placeholder="e.g 1000"
             class="bg-transparent text-sm outline-none flex-grow"
+          />
+        </div>
+      </div> -->
+      <div class="w-full mt-4">
+        <label class="block text-sm font-medium mb-2">Set price</label>
+        <div class="flex items-center bg-[#E4E7EC] border-[0.5px] border-gray-50 rounded-md px-3 py-2">
+          <select v-model="rentFrequency" class="bg-transparent py-1.5 text-sm outline-none border-none pr-2">
+            <option value="monthly">Monthly</option>
+            <option value="annual">Yearly</option>
+            <option value="weekly">Weekly</option>
+          </select>
+          <input
+            type="text"
+            v-model="formattedRentAmount"
+            placeholder="e.g 1,000"
+            class="bg-transparent text-sm outline-none flex-grow"
+            @input="onInput"
           />
         </div>
       </div>
@@ -150,12 +167,19 @@
             <option value="annual">Yearly</option>
             <option value="weekly">Weekly</option>
           </select>
-          <input
+          <!-- <input
             type="text"
             v-model="rentAmount"
             placeholder="e.g 1000"
             class="bg-transparent text-sm outline-none flex-grow"
-          />
+          /> -->
+          <input
+          type="text"
+          v-model="formattedRentAmount"
+          placeholder="e.g 1,000"
+          class="bg-transparent text-sm outline-none flex-grow"
+          @input="onInput"
+        />
         </div>
       </div>
       <div class="space-y-4 mt-4">
@@ -192,12 +216,19 @@
             <option value="annual">Yearly</option>
             <option value="weekly">Weekly</option>
           </select>
-          <input
+          <!-- <input
             type="text"
             v-model="rentAmount"
             placeholder="e.g 1000"
             class="bg-transparent text-sm outline-none flex-grow"
-          />
+          /> -->
+          <input
+          type="text"
+          v-model="formattedRentAmount"
+          placeholder="e.g 1,000"
+          class="bg-transparent text-sm outline-none flex-grow"
+          @input="onInput"
+        />
         </div>
       </div>
       <div class="space-y-4 mt-4">
@@ -432,6 +463,74 @@ watch(
   () => saveRoomData(activeRoom.value), // Call with active room's name
   { deep: true }
 );
+
+
+// Computed property to format the value as currency
+const formattedRentAmount = computed({
+  get() {
+    // Format the rentAmount into currency while typing
+    return rentAmount.value ? formatCurrency(rentAmount.value) : '';
+  },
+  set(value) {
+    // Remove formatting to get the raw number while typing
+    rentAmount.value = unformatCurrency(value);
+  }
+});
+
+// Helper function to format the number as currency
+// function formatCurrency(value) {
+//   // Ensure value is a valid number, remove commas before formatting
+//   const numericValue = parseFloat(value.replace(/[^\d]/g, ''));
+//   if (isNaN(numericValue)) return value;
+
+//   // Format number with commas
+//   return numericValue.toLocaleString('en-US');
+// }
+
+function formatCurrency(value) {
+  // Ensure the value is a string, convert if it's not
+  if (typeof value !== 'string') {
+    value = String(value);
+  }
+
+  // Remove any non-numeric characters except for decimals
+  const numericValue = value.replace(/[^\d.]/g, '');
+
+  // Handle cases where input is not a valid number
+  if (!numericValue || isNaN(parseFloat(numericValue))) {
+    return value; // Return unformatted if invalid input
+  }
+
+  // Split the value by the decimal point to handle whole numbers and decimals separately
+  const [integerPart, decimalPart] = numericValue.split('.');
+
+  // Format the integer part with commas
+  const formattedInteger = parseInt(integerPart, 10).toLocaleString('en-US');
+
+  // Reconstruct the final formatted value, including decimals if present
+  return decimalPart !== undefined
+    ? `${formattedInteger}.${decimalPart.slice(0, 2)}` // Limit decimals to 2 places
+    : formattedInteger;
+}
+
+
+
+// Helper function to remove formatting and get raw value
+function unformatCurrency(value) {
+  // Remove commas and any non-numeric characters
+  return value.replace(/[^\d]/g, '');
+}
+
+// Optional: Watch raw rentAmount for backend submission or other purposes
+watch(rentAmount, (newValue) => {
+  console.log('Raw rent amount for backend:', newValue);
+});
+
+// Optional: You can also use a direct `@input` handler to dynamically manage user input
+function onInput(event) {
+  // Raw number is stored in rentAmount; display is controlled via `formattedRentAmount`
+  rentAmount.value = unformatCurrency(event.target.value);
+}
 </script>
 
 <style scoped>
