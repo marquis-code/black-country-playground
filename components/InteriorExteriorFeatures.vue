@@ -1,7 +1,7 @@
 <template>
     <div class="space-y-6">
       <!-- Gallery Section -->
-      <div @click="router.push(`/dashboard/property/${property.id}/property-gallery`)" class="flex cursor-pointer items-center border-[0.5px] border-gray-50 space-x-4 bg-white p-4 rounded-lg">
+      <div @click="previewCommonAreaImages" class="flex cursor-pointer items-center border-[0.5px] border-gray-50 space-x-4 bg-white p-4 rounded-lg">
         <img :src="dynamicImage('placeholder.png')" alt="Gallery" class="w-12 h-12 rounded-full">
         <div class="flex-1">
           <h3 class="text-lg font-medium">Gallery</h3>
@@ -64,6 +64,26 @@
       default: () => {}
     }
   })
+
+  // Function to extract all images from an array of objects that contain 'images' arrays
+  const extractCommonAreaImages = (commonAreas: any[]): string[] => {
+    const allImages: string[] = [];
+
+    commonAreas.forEach((area) => {
+      if (area?.images && Array.isArray(area.images)) {
+        allImages.push(...area.images);
+      }
+    });
+
+    return allImages;
+  };
+
+  const previewCommonAreaImages = () => {
+    const allCommonAreaImages = extractCommonAreaImages(props.property.commonAreas);
+    localStorage.setItem('selectedImages', JSON.stringify(allCommonAreaImages));
+    router.push(`/dashboard/property/${props.property.id}/room-interior-images`);
+    console.log(allCommonAreaImages); // This will log an array of all images from the common areas
+  }
 
   const router = useRouter()
 

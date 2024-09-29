@@ -46,7 +46,7 @@
 
       <!-- Custom Rule Input -->
       <div>
-        <h3 class="text-sm font-medium mb-2">Custom rule</h3>
+        <h3 class="text-sm font-medium mb-2">Add Additional house rules</h3>
         <input
           v-model="newCustomRule"
           placeholder="Enter custom rule"

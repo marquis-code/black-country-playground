@@ -62,7 +62,7 @@
         v-if="activeTab === 'common-areas'"
       />
       <div v-if="activeTab !== 'property-overview' && activeTab !== 'common-areas'" class=" max-w-3xl mx-auto">
-        <div @click="router.push(`/dashboard/property/${propertyObj.id}/property-gallery`)" class="flex cursor-pointer mb-3 items-center border-[0.5px] border-gray-50 space-x-4 bg-white p-4 rounded-lg">
+        <div @click="previewRoomImages(activeTab)" class="flex cursor-pointer mb-3 items-center border-[0.5px] border-gray-50 space-x-4 bg-white p-4 rounded-lg">
           <img :src="dynamicImage('placeholder.png')" alt="Gallery" class="w-12 h-12 rounded-full">
           <div class="flex-1">
             <h3 class="text-lg font-medium">Gallery</h3>
@@ -240,15 +240,59 @@ const props = defineProps({
 
 const selectedRoomObj = ref('')
 
+// Function to extract images from a room object
+const extractRoomImages = (room: any): string[] => {
+  const allImages: string[] = [];
+
+  // Check if the room itself has images
+  if (room?.images && Array.isArray(room.images)) {
+    allImages.push(...room.images);
+  }
+
+  // Extract images from features array
+  if (room?.features && Array.isArray(room.features)) {
+    room.features.forEach((feature: any) => {
+      if (feature?.images && Array.isArray(feature.images)) {
+        allImages.push(...feature.images);
+      }
+    });
+  }
+
+  return allImages;
+};
+
+// Function to extract all images from an array of objects that contain 'images' arrays
+// const extractCommonAreaImages = (commonAreas: any[]): string[] => {
+//   const allImages: string[] = [];
+
+//   commonAreas.forEach((area) => {
+//     if (area?.images && Array.isArray(area.images)) {
+//       allImages.push(...area.images);
+//     }
+//   });
+
+//   return allImages;
+// };
+
 const handleSelectedTab = (item: any, itemType: any) => {
   console.log(itemType, 'here op')
   activeTab.value = item
 
   if(itemType === 'dynamic'){
+    console.log( item.name, 'here ppppp')
     activeTab.value = item.name
     selectedRoomObj.value = item
     console.log(selectedRoomObj.value, 'ghjkljhgf')
   }
+}
+
+const previewRoomImages = (itemTab: any) => {
+  const selectedRoom = props.propertyObj.rooms.find((room: any) => room?.name === itemTab)
+    const allImages = extractRoomImages(selectedRoom);
+     console.log(allImages); // This will print all the images in the room and its features.
+    // const selectedImages = images.value[tabName];
+    localStorage.setItem('selectedImages', JSON.stringify(allImages));
+    router.push(`/dashboard/property/${props.propertyObj.id}/room-interior-images`);
 }
 
 // Computed property to group amenities by type

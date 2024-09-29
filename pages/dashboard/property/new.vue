@@ -155,7 +155,7 @@
           </aside>
           <div
             id="second-part"
-            class="lg:pl-10 p-4 space-y-6 lg:max-w-screen-7xl w-full"
+            class="lg:pl-10 p-4 space-y-6 lg:max-w-screen-7xl w-full custom-scrollbar-container"
           >
             <CoreProgressStepper
               v-if="activeParentStep === 1"
@@ -824,3 +824,31 @@ watch(
   { immediate: true }
 );
 </script>
+
+<style scoped>
+.custom-scrollbar-container {
+  max-height: 800px;
+  overflow-y: auto;
+  overflow-x: auto;
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #5B8469 #F1F1F1; /* For Firefox */
+}
+
+.custom-scrollbar-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar-container::-webkit-scrollbar-thumb {
+  background-color: #5B8469;
+  border-radius: 10px;
+}
+
+.custom-scrollbar-container::-webkit-scrollbar-track {
+  background-color: #F1F1F1;
+}
+
+.custom-scrollbar-container:hover::-webkit-scrollbar-thumb {
+  background-color: #5B8469; /* Change on hover for better visibility */
+}
+</style>

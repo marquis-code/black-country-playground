@@ -81,7 +81,7 @@
     </div>
     
 
-    <div>
+    <!-- <div>
       <div
         v-if="propertiesList && !loadingProperties"
         class="bg-white rounded-lg overflow-hidden overflow-x-auto"
@@ -313,7 +313,174 @@
         </div>
         <p class="text-[#1D2739]">No properties found.</p>
       </div>
+    </div> -->
+
+    <div>
+      <div
+        v-if="propertiesList && !loadingProperties"
+        class="bg-white rounded-lg overflow-hidden"
+      >
+        <div class="custom-scrollbar-container">
+          <table class="min-w-full bg-white">
+            <thead class="border-b-[0.5px] border-gray-50 z-50 bg-gray-25 sticky top-0">
+              <tr>
+                <th
+                  v-for="column in visibleColumns"
+                  :key="column.key"
+                  class="py-5 px-5 text-left text-xs font-medium text-gray-500 tracking-wider"
+                >
+                  {{ column.label }}
+                </th>
+                <th class="py-5 px-5 text-right text-sm font-medium text-gray-500 tracking-wider">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50 z-10">
+              <tr
+                class="cursor-pointer"
+                v-for="(property, index) in propertiesList"
+                :key="property.id"
+              >
+                <td
+                  @click.prevent="handleDropdownClick('view', property)"
+                  v-for="column in visibleColumns"
+                  :key="column.key"
+                  class="py-5 px-5 whitespace-nowrap text-xs text-[#667185] font-semibold relative"
+                >
+                  <p v-if="column.key !== 'isPublished'">{{ getPropertyValue(property, column.key) }}</p>
+                  <p class="absolute left-0 top-0" v-if="column.key === 'name'">
+                    <span class="bg-[#F7D394] text-[#1D2739] text-xs px-2 py-1" v-if="!property.isPublished">
+                      Draft
+                    </span>
+                  </p>
+                  <p v-if="column.key === 'isPublished'">{{ property.isPublished ? 'Published' : 'Draft' }}</p>
+                </td>
+                <td class="py-5 px-5 whitespace-nowrap text-sm text-right">
+                  <button
+                    @click="toggleDropdown(index)"
+                    class="inline-flex items-center text-sm font-medium text-[#667185] hover:text-black"
+                  >
+                    <svg
+                      width="48"
+                      height="44"
+                      viewBox="0 0 48 44"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M21.9966 22H22.0041"
+                        stroke="#292929"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <path
+                        d="M27 22H27.0075"
+                        stroke="#1D2739"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <path
+                        d="M17 22H17.0075"
+                        stroke="#1D2739"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
+                  <div
+                    v-if="activeDropdown === index"
+                    class="absolute right-16 z-50 mt-2 w- bg-white border border-gray-200 rounded-md shadow-lg"
+                  >
+                    <ul class="py-1 text-sm text-gray-700 divide divide-y-[0.5px]">
+                      <li>
+                        <a
+                          @click.prevent="handleDropdownClick('view', property)"
+                          href="#"
+                          class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+                        >
+                          <img :src="dynamicIcons('view-property')" />
+                          View property
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          @click.prevent="handleDropdownClick('edit', property)"
+                          href="#"
+                          class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+                        >
+                          <img :src="dynamicIcons('edit-property')" />
+                          Edit property
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          @click.prevent="handleDropdownClick('duplicate', property)"
+                          href="#"
+                          class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+                        >
+                          <img :src="dynamicIcons('duplicate-property')" />
+                          Duplicate property & edit
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          @click.prevent="handleDropdownClick('deactivate', property)"
+                          href="#"
+                          class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+                        >
+                          <img :src="dynamicIcons('deactivate-property')" />
+                          Deactivate property
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          @click.prevent="handleDropdownClick('delete', property)"
+                          href="#"
+                          class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+                        >
+                          <img :src="dynamicIcons('delete-property')" />
+                          Delete property
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div
+          v-if="activeDropdown !== null"
+          @click="closeDropdown"
+          class="fixed inset-0 z-40 bg-black opacity-25"
+        ></div>
+        <CorePagination
+          v-if="!loadingProperties && propertiesList.length > 0"
+          :total="metadata.total"
+          :page="metadata.page"
+          :perPage="metadata.perPage"
+          :pages="metadata.pages"
+          @page-changed="handlePageChange"
+        />
+      </div>
+      <div
+        v-if="loadingProperties && propertiesList.length === 0"
+        class="h-32 bg-slate-200 rounded animate-pulse w-full m-3"
+      ></div>
+      <div
+        v-if="!loadingProperties && propertiesList.length === 0"
+        class="flex justify-center items-center flex-col my-20"
+      >
+        <div class="flex justify-center items-center">
+          <!-- SVG and text content for "No properties found" -->
+        </div>
+      </div>
     </div>
+    
 
     <PropertyConfigTableModal
       v-if="propertyConfigModal"
@@ -499,11 +666,11 @@ const showModal = ref(false);
 const columns = ref([
   { label: "Property Name", key: "name", visible: true },
   { label: "Property Type", key: "houseType.name", visible: true },
+  { label: "Status", key: "isPublished", visible: true },
   { label: "Location", key: "address", visible: true },
   { label: "Rooms Occupied", key: "availableRoomsCount", visible: false },
   { label: "Rooms Count", key: "bedroomCount", visible: true },
   { label: "Bathroom Count", key: "bathroomCount", visible: false },
-  { label: "Status", key: "isPublished", visible: false },
   { label: "Agents/Property Managers", key: "agent.firstName", visible: false },
 ]);
 
@@ -567,4 +734,31 @@ const saveColumns = () => {
 .toggle:checked::before {
   transform: translateX(1.5rem);
 }
+
+.custom-scrollbar-container {
+  max-height: 600px;
+  overflow-y: auto;
+  overflow-x: auto;
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #5B8469 #F1F1F1; /* For Firefox */
+}
+
+.custom-scrollbar-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar-container::-webkit-scrollbar-thumb {
+  background-color: #5B8469;
+  border-radius: 10px;
+}
+
+.custom-scrollbar-container::-webkit-scrollbar-track {
+  background-color: #F1F1F1;
+}
+
+.custom-scrollbar-container:hover::-webkit-scrollbar-thumb {
+  background-color: #5B8469; /* Change on hover for better visibility */
+}
+
 </style>

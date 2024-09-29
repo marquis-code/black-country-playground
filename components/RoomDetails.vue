@@ -464,6 +464,13 @@ watch(
   { deep: true }
 );
 
+watch(setAsMasterBedroom, (val) => {
+  useNuxtApp().$toast.success(`Master bedroom has been ${val ? 'turned on' : 'turned off'} successfully for this room`, {
+      autoClose: 5000,
+      dangerouslyHTMLString: true,
+    });
+})
+
 
 // Computed property to format the value as currency
 const formattedRentAmount = computed({

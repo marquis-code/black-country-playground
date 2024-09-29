@@ -1,5 +1,11 @@
 <template>
   <div class="w-full h-full bg-[#EBE5E0] border rounded-lg p-4 flex flex-col items-center justify-center">
+    <div v-if="loading" class="w-full h-4 rounded-lg bg-gray-200 mb-6">
+      <div :class="{'bg-red-500': uploadFailed, 'bg-green-500': uploadSuccess, 'bg-[#292929]': !uploadFailed && !uploadSuccess}"
+        :style="{ width: `${progress}%` }"
+        class="h-full transition-all duration-300 ease-in-out rounded-lg">
+      </div>
+    </div>
     <div v-if="images.length === 0" class="flex flex-col h-64 bg-[#EBE5E0] rounded-lg p-4 w-full relative">
       <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 rounded-lg">
         <div class="loader"></div>
@@ -45,6 +51,10 @@
 <script setup lang="ts">
 import { useBatchUploadFile } from '@/composables/core/batchUpload'
 const { uploadFiles, uploadResponse, loading } = useBatchUploadFile()
+
+const progress = ref(1);  // Initial progress set to 1%
+  const uploadFailed = ref(false);
+  const uploadSuccess = ref(false);
 
 const props = defineProps({
   label: {
@@ -99,8 +109,22 @@ async function handleFileUpload(event: Event) {
   const target = event.target as HTMLInputElement
   if (target && target.files && target.files.length > 0) {
     try {
+      progress.value = 1;  // Reset progress
+      uploadFailed.value = false;
+      uploadSuccess.value = false;
       const files = Array.from(target.files) // Get all files
+
+       // Simulate upload progress
+       const interval = setInterval(() => {
+        if (progress.value < 100) {
+          progress.value += 10;
+        }
+      }, 300);
       await uploadFiles(files) // Use the batch upload composable
+
+      clearInterval(interval);
+      progress.value = 100;
+      uploadSuccess.value = true;
       
       if (uploadResponse.value.length > 0) {
         // Extract secure URLs from the response and add them to the images array
@@ -160,10 +184,20 @@ async function handleFileUpload(event: Event) {
           }
       }
     } catch (error) {
+      progress.value = 100;
+      uploadFailed.value = true;
+      useNuxtApp().$toast.error('Error uploading files', {
+        autoClose: 5000,
+        dangerouslyHTMLString: true,
+      });
       console.error('Error uploading files:', error)
     }
   } else {
-    console.error('No files selected for upload')
+    useNuxtApp().$toast.error('No files selected for upload', {
+        autoClose: 5000,
+        dangerouslyHTMLString: true,
+      });
+    // console.error('No files selected for upload')
   }
 }
 
@@ -180,9 +214,29 @@ function nextImage() {
 }
 
 function removeImage() {
-  images.splice(currentImageIndex.value, 1)
-  if (currentImageIndex.value >= images.length) {
-    currentImageIndex.value = images.length - 1
+  if (images.length > 0 && currentImageIndex.value >= 0) {
+    images.splice(currentImageIndex.value, 1); // Remove from the array
+    
+    // Adjust the index if the last image was removed
+    if (currentImageIndex.value >= images.length) {
+      currentImageIndex.value = images.length - 1;
+    }
+    
+    // Also ensure that session storage or props are updated if necessary
+    if (props.location === 'common-areas') {
+      const propertyData = props.payload;
+      const commonArea = propertyData?.commonAreas?.value?.find((area: any) => area.name === props.label);
+      if (commonArea) {
+        commonArea.images = images; // Update the common area images
+      }
+    } else if (props.location === 'rooms') {
+      const propertyData = props.payload;
+      const room = propertyData?.rooms?.value?.find((r: any) => r.name === props.roomName);
+      const feature = room?.features?.find((f: any) => f.name === props.label);
+      if (feature) {
+        feature.images = images; // Update the feature images
+      }
+    }
   }
 }
 </script>

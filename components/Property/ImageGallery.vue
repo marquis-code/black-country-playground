@@ -1,34 +1,37 @@
 <template>
-    <div v-if="images" class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6 p-6 lg:p-0">
-      <!-- Main Image -->
-      <div>
-        <img :src="images[0]" alt="Main Image" class="rounded-lg w-full" />
-      </div>
-  
-      <!-- Smaller Images on the right -->
-      <div class="grid grid-cols-2 gap-4">
-        <!-- Display the first 4 images from the array -->
+<main>
+  <div v-if="images" class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6 p-6 lg:p-0">
+    <!-- Main Image -->
+    <div>
+      <img :src="images[0]" alt="Main Image" class="rounded-lg w-full" />
+    </div>
+
+    <!-- Smaller Images on the right -->
+    <div class="grid grid-cols-2 gap-4">
+      <!-- Display the first 4 images from the array -->
+      <img
+        v-for="(image, index) in rightImages"
+        :key="index"
+        :src="image"
+        :alt="'Image ' + (index + 2)"
+        class="rounded-lg w-full"
+      />
+
+      <!-- 'View all' overlay for the last image if there are more than 5 images -->
+      <div v-if="remainingImagesCount > 0" class="relative cursor-pointer" @click="navigateToAllImages">
         <img
-          v-for="(image, index) in rightImages"
-          :key="index"
-          :src="image"
-          :alt="'Image ' + (index + 2)"
+          :src="images[4]"
+          alt="Image 5"
           class="rounded-lg w-full"
         />
-  
-        <!-- 'View all' overlay for the last image if there are more than 5 images -->
-        <div v-if="remainingImagesCount > 0" class="relative cursor-pointer" @click="navigateToAllImages">
-          <img
-            :src="images[4]"
-            alt="Image 5"
-            class="rounded-lg w-full"
-          />
-          <div class="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center text-white text-lg font-bold rounded-lg">
-            View all +{{ remainingImagesCount }}
-          </div>
+        <div class="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center text-white text-lg font-bold rounded-lg">
+          View all +{{ remainingImagesCount }}
         </div>
       </div>
     </div>
+  </div>
+  <img v-else src="@/assets/img/image-placeholder.jpg" alt="placeholder" class="rounded-lg w-full" />
+</main>
   </template>
   
   <script setup lang="ts">

@@ -319,7 +319,7 @@ function removeImage(index: number) {
     } catch (error) {
       progress.value = 100;
       uploadFailed.value = true;
-      useNuxtApp().$toast.error(error.value, {
+      useNuxtApp().$toast.error(error || 'Something went wrong', {
         autoClose: 5000,
         dangerouslyHTMLString: true,
       });
