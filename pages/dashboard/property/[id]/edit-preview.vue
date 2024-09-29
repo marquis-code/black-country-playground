@@ -58,6 +58,7 @@
   const router = useRouter();
   import { useEditProperty } from '@/composables/modules/property/update'
   const { editProperty, payload, loading, fetchingProperty, saving, savingProperty }  = useEditProperty()
+
   // editProperty();
   definePageMeta({
        middleware: 'auth'

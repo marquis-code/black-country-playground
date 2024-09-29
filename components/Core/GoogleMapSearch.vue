@@ -62,7 +62,7 @@ export default {
     return {
       center: { lat: 40.689247, lng: -111.044502 }, // Default to a general location
       zoom: 15,
-      googleMapsApiKey: process.env.VITE_GOOGLE_MAPS_API_KEY, // Secure your API key
+      googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY, // Accessing API key correctly
       autocomplete: null, // This will hold the autocomplete object
       placesService: null, // To handle the Places API service
       markers: [], // Store markers for amenities
