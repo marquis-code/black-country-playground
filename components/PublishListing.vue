@@ -9,26 +9,6 @@
         :key="index"
         class="bg-white py-1 relative space-y-4"
       >
-        <!-- Question Title -->
-        <section>
-          <p class="text-sm text-[#1D2739] font-medium">select response type</p>
-
-          <!-- Question Type Selector -->
-          <div
-            id="dropdown"
-            class="relative cursor-pointer border-[0.5px] rounded-lg w-full bg-[#F0F2F5] mt-2"
-          >
-            <select
-              v-model="question.widgetType"
-              class="w-full text-sm py-3 bg-[#F0F2F5] font-medium border-[#E4E7EC] outline-none px-2"
-            >
-              <option value="input">Short response</option>
-              <option value="long-response">Long response</option>
-              <option value="select">Dropdown (single select)</option>
-            </select>
-          </div>
-        </section>
-
         <!-- Short Response -->
         <section>
           <p class="text-sm text-[#1D2739] font-medium py-0 my-0">Enter your question</p>
@@ -109,6 +89,25 @@
             </button>
           </div>
         </section>
+                <!-- Question Title -->
+                <section>
+                  <p class="text-sm -mt-5 text-[#1D2739] font-medium">select response type</p>
+        
+                  <!-- Question Type Selector -->
+                  <div
+                    id="dropdown"
+                    class="relative cursor-pointer border-[0.5px] rounded-lg w-full bg-[#F0F2F5] mt-2"
+                  >
+                    <select
+                      v-model="question.widgetType"
+                      class="w-full text-sm py-3 bg-[#F0F2F5] font-medium border-[#E4E7EC] outline-none px-2"
+                    >
+                      <option value="input">Short response</option>
+                      <option value="long-response">Long response</option>
+                      <option value="select">Dropdown (single select)</option>
+                    </select>
+                  </div>
+                </section>
       </div>
 
       <!-- Button to Add New Question -->

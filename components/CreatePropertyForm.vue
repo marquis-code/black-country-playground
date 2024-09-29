@@ -70,7 +70,7 @@
             <!-- Input field -->
             <label name="property-size" for="property-size" class="block sr-only text-sm font-medium text-gray-700">Property size</label>
             <input
-             type="tel"
+             type="number"
               name="property-size"
               id="property-size"
               v-model.number="payload.size.value"
