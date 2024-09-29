@@ -58,9 +58,6 @@
   const router = useRouter();
   import { useEditProperty } from '@/composables/modules/property/update'
   const { editProperty, payload, loading, fetchingProperty, saving, savingProperty }  = useEditProperty()
-  import { useGlobalModal } from '@/composables/core/useGlobalModal';
-  
-  const { openModal } = useGlobalModal();
   // editProperty();
   definePageMeta({
        middleware: 'auth'

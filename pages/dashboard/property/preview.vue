@@ -57,9 +57,6 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 import { use_create_property } from '@/composables/modules/property/create';
 const { payload, create_property, loading } = use_create_property();
-import { useGlobalModal } from '@/composables/core/useGlobalModal';
-
-const { openModal } = useGlobalModal();
 // editProperty();
 definePageMeta({
      middleware: 'auth'
