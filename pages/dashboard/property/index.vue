@@ -4,18 +4,18 @@
       <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6 justify-between">
         <!-- Header left side -->
         <div class="flex items-center gap-x-4">
-          <h4 class="text-[#1D2739] text-lg">Property Management</h4>
+          <h4 class="text-[#1D2739] text-sm">Property Management</h4>
     
           <!-- Desktop View Buttons -->
           <div class="hidden lg:flex gap-x-4">
             <button @click="activeTab = 'listings'" :class="[activeTab === 'listings' ? 'bg-[#5B8469] text-white' : '']"
-              class="bg-[#5B8469] font-medium px-4 py-2 text-sm rounded-md text-white">Listings</button>
+              class="bg-[#5B8469] font-medium px-4 py-2 text-xs rounded-md text-white">Listings</button>
             <button @click="activeTab = 'rental-applications'"
               :class="[activeTab === 'rental-applications' ? 'bg-[#5B8469] text-white' : ' ']"
-              class="text-[#292929] font-medium text-sm bg-[#F0F2F5] px-4 py-2 rounded-md">Rental applications</button>
+              class="text-[#292929] font-medium text-xs bg-[#F0F2F5] px-4 py-2 rounded-md">Rental applications</button>
             <button @click="activeTab = 'lease-documents'"
               :class="[activeTab === 'lease-documents' ? 'bg-[#5B8469] text-white' : 'bg-[#F0F2F5] text-[#292929]']"
-              class="text-[#292929] font-medium text-sm bg-[#F0F2F5] px-4 py-2 rounded-md">Lease Documents</button>
+              class="text-[#292929] font-medium text-xs bg-[#F0F2F5] px-4 py-2 rounded-md">Lease Documents</button>
           </div>
     
           <!-- Mobile View Hamburger Menu -->
@@ -45,12 +45,12 @@
             <button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false"
               aria-haspopup="true">
               <span class="sr-only">Open user menu</span>
-              <p class="bg-gray-900 text-white p-3 font-semibold rounded-lg">{{ initials }}</p>
+              <p class="bg-gray-900 text-white px-2 py-2 font- rounded-md">{{ initials }}</p>
               <span class="hidden lg:flex lg:items-center">
                 <div>
-                  <span v-if="user" class="ml-4 text-sm py-0 my-0 font-semibold block leading-6 text-gray-900"
+                  <span v-if="user" class="ml-4 text-xs py-0 my-0 font-semibold block leading-6 text-gray-900"
                     aria-hidden="true">{{ user?.firstName }} {{ user?.lastName }}</span>
-                  <span class="text-sm py-0 my-0 font-light text-[#667185] block">Super admin</span>
+                  <span class=" py-0 my-0 font-light text-xs text-[#667185] block">Super admin</span>
                 </div>
                 <svg @click="router.push('/dashboard/profile')" class="cursor-pointer" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="#1D2739" stroke-width="2"

@@ -1,93 +1,84 @@
 <template>
   <main>
-    <section class="px-4 sm:px-6 lg:px-8">
-      <div class="">
-        <div class="lg:flex justify-between items-center mb-6 space-y-4 lg:space-y-0 w-full">
-          <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full lg:w-2/3">
-            <button
-              @click="propertyFilterModal = true"
-              class="flex items-center gap-x-2 px-4 py-2 text-sm bg-white border-[0.5px] border-gray-300 rounded-md text-[#1D2739] w-full sm:w-auto"
-            >
-              Filter
-              <img :src="dynamicIcons('gray-filter')" />
-            </button>
-            <div class="relative w-full">
-              <input
-                v-model="filters.searchQuery"
-                placeholder="Search properties by name..."
-                type="text"
-                class="px-4 text-sm py-3 w-full outline-none pl-10 border-[0.5px] border-gray-300 text-[#667185] rounded-md"
-              />
-              <img
-                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500"
-                :src="dynamicIcons('gray-search')"
-              />
-            </div>
-          </div>
-          <div class="flex flex-col sm:flex-row justify-end items-stretch sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 lg:w-1/3">
-            <button
-              @click="showModal = true"
-              class="px-4 py-3 bg-white flex items-center gap-x-3 text-[#292929] border-[0.5px] text-sm border-gray-300 rounded-md w-full sm:w-auto"
-            >
-              <img :src="dynamicIcons('gray-settings')" />
-              Configure table
-            </button>
-            <section class="relative w-full sm:w-auto">
-              <button
-                @click="toggleDownloadDropdown"
-                class="px-4 py-3 bg-white border-[0.5px] text-sm flex items-center gap-x-3 border-gray-300 rounded-md text-gray-70 w-full sm:w-auto"
-              >
-                <img :src="dynamicIcons('gray-download')" />
-                Export
-              </button>
-              <div
-                v-if="downloadDropdown"
-                class="absolute right-0 sm:right-4 z-50 mt-2 bg-white border border-gray-200 w-44 rounded-lg shadow-lg"
-              >
-                <ul class="py-1 text-sm text-gray-700 divide-gray-100 divide-y-[0.5px]">
-                  <li>
-                    <a
-                      @click="downloadData('pdf')"
-                      href="#"
-                      class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
-                    >
-                      <img :src="dynamicIcons('gray-pdf')" />
-                      PDF
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      @click="downloadData('excel')"
-                      href="#"
-                      class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
-                    >
-                      <img :src="dynamicIcons('gray-excel')" />
-                      Excel/Spreadsheet
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      @click="downloadData('csv')"
-                      href="#"
-                      class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
-                    >
-                      <img :src="dynamicIcons('gray-csv')" />
-                      CSV
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </section>
-            <button
-              @click="router.push('/dashboard/property/create-steps')"
-              class="px-4 py-3 flex text-sm items-center gap-x-3 bg-[#292929] text-white rounded-md hover:bg-gray-800 w-full sm:w-auto"
-            >
-              <img :src="dynamicIcons('white-add')" /> New Property
-            </button>
-          </div>
+
+    <div class="flex justify-between items-center mb-4">
+      <!-- Left: Filter and Search -->
+      <div class="flex space-x-2">
+        <!-- Filter Button -->
+        <button @click="propertyFilterModal = true" class="flex items-center text-xs space-x-1 bg-[#F0F2F5] border-[#F0F2F5] border text-gray-700 px-2 py-2 rounded transition-all">
+          <img :src="dynamicIcons('gray-filter')" />
+          <span>Filter</span>
+        </button>
+  
+        <!-- Search Bar -->
+        <div class="relative">
+          <input  v-model="filters.searchQuery" type="text" placeholder="Search properties by name..." class="bg-[#F0F2F5] pl-10 border-[#F0F2F5] border text-xs text-gray-700 px-4 py-3 rounded w-full sm:w-64 focus:outline-none focus:bg-white transition-all"/>
+          <span class="absolute inset-y-0 left-3 flex items-center pr-2">
+            <img
+            class=""
+            :src="dynamicIcons('gray-search')"
+          />
+          </span>
         </div>
       </div>
-    </section>
+  
+      <!-- Right: Configure Table, Export, and New Property -->
+      <div class="flex space-x-2">
+        <!-- Configure Table Button -->
+        <button @click="showModal = true" class="flex items-center space-x-1 text-xs px-2  bg-[#F0F2F5] border-[#F0F2F5] border text-gray-700 py-2 rounded hover:bg-gray-200 transition-all">
+          <img :src="dynamicIcons('gray-settings')" />
+          <span>Configure table</span>
+        </button>
+  
+        <!-- Export Button -->
+        <button  @click="toggleDownloadDropdown" class="flex items-center space-x-1 text-xs px-2 bg-[#F0F2F5] border-[#F0F2F5] border text-gray-700 py-2 rounded hover:bg-gray-200 transition-all">
+          <img :src="dynamicIcons('gray-download')" />
+          <span>Export</span>
+        </button>
+        <div
+        v-if="downloadDropdown"
+        class="absolute right-0 sm:right-4 z-50 mt-2 bg-white border border-gray-200 w-44 rounded-lg shadow-lg"
+      >
+        <ul class="py-1 text-sm text-gray-700 divide-gray-100 divide-y-[0.5px]">
+          <li>
+            <a
+              @click="downloadData('pdf')"
+              href="#"
+              class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+            >
+              <img :src="dynamicIcons('gray-pdf')" />
+              PDF
+            </a>
+          </li>
+          <li>
+            <a
+              @click="downloadData('excel')"
+              href="#"
+              class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+            >
+              <img :src="dynamicIcons('gray-excel')" />
+              Excel/Spreadsheet
+            </a>
+          </li>
+          <li>
+            <a
+              @click="downloadData('csv')"
+              href="#"
+              class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+            >
+              <img :src="dynamicIcons('gray-csv')" />
+              CSV
+            </a>
+          </li>
+        </ul>
+      </div>
+  
+        <!-- New Property Button -->
+        <button @click="router.push('/dashboard/property/create-steps')" class="bg-[#292929] px-2 flex items-center text-xs text-white py-2 rounded hover:bg-gray-800 transition-all">
+          <img :src="dynamicIcons('white-add')" /> New Property
+        </button>
+      </div>
+    </div>
     
 
     <div>
@@ -101,7 +92,7 @@
               <th
                 v-for="column in visibleColumns"
                 :key="column.key"
-                class="py-5 px-5 text-left text-sm font-medium text-gray-500 tracking-wider"
+                class="py-5 px-5 text-left text-xs font-medium text-gray-500 tracking-wider"
               >
                 {{ column.label }}
               </th>
@@ -119,9 +110,10 @@
               :key="property.id"
             >
               <td
+               @click.prevent="handleDropdownClick('view', property)"
                 v-for="column in visibleColumns"
                 :key="column.key"
-                class="py-5 px-5 whitespace-nowrap text-sm text-[#667185] font-semibold relative"
+                class="py-5 px-5 whitespace-nowrap text-xs text-[#667185] font-semibold relative"
               >
                 <p v-if="column.key !== 'isPublished'">{{ getPropertyValue(property, column.key) }}</p>
                 <p class="absolute left-0 top-0" v-if="column.key === 'name'"> <span class="bg-[#F7D394] text-[#1D2739] text-xs px-2 py-1" v-if="!property.isPublished">Draft</span></p>
