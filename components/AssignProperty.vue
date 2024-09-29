@@ -1,13 +1,13 @@
 <template>
     <main>
-        <div class="relative w-full">
+        <div class="relative w-full h-44">
             <label class="block text-sm font-medium text-gray-700">Assign property</label>
             <div class="mt-1 relative">
                 <input type="text" readonly placeholder="Single agent/property manager" v-model="selectedUser"
                     @click="toggleDropdown"
                     class="w-full bg-[#F0F2F5] text-sm py-3 px-4 border-[0.5px] outline-none border-gray-100 rounded-md cursor-pointer" />
                 <div v-if="showDropdown" ref="dropdown"
-                    class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1">
+                    class="absolute z-50 mt-1 w-full bg-white shadow-lg rounded-md py-1 h-44">
                     <ul v-if="!loading">
                         <li v-for="user in agents" :key="user.id" @click="selectUser(user)"
                             class="px-4 py-3 text-sm border-b-[0.5px] last:border-b-0 hover:bg-gray-50 cursor-pointer">

@@ -827,7 +827,7 @@ watch(
 
 <style scoped>
 .custom-scrollbar-container {
-  max-height: 800px;
+  max-height: 1000px;
   overflow-y: auto;
   overflow-x: auto;
   scrollbar-width: thin; /* For Firefox */
