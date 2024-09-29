@@ -1,7 +1,6 @@
 <template>
   <main>
     <div class="pb-6 space-y-6">
-      <!-- Furnished status -->
       <div class="flex items-center justify-between space-x-4">
         <label class="text-lg text-[#1D2739]">Is the common area furnished?</label>
         <div class="flex space-x-2">
@@ -302,6 +301,8 @@
   </main>
 </template>
 <script lang="ts" setup>
+import { useGetCommonAreas } from '@/composables/modules/property/fetchCommonAreas'
+const { commonAreasList: commonList } = useGetCommonAreas()
 const props = defineProps({
   commonAreasList: {
     type: Array,
@@ -364,38 +365,6 @@ onMounted(() => {
 const emit = defineEmits(['updateCommonAreas', 'updateIsFurnished', 'saveRoomData']);
 
 // Add manual interior item and update the list
-// const addInteriorItem = () => {
-//   if (newInteriorItem.value.trim()) {
-//     const newItem = {
-//       name: newInteriorItem.value.trim(),
-//       // id: `${newInteriorItem.value.trim()}_${Date.now()}`, // Generating a unique ID
-//       type: "interior",
-//       canBeFurnished: props.payload.isFurnishedCommonArea.value,
-//       images: []
-//     };
-    
-//     // Push the new item to the interior furnished areas list (UI list)
-//     if(props.payload.isFurnishedCommonArea.value){
-//       props.interiorFurnishedAreasList.push(newItem);
-//     }
-
-//     if(!props.payload.isFurnishedCommonArea.value){
-//       props.interiorUnFurnishedAreasList.push(newItem);
-//     }
-    
-//     // Push to the selected areas (common areas)
-//     commonAreas.value.push(newItem);
-
-//     // Reset the input field
-//     newInteriorItem.value = "";
-//     showInteriorInput.value = false;
-
-//     // Emit the updated common areas
-//     emit("updateCommonAreas", commonAreas.value);
-//   }
-// };
-
-// Add manual interior item and update the list
 const addInteriorItem = () => {
   if (newInteriorItem.value.trim()) {
     const newItem = {
@@ -418,41 +387,6 @@ const addInteriorItem = () => {
     emit("updateCommonAreas", commonAreas.value);
   }
 };
-
-
-// Add manual exterior item and update the list
-// const addExteriorItem = () => {
-//   if (newExteriorItem.value.trim()) {
-//     const newItem = {
-//       name: newExteriorItem.value.trim(),
-//       canBeFurnished: props.payload.isFurnishedCommonArea.value,
-//       // id: `${newExteriorItem.value.trim()}_${Date.now()}`, // Generating a unique ID
-//       type: "exterior",
-//       images: []
-//     };
-
-//     // Push the new item to the exterior furnished areas list (UI list)
-//     // props.exteriorFurnishedAreasList.push(newItem);
-//      // Push the new item to the interior furnished areas list (UI list)
-//      if(props.payload.isFurnishedCommonArea.value){
-//       props.exteriorFurnishedAreasList.push(newItem);
-//     }
-
-//     if(!props.payload.isFurnishedCommonArea.value){
-//       props.exteriorUnFurnishedAreasList.push(newItem);
-//     }
-    
-//     // Push to the selected areas (common areas)
-//     commonAreas.value.push(newItem);
-
-//     // Reset the input field
-//     newExteriorItem.value = "";
-//     showExteriorInput.value = false;
-
-//     // Emit the updated common areas
-//     emit("updateCommonAreas", commonAreas.value);
-//   }
-// };
 
 // Add manual exterior item and update the list
 const addExteriorItem = () => {
@@ -486,26 +420,6 @@ const isSelected = (item: string, type: string) => {
 };
 
 // Function to toggle selection
-// const toggleSelection = (item: string, type: string) => {
-//   const index = commonAreas.value.findIndex(
-//     (area: any) => area.name === item && area.type === type
-//   );
-//   if (index > -1) {
-//     // Deselect the item
-//     commonAreas.value.splice(index, 1);
-//   } else {
-//     // Select the item
-//     commonAreas.value.push({
-//       name: item,
-//       type,
-//       images: [], // Start with empty images
-//     });
-//   }
-//   props.payload.commonAreas.value = commonAreas.value
-//   // Emit updated array to parent
-//   emit("updateCommonAreas", commonAreas.value);
-// };
-// Function to toggle selection
 const toggleSelection = (item: string, type: string) => {
   const index = commonAreas.value.findIndex(
     (area: any) => area.name === item && area.type === type
@@ -530,13 +444,6 @@ const isFurnishedCommonArea = ref(props?.payload?.isFurnishedCommonArea.value);
 onMounted(() => {
   isFurnishedCommonArea.value = props?.payload?.isFurnishedCommonArea.value;
 });
-
-
-// const setFurnishedStatus = (status: boolean) => {
-//   isFurnishedCommonArea.value = status;
-//   props.payload.isFurnishedCommonArea.value = status;
-//   emit("updateIsFurnished", isFurnishedCommonArea.value);
-// };
 
 const setFurnishedStatus = (status: boolean) => {
   // Reset the common areas and the corresponding lists when the status changes

@@ -191,13 +191,13 @@
               @updateCommonAreas="handleCommonAreas"
               @updateIsFurnished="handlePropertyFurnished"
               :payload="payload"
-              :commonAreasList="commonAreasList"
+              :commonAreasListings="commonAreasList"
               :interiorAreas="interiorAreas"
               :exteriorAreas="exteriorAreas"
-              :exteriorFurnishedAreasList="exteriorFurnishedAreasList"
-              :exteriorUnFurnishedAreasList="exteriorUnFurnishedAreasList"
-              :interiorFurnishedAreasList="interiorFurnishedAreasList"
-              :interiorUnFurnishedAreasList="interiorUnFurnishedAreasList"
+              :exteriorFurnishedAreasList="exteriorFurnishedAreas"
+              :exteriorUnFurnishedAreasList="exteriorUnfurnishedAreas"
+              :interiorFurnishedAreasList="interiorFurnishedAreas"
+              :interiorUnFurnishedAreasList="interiorUnfurnishedAreas"
               :loading="loadingCommonAreas"
               v-if="activeParentStep === 2 && propertyDetailsStep === 1"
             >
@@ -311,7 +311,7 @@ import { useFetchAgents } from '@/composables/modules/agents/fetch'
 import { useIsEmptyObject } from '@/composables/core/useIsEmptyObject'
 const { payload, resetPayload, loading, saving, save_property } = use_create_property()
 const { agentsList, loading: loadingAgents } = useFetchAgents()
-const { loading: loadingCommonAreas, commonAreasList, interiorAreas, exteriorAreas, exteriorFurnishedAreasList, exteriorUnFurnishedAreasList, interiorFurnishedAreasList, interiorUnFurnishedAreasList } = useGetCommonAreas()
+const { loading: loadingCommonAreas, commonAreasList, interiorAreas, exteriorAreas, exteriorFurnishedAreas, exteriorUnfurnishedAreas, interiorFurnishedAreas, interiorUnfurnishedAreas } = useGetCommonAreas()
 const { loading: loadingRoomFeatures, roomFeaturesList } = useGetRoomFeatures()
 const steps = ref([
   { id: 1, title: "Basic Property Information", completed: false },

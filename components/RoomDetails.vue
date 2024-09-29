@@ -90,7 +90,7 @@
       <!-- Conditional Fields Based on Availability -->
       <div v-if="availability === 'available_now'" class="mt-4 space-y-4">
         <div class="w-full mt-4">
-          <label class="block text-sm font-medium mb-2">Set pricesdfghjk</label>
+          <label class="block text-sm font-medium mb-2">Set prices</label>
           <div class="flex items-center bg-[#E4E7EC] border-[0.5px] border-gray-50 rounded-md px-3 py-2">
             <select
               v-model="rentFrequency"
