@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-lg shadow-sm p-4">
+  <div class="bg-white rounded- shadow-sm">
     <h2 class="text-xl font-semibold mb-6">Common Area</h2>
     
     <!-- Display common areas in a grid layout -->
@@ -14,6 +14,7 @@
               alt="common area image"
               class="w-full h-full object-cover transition-opacity"
             />
+            <img v-else src="@/assets/icons/image-unavailable.svg" alt="" class="h-20 w-20" />
             
             <!-- Previous button -->
             <button

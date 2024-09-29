@@ -56,12 +56,14 @@
             :key="fIndex"
             class="relative rounded-lg overflow-hidden shadow-md bg-white border"
           >
-            <div class="relative w-full h-32 flex items-center justify-center overflow-hidden">
+            <div class="relative w-full h-44 flex items-center justify-center overflow-hidden">
               <img
+                v-if="feature.images[0]"
                 :src="feature.images[0]"
                 alt="feature image"
                 class="w-full h-full object-cover transition-opacity"
               />
+              <img v-else src="@/assets/icons/image-unavailable.svg" class="h-20 w-20 mb-3" />
             </div>
             <p class="absolute bottom-0 left-0 w-full bg-gray-700 bg-opacity-70 text-white p-2 text-sm">
               {{ feature.name }}
