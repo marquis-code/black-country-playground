@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="pb-6 space-y-6">
+    <div v-if="!loading" class="pb-6 space-y-6">
       <div class="flex items-center justify-between space-x-4">
         <label class="text-lg text-[#1D2739]">Is the common area furnished?</label>
         <div class="flex space-x-2">
@@ -31,7 +31,7 @@
         <fieldset>
           <legend class="sr-only">Interior Checkboxes</legend>
 
-          <div v-if="isFurnishedCommonArea" class="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+          <div v-if="isFurnishedCommonArea"  class="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
             <label
               v-for="(item, index) in interiorFurnishedAreasList"
               :key="item.name"
@@ -295,12 +295,29 @@
         </div>
       </div>
     </div>
+    <section v-else>
+      <div class="rounded-md p-4 w-full mx-auto mt-10">
+        <div class="animate-pulse flex space-x-4">
+          <!-- <div class="rounded-md bg-slate-200 h-44 w-44"></div> -->
+          <div class="flex-1 space-y-6 py-1">
+            <div class="h-32 bg-slate-200 rounded"></div>
+            <div class="space-y-3">
+              <div class="grid grid-cols-3 gap-4">
+                <div class="h-32 w-full bg-slate-200 rounded col-span-2"></div>
+                <div class="h-32 w-full bg-slate-200 rounded col-span-1"></div>
+              </div>
+              <div class="h-32 w-full bg-slate-200 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+     </section>
 
     <!-- Emitted action buttons -->
     <slot name="action-buttons"></slot>
   </main>
 </template>
-<script lang="ts" setup>
+<!-- <script lang="ts" setup>
 import { useGetCommonAreas } from '@/composables/modules/property/fetchCommonAreas'
 const { commonAreasList: commonList } = useGetCommonAreas()
 const props = defineProps({
@@ -461,6 +478,312 @@ const setFurnishedStatus = (status: boolean) => {
   emit("updateCommonAreas", commonAreas.value);
 };
 
+
+// Save room data function
+const saveRoomData = (roomName: string) => {
+  emit('saveRoomData', roomName);
+};
+
+// Watcher for form changes
+watch([isFurnishedCommonArea, commonAreas], () => {
+  saveRoomData(currentRoomName.value);
+}, { deep: true });
+
+// Method to handle navigation between rooms
+const handleRoomTabChange = (newRoomName: string) => {
+  // Save current room data before switching
+  saveRoomData(currentRoomName.value);
+  currentRoomName.value = newRoomName;
+};
+
+// Method to handle the "Next" button click
+const handleNextButtonClick = () => {
+  // Save current room data
+  saveRoomData(currentRoomName.value);
+  // Logic to navigate to the next room
+};
+</script> -->
+
+
+<script lang="ts" setup>
+// Import the composable
+import { useGetCommonAreas } from '@/composables/modules/property/fetchCommonAreas'
+const { commonAreasList: commonList } = useGetCommonAreas()
+
+// Props setup
+const props = defineProps({
+  commonAreasList: {
+    type: Array,
+    default: () => []
+  },
+  interiorAreas: {
+    type: Array,
+    default: () => []
+  },
+  exteriorAreas: {
+    type: Array,
+    default: () => []
+  },
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  exteriorFurnishedAreasList: {
+    type: Array,
+    default: () => []
+  },
+  exteriorUnFurnishedAreasList: {
+    type: Array,
+    default: () => []
+  },
+  interiorFurnishedAreasList: {
+    type: Array,
+    default: () => []
+  },
+  interiorUnFurnishedAreasList: {
+    type: Array,
+    default: () => []
+  },
+  payload: {
+    type: Object,
+    default: () => {}
+  },
+});
+
+
+// Handle furnished status
+const commonArea = ref(false)
+const isFurnishedCommonCommonArea = ref(props?.payload?.isFurnishedCommonArea.value)
+const isFurnishedCommonArea = ref(props?.payload?.isFurnishedCommonArea.value)
+// onMounted(() => {
+//   props?.payload?.isFurnishedCommonArea.value
+// })
+
+// State for dynamically adding items
+const showInteriorInput = ref(false);
+const showExteriorInput = ref(false);
+const newInteriorItem = ref("");
+const newExteriorItem = ref("");
+
+// Track common areas in an array
+const commonAreas = ref<any[]>([]);
+
+// Current room name being edited
+const currentRoomName = ref<string>('Room 1');
+
+// Initialize with existing common areas selections from props
+onMounted(() => {
+  if (props.payload?.commonAreas?.value) {
+    commonAreas.value = props.payload.commonAreas.value;
+  }
+});
+
+// Emit event to notify parent component
+const emit = defineEmits(['updateCommonAreas', 'updateIsFurnished', 'saveRoomData']);
+
+// Add manual interior item and update the list
+const addInteriorItem = () => {
+  if (newInteriorItem.value.trim()) {
+    const newItem = {
+      name: newInteriorItem.value.trim(),
+      type: "interior",
+      canBeFurnished: isFurnishedCommonArea.value,
+      images: []
+    };
+    
+    // Categorize into furnished/unfurnished
+    if (isFurnishedCommonArea.value) {
+      props.interiorFurnishedAreasList.push(newItem);
+    } else {
+      props.interiorUnFurnishedAreasList.push(newItem);
+    }
+    
+    commonAreas.value.push(newItem);
+
+    newInteriorItem.value = "";
+    showInteriorInput.value = false;
+    emit("updateCommonAreas", commonAreas.value);
+  }
+};
+
+// Add manual exterior item and update the list
+const addExteriorItem = () => {
+  if (newExteriorItem.value.trim()) {
+    const newItem = {
+      name: newExteriorItem.value.trim(),
+      type: "exterior",
+      canBeFurnished: isFurnishedCommonArea.value,
+      images: []
+    };
+
+    // Categorize into furnished/unfurnished
+    if (isFurnishedCommonArea.value) {
+      props.exteriorFurnishedAreasList.push(newItem);
+    } else {
+      props.exteriorUnFurnishedAreasList.push(newItem);
+    }
+    
+    commonAreas.value.push(newItem);
+
+    newExteriorItem.value = "";
+    showExteriorInput.value = false;
+    emit("updateCommonAreas", commonAreas.value);
+  }
+};
+
+// Function to check if an item is already selected
+const isSelected = (item: string, type: string) => {
+  return commonAreas.value.some(
+    (area: any) => area.name === item && area.type === type
+  );
+};
+
+// // Function to toggle selection
+// const toggleSelection = (item: string, type: string) => {
+//   const index = commonAreas.value.findIndex(
+//     (area: any) => area.name === item && area.type === type
+//   );
+//   if (index > -1) {
+//     // Remove from all relevant lists
+//     commonAreas.value.splice(index, 1);
+//     removeFromCategorizedLists(item, type);
+//   } else {
+//     // Add to the appropriate list based on furnished status
+//     const newItem = {
+//       name: item,
+//       type,
+//       canBeFurnished: isFurnishedCommonArea.value,
+//       images: []
+//     };
+//     commonAreas.value.push(newItem);
+//     addToCategorizedLists(newItem);
+//   }
+//   emit("updateCommonAreas", commonAreas.value);
+// };
+
+// // Add the new item to the categorized lists
+// const addToCategorizedLists = (item: any) => {
+//   if (item.type === "interior") {
+//     if (item.canBeFurnished) {
+//       props.interiorFurnishedAreasList.push(item);
+//     } else {
+//       props.interiorUnFurnishedAreasList.push(item);
+//     }
+//   } else if (item.type === "exterior") {
+//     if (item.canBeFurnished) {
+//       props.exteriorFurnishedAreasList.push(item);
+//     } else {
+//       props.exteriorUnFurnishedAreasList.push(item);
+//     }
+//   }
+// };
+
+// Function to toggle selection
+const toggleSelection = (item: string, type: string) => {
+  const index = commonAreas.value.findIndex(
+    (area: any) => area.name === item && area.type === type
+  );
+  if (index > -1) {
+    // Remove from all relevant lists
+    commonAreas.value.splice(index, 1);
+    removeFromCategorizedLists(item, type);
+  } else {
+    // Add to the appropriate list based on furnished status, ensuring no duplication
+    const newItem = {
+      name: item,
+      type,
+      canBeFurnished: isFurnishedCommonArea.value,
+      images: []
+    };
+
+    // Ensure no duplicate before adding
+    const isAlreadyAdded = commonAreas.value.some(
+      (area: any) => area.name === newItem.name && area.type === newItem.type
+    );
+
+    if (!isAlreadyAdded) {
+      commonAreas.value.push(newItem);
+      addToCategorizedLists(newItem);
+    }
+  }
+  emit("updateCommonAreas", commonAreas.value);
+};
+
+// Add the new item to the categorized lists
+const addToCategorizedLists = (item: any) => {
+  if (item.type === "interior") {
+    const isAlreadyAdded = item.canBeFurnished
+      ? props.interiorFurnishedAreasList.some(
+          (area: any) => area.name === item.name
+        )
+      : props.interiorUnFurnishedAreasList.some(
+          (area: any) => area.name === item.name
+        );
+
+    if (!isAlreadyAdded) {
+      if (item.canBeFurnished) {
+        props.interiorFurnishedAreasList.push(item);
+      } else {
+        props.interiorUnFurnishedAreasList.push(item);
+      }
+    }
+  } else if (item.type === "exterior") {
+    const isAlreadyAdded = item.canBeFurnished
+      ? props.exteriorFurnishedAreasList.some(
+          (area: any) => area.name === item.name
+        )
+      : props.exteriorUnFurnishedAreasList.some(
+          (area: any) => area.name === item.name
+        );
+
+    if (!isAlreadyAdded) {
+      if (item.canBeFurnished) {
+        props.exteriorFurnishedAreasList.push(item);
+      } else {
+        props.exteriorUnFurnishedAreasList.push(item);
+      }
+    }
+  }
+};
+
+
+// Remove the item from the categorized lists
+const removeFromCategorizedLists = (name: string, type: string) => {
+  const removeFromList = (list: any[]) => {
+    const index = list.findIndex(item => item.name === name);
+    if (index > -1) {
+      list.splice(index, 1);
+    }
+  };
+  
+  if (type === "interior") {
+    removeFromList(props.interiorFurnishedAreasList);
+    removeFromList(props.interiorUnFurnishedAreasList);
+  } else if (type === "exterior") {
+    removeFromList(props.exteriorFurnishedAreasList);
+    removeFromList(props.exteriorUnFurnishedAreasList);
+  }
+};
+
+// onMounted(() => {
+//   isFurnishedCommonArea.value = props?.payload?.isFurnishedCommonArea.value
+// });
+
+const setFurnishedStatus = (status: boolean) => {
+  // Reset the common areas and the corresponding lists when the status changes
+  if (isFurnishedCommonArea.value !== status) {
+    commonAreas.value = [];
+    // props.interiorFurnishedAreasList.splice(0);
+    // props.interiorUnFurnishedAreasList.splice(0);
+    // props.exteriorFurnishedAreasList.splice(0);
+    // props.exteriorUnFurnishedAreasList.splice(0);
+  }
+
+  isFurnishedCommonArea.value = status;
+  props.payload.isFurnishedCommonArea.value = status;
+  emit("updateIsFurnished", status);
+  emit("updateCommonAreas", commonAreas.value);
+};
 
 // Save room data function
 const saveRoomData = (roomName: string) => {
