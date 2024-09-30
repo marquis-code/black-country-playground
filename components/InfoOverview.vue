@@ -156,9 +156,9 @@ const isExpanded = ref(false);
 
 // Computed property to get the truncated text
 const truncatedText = computed(() => {
-  return props.property.description.length > 50 
-    ? props.property.description.substring(0, 50) + '...' 
-    : props.property.description;
+  return props?.property?.description?.length > 50 
+    ? props?.property?.description.substring(0, 50) + '...' 
+    : props?.property?.description;
 });
 
 // Function to toggle the view between expanded and truncated text

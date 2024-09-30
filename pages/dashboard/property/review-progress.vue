@@ -585,9 +585,9 @@
           </div>
           <div>
             <h3 class="text-sm text-[#1D2739]">
-              {{ amenity.description }}
+              {{ amenity.name }}
             </h3>
-            <p class="text-sm text-[#667185]">{{ amenity.address }}</p>
+            <p class="text-sm text-[#667185]">{{ amenity.description }}</p>
           </div>
         </div>
       </div>

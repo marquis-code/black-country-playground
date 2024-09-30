@@ -46,8 +46,18 @@
 <script>
 import { GoogleMap, Marker } from "vue3-google-map";
 import { Loader } from "@googlemaps/js-api-loader";
-const userIcon = '@/assets/icons/current-location.svg'; // Add a URL for the user icon
-const amenityIcon = '@/assets/icons/current-location.svg'; // Add a URL for the amenity icon
+
+const typeMapping = {
+  school: "Schools",
+  hospital: "Hospitals",
+  restaurant: "Restaurants",
+  cafe: "Cafes",
+  park: "Parks",
+  gym: "Gyms",
+  church: "Churches",
+  lodging: "Hotels",
+  // Add other mappings as necessary
+};
 
 export default {
   name: "App",
@@ -60,44 +70,28 @@ export default {
   },
   data() {
     return {
-      // center: { lat: 40.689247, lng: -111.044502 }, // Default to a general location
       center: null,
       zoom: 15,
       googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-      autocomplete: null, // This will hold the autocomplete object
-      placesService: null, // To handle the Places API service
-      markers: [], // Store markers for amenities,
+      autocomplete: null,
+      placesService: null,
+      markers: [],
       locationSelected: false,
     };
   },
-  // mounted() {
-  //   // Set map center to the user's current location on mount
-  //   this.setCurrentLocation();
-  //   this.payload.latitude.value = 
-  //   this.payload.longitude.value = 
-  //   this.payload.address.value = 
-
-  //   // Initialize Autocomplete once the component is mounted
-  //   this.initAutocomplete();
-  // },
   mounted() {
     this.setCurrentLocation();
-  // Set the initial input value for the search field
-  if (this.payload.address.value) {
-    this.$refs.searchInput.value = this.payload.address.value; // Set input field value
-  }
-
-  // If latitude and longitude are provided, set the center
-  if (this.payload.latitude.value && this.payload.longitude.value) {
-    this.center = {
-      lat: this.payload.latitude.value,
-      lng: this.payload.longitude.value,
-    };
-  }
-
-  // Initialize Autocomplete once the component is mounted
-  this.initAutocomplete();
-},
+    if (this.payload.address.value) {
+      this.$refs.searchInput.value = this.payload.address.value;
+    }
+    if (this.payload.latitude.value && this.payload.longitude.value) {
+      this.center = {
+        lat: this.payload.latitude.value,
+        lng: this.payload.longitude.value,
+      };
+    }
+    this.initAutocomplete();
+  },
   methods: {
     setCurrentLocation() {
       if (navigator.geolocation) {
@@ -107,117 +101,97 @@ export default {
               lat: position.coords.latitude,
               lng: position.coords.longitude,
             };
-            this.zoom = 15; // Adjust the zoom level if needed
+            this.zoom = 15;
           },
-          (error) => {
-            console.error("Error getting user location: ", error);
-          }
+          (error) => console.error("Error getting user location:", error)
         );
       } else {
         console.error("Geolocation is not supported by this browser.");
       }
     },
     initAutocomplete() {
-      // Load Google Maps places library
       const loader = new Loader({
         apiKey: this.googleMapsApiKey,
         version: "weekly",
         libraries: ["places"],
       });
-
-      loader
-        .load()
-        .then(() => {
-          const input = this.$refs.searchInput;
-          this.autocomplete = new google.maps.places.Autocomplete(input);
-
-          // Add a listener for the place changed event
-          this.autocomplete.addListener("place_changed", this.onPlaceChanged);
-
-          // Initialize Places service for nearby searches
-          const map = new google.maps.Map(document.createElement('div')); // Temporary map for places service
-          this.placesService = new google.maps.places.PlacesService(map);
-        })
-        .catch((error) => {
-          console.error("Error loading Google Maps API:", error);
-        });
+      loader.load().then(() => {
+        const input = this.$refs.searchInput;
+        this.autocomplete = new google.maps.places.Autocomplete(input);
+        this.autocomplete.addListener("place_changed", this.onPlaceChanged);
+        const map = new google.maps.Map(document.createElement("div"));
+        this.placesService = new google.maps.places.PlacesService(map);
+      });
     },
     onPlaceChanged() {
       const place = this.autocomplete.getPlace();
-
-      if (!place.geometry) {
-        console.error("No details available for the selected place");
-        return;
-      }
-
-      // Update the map center to the new location
+      if (!place.geometry) return;
       this.center = {
         lat: place.geometry.location.lat(),
         lng: place.geometry.location.lng(),
       };
-
-      // Populate selected location data into props
       this.populateSelectedLocationData(place);
-
-      // Optionally, update the zoom level to fit the selected place better
       this.zoom = 15;
-
-      // Search for amenities near the selected place
       this.searchNearbyAmenities();
     },
     populateSelectedLocationData(place) {
-      // Set the payload values with selected location data
-      this.$emit('update:payload', {
+      this.$emit("update:payload", {
         ...this.payload,
         latitude: { value: place.geometry.location.lat() },
         longitude: { value: place.geometry.location.lng() },
-        address: { value: place.formatted_address || place.name }, // Using formatted_address or place name
-        neighbouringLandmarks: { value: [] } // Initialize as an empty array for now
+        address: { value: place.formatted_address || place.name },
+        neighbouringLandmarks: { value: [] },
       });
       this.locationSelected = true;
-      this.payload.latitude.value = place.geometry.location.lat()
-      this.payload.longitude.value = place.geometry.location.lng()
-      this.payload.address.value = place.formatted_address || place.name
+      this.payload.latitude.value = place.geometry.location.lat();
+      this.payload.longitude.value = place.geometry.location.lng();
+      this.payload.address.value = place.formatted_address || place.name;
     },
     searchNearbyAmenities() {
-      if (!this.placesService) {
-        console.error("Places Service not initialized");
-        return;
-      }
-
-      // Clear previous markers
+      if (!this.placesService) return;
       this.markers = [];
-
-      // Set up request parameters for the nearby search
       const request = {
         location: this.center,
-        radius: 1500, // Define the radius (in meters) to search for amenities
-        type: ['restaurant', 'cafe', 'park', 'gym', 'hospitals', 'schools', 'church'], // Add more amenity types as needed
+        radius: 1500,
+        type: [
+          "restaurant",
+          "cafe",
+          "park",
+          "gym",
+          "hospital",
+          "school",
+          "church",
+        ],
       };
-
-      // Perform the nearby search
       this.placesService.nearbySearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-          // Emit the amenities found
           this.emitAmenitiesData(results);
-        } else {
-          console.error("Error retrieving nearby amenities: ", status);
         }
       });
     },
     emitAmenitiesData(amenities) {
-      // Format and emit the amenities data to the parent component
-      const formattedAmenities = amenities.map((place) => ({
-        name: place.name,
-        type: place.types.join(", "), // Joining types for display
-        description: place.vicinity, // Description can be set to vicinity or custom
-        longitude: place.geometry.location.lng(),
-        latitude: place.geometry.location.lat(),
-        address: place.vicinity,
-      }));
+      console.log(amenities, 'here are the amenities')
+      // Create a flat array to hold all amenities
+      const amenitiesArray = amenities
+        .map((place) => {
+          const mainType = place.types.find((type) => typeMapping[type]);
+          if (mainType) {
+            const simplifiedType = typeMapping[mainType];
 
-      // Store markers for each amenity
-      this.markers = formattedAmenities.map(amenity => ({
+            return {
+              name: place.name,
+              address: place.vicinity,
+              description: place.vicinity,
+              latitude: place.geometry.location.lat(),
+              longitude: place.geometry.location.lng(),
+              type: simplifiedType,
+            };
+          }
+        })
+        .filter(Boolean); // Remove any undefined entries
+
+      // Update markers based on the new structure
+      this.markers = amenitiesArray.map((amenity) => ({
         name: amenity.name,
         location: {
           lat: amenity.latitude,
@@ -225,23 +199,20 @@ export default {
         },
       }));
 
-      // Update props with neighbouring landmarks data
-      this.$emit('update:payload', {
+      // Emit the data as a flat array of objects
+      this.$emit("update:payload", {
         ...this.payload,
-        neighbouringLandmarks: { value: formattedAmenities },
+        neighbouringLandmarks: { value: amenitiesArray },
       });
 
-      this.payload.neighbouringLandmarks.value = formattedAmenities
-
-      // Example of how to log the amenities data
-      console.log("Nearby amenities:", formattedAmenities);
+      this.payload.neighbouringLandmarks.value = amenitiesArray;
     },
   },
 };
 </script>
 
 <style>
-/* Optional Styling */
+/* Optional styling for search box or other components */
 #search-box {
   width: 100%;
   padding: 10px;
