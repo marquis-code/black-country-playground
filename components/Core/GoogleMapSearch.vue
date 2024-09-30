@@ -192,7 +192,7 @@ export default {
       const request = {
         location: this.center,
         radius: 1500, // Define the radius (in meters) to search for amenities
-        type: ['restaurant', 'cafe', 'park', 'gym'], // Add more amenity types as needed
+        type: ['restaurant', 'cafe', 'park', 'gym', 'hospitals', 'schools', 'church'], // Add more amenity types as needed
       };
 
       // Perform the nearby search
