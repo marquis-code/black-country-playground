@@ -221,7 +221,7 @@
         </div>
       </div> -->
 
-      <div class="overflow-x-auto scrollbar-hidden">
+      <!-- <div class="overflow-x-auto scrollbar-hidden">
         <div class="mb-4 flex space-x-2 w-max">
           <button
             v-for="type in amenityTypes"
@@ -237,6 +237,41 @@
             {{ type }}
           </button>
         </div>
+      </div> -->
+      <div class="relative">
+        <!-- Left Arrow -->
+        <button
+          v-if="isScrollable && showLeftArrow"
+          @click="scrollLeft"
+          class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white shadow-lg p-2 rounded-full z-10"
+        >
+          &#9664;
+        </button>
+    
+        <div class="overflow-x-auto scrollbar-hidden" ref="scrollContainer" @scroll="checkScrollPosition">
+          <div class="mb-4 flex space-x-2 w-max relative">
+            <button
+              v-for="type in amenityTypes"
+              :key="type"
+              @click="toggleVisibility(type)"
+              :class="[
+                'px-4 py-2 rounded text-sm',
+                visibleType === type ? 'bg-[#EBE5E0] text-[#344054]' : 'bg-[#F0F2F5]',
+              ]"
+            >
+              {{ type }}
+            </button>
+          </div>
+        </div>
+    
+        <!-- Right Arrow -->
+        <button
+          v-if="isScrollable && showRightArrow"
+          @click="scrollRight"
+          class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white shadow-lg p-2 rounded-full z-10"
+        >
+          &#9654;
+        </button>
       </div>
 
       <div
@@ -301,7 +336,7 @@
           <h3 class="text-sm text-[#1D2739]">
             {{ amenity.description }}
           </h3>
-          <p class="text-sm text-[#667185]">{{ amenity.address }}</p>
+          <p class="text-sm text-[#667185]">{{ amenity.name }}</p>
         </div>
       </div>
     </div>
@@ -430,6 +465,52 @@ onMounted(() => {
 const toggleVisibility = (type: any) => {
   visibleType.value = visibleType.value === type ? null : type;
 };
+
+
+// const visibleType = ref<string>(''); // Visible type tracking
+  const scrollContainer = ref<HTMLElement | null>(null);
+
+const isScrollable = ref(false); // To track if the content is scrollable
+const showLeftArrow = ref(false); // To track visibility of the left arrow
+const showRightArrow = ref(false); // To track visibility of the right arrow
+
+// const toggleVisibility = (type: string) => {
+//   visibleType.value = type;
+// };
+
+const scrollLeft = () => {
+  if (scrollContainer.value) {
+    scrollContainer.value.scrollBy({ left: -100, behavior: 'smooth' });
+  }
+};
+
+const scrollRight = () => {
+  if (scrollContainer.value) {
+    scrollContainer.value.scrollBy({ left: 100, behavior: 'smooth' });
+  }
+};
+
+const checkScrollPosition = () => {
+  if (scrollContainer.value) {
+    const scrollLeft = scrollContainer.value.scrollLeft;
+    const scrollWidth = scrollContainer.value.scrollWidth;
+    const clientWidth = scrollContainer.value.clientWidth;
+
+    showLeftArrow.value = scrollLeft > 0;
+    showRightArrow.value = scrollLeft + clientWidth < scrollWidth;
+  }
+};
+
+onMounted(() => {
+  // Check if the scroll is necessary (if content overflows)
+  if (scrollContainer.value) {
+    const clientWidth = scrollContainer.value.clientWidth;
+    const scrollWidth = scrollContainer.value.scrollWidth;
+
+    isScrollable.value = scrollWidth > clientWidth;
+    checkScrollPosition();
+  }
+});
 </script>
 
 <!-- Custom CSS to hide scrollbar -->
@@ -442,4 +523,24 @@ const toggleVisibility = (type: any) => {
 .hide-scrollbar::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
 }
+
+  /* Custom scrollbar styling */
+  .scrollbar-hidden::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .scrollbar-hidden::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
+  }
+  
+  .scrollbar-hidden::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-hidden {
+    scrollbar-color: #ccc transparent;
+    scrollbar-width: thin;
+  }
 </style>

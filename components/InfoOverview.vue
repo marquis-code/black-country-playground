@@ -2,10 +2,18 @@
 <main>
               <!-- Property Description -->
               <h2  class="text-base text-[#1D2739] font-medium bg-white border-[0.5px] py-3 px-3 rounded-sm border-gray-50">Property Description</h2>
-              <div class="pt-4 bg-white rounded-lg border-gray-50 p-3 border-[0.5px] text-sm">
+              <!-- <div class="pt-4 bg-white rounded-lg border-gray-50 p-3 border-[0.5px] text-sm">
                 <p class="text-[#1D2739] mt-2  leading-snug text-sm">
                   {{property.description ?? 'Nil'}}
                   <a v-if="property?.description?.length > 50" href="#" class="text-blue-500">View more</a>
+                </p>
+              </div> -->
+              <div class="pt-4 bg-white rounded-lg border-gray-50 p-3 border-[0.5px] text-sm">
+                <p class="text-[#1D2739] mt-2 leading-snug text-sm">
+                  {{ isExpanded ? property.description : truncatedText }}
+                  <a v-if="property?.description?.length > 50" href="#" @click.prevent="toggleView" class="text-blue-500">
+                    {{ isExpanded ? 'View less' : 'View more' }}
+                  </a>
                 </p>
               </div>
         
@@ -142,4 +150,19 @@ if(props.property.rooms){
   });
 }
 });
+
+// Reactive state to track if the full text is expanded
+const isExpanded = ref(false);
+
+// Computed property to get the truncated text
+const truncatedText = computed(() => {
+  return props.property.description.length > 50 
+    ? props.property.description.substring(0, 50) + '...' 
+    : props.property.description;
+});
+
+// Function to toggle the view between expanded and truncated text
+const toggleView = () => {
+  isExpanded.value = !isExpanded.value;
+};
 </script>
