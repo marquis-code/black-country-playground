@@ -189,13 +189,13 @@
             </button>
           </div>
         </div>
-        <div class="mt-6">
+        <!-- <div class="mt-6">
           <button
             class="mt-4 w-full bg-[#292929] text-white py-3 text-sm rounded-md"
           >
             Send application
           </button>
-        </div>
+        </div> -->
       </div>
 
       <h3

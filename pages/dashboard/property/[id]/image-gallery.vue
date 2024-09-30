@@ -72,7 +72,7 @@
         </div>
        </section>
   <section v-else class="grid grid-cols-3 gap-6 max-w-10xl mx-auto">
-    <section v-for="image in propertyObj.images" :key="image.id">
+    <section v-for="image in allImages" :key="image.id">
         <div>
            <img :src="image" class="rounded-md" />
         </div>
@@ -87,9 +87,12 @@ import { useUserInitials } from '@/composables/core/useUserInitials'
 import { useUser } from '@/composables/auth/user'
 import Layout from '@/layouts/dashboard.vue';
 import { useFetchProperty } from "@/composables/modules/property/fetchProperty";
+import { useImageExtractor } from '@/composables/core/useExtractImages'; 
 const { propertyObj, loading } = useFetchProperty();
 const router = useRouter()
 const { user } = useUser()
+const { extractImages } = useImageExtractor();
+const allImages = computed(() => extractImages(propertyObj.value));
 
 definePageMeta({
      middleware: 'auth'

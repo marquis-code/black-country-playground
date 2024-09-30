@@ -1,9 +1,9 @@
 <template>
 <main>
-  <div v-if="images" class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6 p-6 lg:p-0">
+  <div v-if="allImages" class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6 p-6 lg:p-0">
     <!-- Main Image -->
     <div>
-      <img :src="images[0]" alt="Main Image" class="rounded-lg w-full" />
+      <img :src=" allImages[0]" alt="Main Image" class="rounded-lg w-full" />
     </div>
 
     <!-- Smaller Images on the right -->
@@ -20,7 +20,7 @@
       <!-- 'View all' overlay for the last image if there are more than 5 images -->
       <div v-if="remainingImagesCount > 0" class="relative cursor-pointer" @click="navigateToAllImages">
         <img
-          :src="images[4]"
+          :src=" allImages[4]"
           alt="Image 5"
           class="rounded-lg w-full"
         />
@@ -37,13 +37,18 @@
   <script setup lang="ts">
   import { computed } from 'vue';
   import { useRouter } from 'nuxt/app';
+  import { useImageExtractor } from '@/composables/core/useExtractImages'; 
+
+  const props = defineProps<Props>();
+  
+  const { extractImages } = useImageExtractor();
+  const allImages = computed(() => extractImages(props.propertyObj));
   
   // Accept the images as a prop
   interface Props {
     images: string[];
     propertyObj: Object
   }
-  const props = defineProps<Props>();
   
   const router = useRouter();
   

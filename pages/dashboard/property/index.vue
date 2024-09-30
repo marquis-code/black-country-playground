@@ -128,9 +128,12 @@
       cancelButtonText="Cancel" />
 
     <!-- Reusable Modal for Deactivate Property -->
-    <CoreReusableModal :loading="deactivating" :isOpen="deactivateModal" @close="deactivateModal = false" @confirm="handleDeactivateConfirm"
-      title="Deactivate Property" message="Deactivating this property will make it unavailable for new inquiries and listings. You can reactivate it at any time."
-      confirmButtonText="Yes, deactivate" cancelButtonText="Cancel" />
+    <!-- <CoreReusableModal :loading="deactivating" :isOpen="deactivateModal" @close="deactivateModal = false" @confirm="handleDeactivateConfirm"
+      title="Deactivate Property" :message="`${selectedObj.isPublished ? 'Deactivating this property will make it unavailable for new inquiries and listings. You can reactivate it at any time.' : 'Activating this property will make it available for new inquiries and listings. You can reactivate it at any time.'}`"
+      confirmButtonText="Yes, deactivate" cancelButtonText="Cancel" /> -->
+      <CoreReusableModal :loading="deactivating" :isOpen="deactivateModal" @close="deactivateModal = false" @confirm="handleDeactivateConfirm"
+      :title="`${selectedObj.isPublished ? 'Deactivate' : 'Activate'} Property`" :message="`${selectedObj.isPublished ? 'Deactivating this property will make it unavailable for new inquiries and listings. You can reactivate it at any time.' : 'Activating this property will make it available for new inquiries and listings. You can de-activate it at any time.'}`"
+      :confirmButtonText="`${selectedObj.isPublished ? 'Yes, deactivate' : 'Yes, Activate'}`" cancelButtonText="Cancel" />
 
     <!-- Reusable Modal for Duplicate Property -->
     <CoreReusableModal :loading="duplicating" :isOpen="duplicateModal" @close="duplicateModal = false" @confirm="handleDuplicateConfirm"
@@ -221,18 +224,46 @@ const handleDeleteConfirm = async () => {
   }
 };
 
+// const handleDeactivateConfirm = async () => {
+//   try {
+//    if(selectedObj.value.isPublished){
+//     await deactivateProperty(selectedObj.value.id, 'deactivate'); // Wait for the deactivation to complete
+//    } else {
+//     await deactivateProperty(selectedObj.value.id, 'activate'); // Wait for the deactivation to complete
+//    }
+//     deactivateModal.value = false; // Update the modal state
+//     if(selectedObj.value.isPublished){
+//       router.push(`/dashboard/property/${selectedObj.value.id}/deactivate-success`); // Navigate to the success page
+//     } else {
+//       router.push(`/dashboard/property/${selectedObj.value.id}/activate-success`); // Navigate to the success page
+//     }
+//   } catch (error) {
+//     useNuxtApp().$toast.error("YError deactivating property:", {
+//       autoClose: 5000,
+//       dangerouslyHTMLString: true,
+//     });
+//   }
+// };
+
 const handleDeactivateConfirm = async () => {
   try {
-    await deactivateProperty(selectedObj.value.id); // Wait for the deactivation to complete
-    deactivateModal.value = false; // Update the modal state
-    router.push(`/dashboard/property/${selectedObj.value.id}/deactivate-success`); // Navigate to the success page
+    const actionType = selectedObj.value.isPublished ? 'deactivate' : 'activate';
+    const successRoute = selectedObj.value.isPublished 
+      ? `/dashboard/property/${selectedObj.value.id}/deactivate-success` 
+      : `/dashboard/property/${selectedObj.value.id}/activate-success`;
+
+    await deactivateProperty(selectedObj.value.id, actionType); // Wait for the action to complete
+
+    deactivateModal.value = false; // Close the modal
+    router.push(successRoute); // Navigate to the success page
   } catch (error) {
-    useNuxtApp().$toast.error("YError deactivating property:", {
+    useNuxtApp().$toast.error("Error processing property action.", {
       autoClose: 5000,
       dangerouslyHTMLString: true,
     });
   }
 };
+
 
 
 const handleDuplicateConfirm = async () => {

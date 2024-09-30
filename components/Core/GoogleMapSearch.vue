@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
   <div>
    <div class="relative">
     <svg class="absolute left-3 top-4" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -13,7 +13,7 @@
       placeholder="Search for a location"
       class="py-3 w-full pl-10 outline-none border border-gray-100 rounded-t-md"
     />
-    <svg id="tick-marker" class="absolute right-3 top-4" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg v-if="locationSelected"  class="absolute right-3 top-4" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M14.1641 2.78184C12.9383 2.0728 11.5152 1.66699 9.9974 1.66699C5.39502 1.66699 1.66406 5.39795 1.66406 10.0003C1.66406 14.6027 5.39502 18.3337 9.9974 18.3337C14.5997 18.3337 18.3307 14.6027 18.3307 10.0003C18.3307 9.42958 18.2733 8.87216 18.1641 8.33366" stroke="#5B8469" stroke-width="2" stroke-linecap="round"/>
       <path d="M6.66406 10.417C6.66406 10.417 7.91406 10.417 9.58073 13.3337C9.58073 13.3337 14.2131 5.69477 18.3307 4.16699" stroke="#5B8469" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -31,14 +31,14 @@
           icon: userIcon 
         }" 
       />
-      <Marker
+      <!-- <Marker
         v-for="(marker, index) in markers"
         :key="index"
         :options="{
           position: marker.location, 
           icon: amenityIcon 
         }"
-      />
+      /> -->
     </GoogleMap>
   </div>
 </template>
@@ -60,12 +60,14 @@ export default {
   },
   data() {
     return {
-      center: { lat: 40.689247, lng: -111.044502 }, // Default to a general location
+      // center: { lat: 40.689247, lng: -111.044502 }, // Default to a general location
+      center: null,
       zoom: 15,
-      googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY, // Accessing API key correctly
+      googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
       autocomplete: null, // This will hold the autocomplete object
       placesService: null, // To handle the Places API service
-      markers: [], // Store markers for amenities
+      markers: [], // Store markers for amenities,
+      locationSelected: false,
     };
   },
   // mounted() {
@@ -79,6 +81,7 @@ export default {
   //   this.initAutocomplete();
   // },
   mounted() {
+    this.setCurrentLocation();
   // Set the initial input value for the search field
   if (this.payload.address.value) {
     this.$refs.searchInput.value = this.payload.address.value; // Set input field value
@@ -100,7 +103,6 @@ export default {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            console.log(position, 'position here')
             this.center = {
               lat: position.coords.latitude,
               lng: position.coords.longitude,
@@ -172,6 +174,7 @@ export default {
         address: { value: place.formatted_address || place.name }, // Using formatted_address or place name
         neighbouringLandmarks: { value: [] } // Initialize as an empty array for now
       });
+      this.locationSelected = true;
       this.payload.latitude.value = place.geometry.location.lat()
       this.payload.longitude.value = place.geometry.location.lng()
       this.payload.address.value = place.formatted_address || place.name
@@ -203,7 +206,6 @@ export default {
       });
     },
     emitAmenitiesData(amenities) {
-      console.log(amenities, 'all amenities data');
       // Format and emit the amenities data to the parent component
       const formattedAmenities = amenities.map((place) => ({
         name: place.name,
@@ -245,243 +247,4 @@ export default {
   padding: 10px;
   font-size: 16px;
 }
-</style>  -->
-
-
-<template>
-  <div>
-    <div class="relative">
-      <svg class="absolute left-3 top-4" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M5.83594 15C4.31183 15.3431 3.33594 15.8703 3.33594 16.4614C3.33594 17.4953 6.3207 18.3333 10.0026 18.3333C13.6845 18.3333 16.6693 17.4953 16.6693 16.4614C16.6693 15.8703 15.6934 15.3431 14.1693 15" stroke="#292929" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M12.0807 7.50033C12.0807 8.65091 11.148 9.58366 9.9974 9.58366C8.84681 9.58366 7.91406 8.65091 7.91406 7.50033C7.91406 6.34973 8.84681 5.41699 9.9974 5.41699C11.148 5.41699 12.0807 6.34973 12.0807 7.50033Z" stroke="#292929" stroke-width="1.5"/>
-        <path d="M11.0452 14.5783C10.7641 14.849 10.3885 15.0003 9.99756 15.0003C9.60656 15.0003 9.2309 14.849 8.94981 14.5783C6.37598 12.0843 2.92672 9.29824 4.60882 5.25343C5.51831 3.06643 7.70151 1.66699 9.99756 1.66699C12.2936 1.66699 14.4767 3.06643 15.3862 5.25343C17.0662 9.29316 13.6254 12.0929 11.0452 14.5783Z" stroke="#292929" stroke-width="1.5"/>
-      </svg>
-
-      <input
-        ref="searchInput"
-        type="text"
-        placeholder="Search for a location"
-        class="py-3 w-full pl-10 outline-none border border-gray-100 rounded-t-md"
-      />
-      
-      <!-- Show tick marker only when a location is selected -->
-      <svg
-        v-if="locationSelected"
-        id="tick-marker"
-        class="absolute right-3 top-4"
-        width="20"
-        height="20"
-        viewBox="0 0 20 20"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M14.1641 2.78184C12.9383 2.0728 11.5152 1.66699 9.9974 1.66699C5.39502 1.66699 1.66406 5.39795 1.66406 10.0003C1.66406 14.6027 5.39502 18.3337 9.9974 18.3337C14.5997 18.3337 18.3307 14.6027 18.3307 10.0003C18.3307 9.42958 18.2733 8.87216 18.1641 8.33366" stroke="#5B8469" stroke-width="2" stroke-linecap="round"/>
-        <path d="M6.66406 10.417C6.66406 10.417 7.91406 10.417 9.58073 13.3337C9.58073 13.3337 14.2131 5.69477 18.3307 4.16699" stroke="#5B8469" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      
-    </div>
-    <GoogleMap
-      :api-key="googleMapsApiKey"
-      style="width: 100%; height: 500px"
-      :center="center"
-      :zoom="zoom"
-      @click="handleMapClick"
-    >
-      <Marker 
-        v-for="(marker, index) in markers"
-        :key="index"
-        :options="{
-          position: {
-            lat: marker.lat,
-            lng: marker.lng
-          },
-          icon: userIcon
-        }"
-      />
-      <InfoWindow
-        v-if="selectedMarker"
-        :options="{
-          position: {
-            lat: selectedMarker.lat,
-            lng: selectedMarker.lng
-          }
-        }"
-        :content="selectedMarker.name"
-      />
-    </GoogleMap>
-  </div>
-</template>
-
-<script>
-import { GoogleMap, Marker, InfoWindow } from "vue3-google-map"; // Import InfoWindow
-import { Loader } from "@googlemaps/js-api-loader";
-const userIcon = '@/assets/icons/current-location.svg'; // Add a URL for the user icon
-
-export default {
-  name: "App",
-  components: { GoogleMap, Marker, InfoWindow }, // Register InfoWindow component
-  props: {
-    payload: {
-      type: Object,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      center: null,
-      zoom: 15,
-      googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-      autocomplete: null,
-      placesService: null,
-      markers: [], // Hold markers for both user location and searched location
-      locationSelected: false,
-      selectedMarker: null, // To hold the currently selected marker
-    };
-  },
-  mounted() {
-    this.setCurrentLocation();
-
-    if (this.payload.address.value) {
-      this.$refs.searchInput.value = this.payload.address.value; // Set input field value
-    }
-
-    if (this.payload.latitude.value && this.payload.longitude.value) {
-      this.center = {
-        lat: this.payload.latitude.value,
-        lng: this.payload.longitude.value,
-      };
-    }
-
-    this.initAutocomplete();
-  },
-  methods: {
-    setCurrentLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            this.center = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            };
-            this.zoom = 15; // Adjust the zoom level if needed
-
-            // Place a marker at the user's default location
-            this.markers.push({
-              lat: this.center.lat,
-              lng: this.center.lng,
-              name: "Your Location", // You can customize the name
-            });
-          },
-          (error) => {
-            console.error("Error getting user location: ", error);
-            // Fallback to a default location if geolocation fails
-            this.center = { lat: 40.712776, lng: -74.005974 }; // Default to New York City (example)
-            // Place a marker at the default location
-            this.markers.push({
-              lat: this.center.lat,
-              lng: this.center.lng,
-              name: "Default Location", // You can customize the name
-            });
-          }
-        );
-      } else {
-        console.error("Geolocation is not supported by this browser.");
-        // Fallback to a default location if geolocation is not supported
-        this.center = { lat: 40.712776, lng: -74.005974 }; // Default to New York City (example)
-        // Place a marker at the default location
-        this.markers.push({
-          lat: this.center.lat,
-          lng: this.center.lng,
-          name: "Default Location", // You can customize the name
-        });
-      }
-    },
-    initAutocomplete() {
-      const loader = new Loader({
-        apiKey: this.googleMapsApiKey,
-        version: "weekly",
-        libraries: ["places"],
-      });
-
-      loader
-        .load()
-        .then(() => {
-          const input = this.$refs.searchInput;
-          this.autocomplete = new google.maps.places.Autocomplete(input);
-
-          this.autocomplete.addListener("place_changed", this.onPlaceChanged);
-
-          const map = new google.maps.Map(document.createElement('div'));
-          this.placesService = new google.maps.places.PlacesService(map);
-        })
-        .catch((error) => {
-          console.error("Error loading Google Maps API:", error);
-        });
-    },
-    onPlaceChanged() {
-      const place = this.autocomplete.getPlace();
-
-      if (!place.geometry) {
-        console.error("No details available for the selected place");
-        return;
-      }
-
-      // Clear previous markers and add the new one for the searched location
-      this.markers = [
-        {
-          lat: place.geometry.location.lat(),
-          lng: place.geometry.location.lng(),
-          name: place.formatted_address,
-        },
-      ];
-
-      this.center = {
-        lat: place.geometry.location.lat(),
-        lng: place.geometry.location.lng(),
-      };
-
-      this.locationSelected = true; // Indicate that a location has been selected
-
-      this.$emit("update:payload", {
-        latitude: { value: place.geometry.location.lat() },
-        longitude: { value: place.geometry.location.lng() },
-        address: { value: place.formatted_address },
-      });
-      this.payload.latitude.value = place.geometry.location.lat()
-      this.payload.longitude.value = place.geometry.location.lng()
-      this.payload.address.value = place.formatted_address || place.name
-    },
-    searchNearbyAmenities() {
-      const request = {
-        location: new google.maps.LatLng(this.center.lat, this.center.lng),
-        radius: '500', // Search within a 500-meter radius
-        types: ['restaurant', 'hospital', 'park'], // Example types
-      };
-
-      this.placesService.nearbySearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          this.markers.push(...results.map((place) => ({
-            lat: place.geometry.location.lat(),
-            lng: place.geometry.location.lng(),
-            name: place.name,
-            type: place.types[0], // Use the first type as an example
-          })));
-        }
-      });
-    },
-    handleMapClick(event) {
-      const lat = event.latLng.lat();
-      const lng = event.latLng.lng();
-      this.center = { lat, lng };
-      this.searchNearbyAmenities();
-    },
-    showInfoWindow(marker) {
-      this.selectedMarker = marker;
-    },
-  },
-};
-</script>
-
-<style scoped>
-/* Add any necessary styles */
 </style>
