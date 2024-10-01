@@ -171,85 +171,6 @@ export const use_create_property = () => {
     }
   };
 
-
-  // const save_property = async () => {
-  //   // Remove rooms that have no features array
-  //   const filteredRooms = runtimePayload.rooms.value
-  //     .filter((room) => Array.isArray(room.features) && room.features.length > 0)
-  //     .map((room) => {
-  //       // Remove empty fields from each room
-  //       return Object.keys(room).reduce((acc, key) => {
-  //         const value = room[key];
-
-  //         // Check if the value is non-empty and should be included
-  //         if (
-  //           value !== null &&
-  //           value !== "" &&
-  //           !(Array.isArray(value) && value.length === 0)
-  //         ) {
-  //           acc[key] = value;
-  //         }
-
-  //         return acc;
-  //       }, {});
-  //     });
-
-  //   // Convert specific fields to numbers before creating the final payload
-  //   const finalPayload = Object.keys(runtimePayload).reduce((acc, key) => {
-  //     acc[key] = (['size', 'bedroomCount', 'bathroomCount', 'floorNumber'].includes(key) && runtimePayload[key].value !== null)
-  //       ? Number(runtimePayload[key].value)
-  //       : runtimePayload[key].value;
-  //     return acc;
-  //   }, { isPublished: true });
-
-  //   // Set the cleaned and filtered rooms into the final payload
-  //   finalPayload.rooms = filteredRooms;
-
-  //   console.log(finalPayload);
-
-  //   saving.value = true;
-  //   try {
-  //     const res = await property_api.$_create(finalPayload) as any
-  //     console.log(res, 'Hello')
-  //     if (res.type !== "ERROR") {
-  //       // Property created successfully, reset the payload
-  //       resetPayload();
-  //       Router.push("/dashboard/property/draft-success");
-  //     }
-  //   } catch (error) {
-  //     if (error.response) {
-  //       // Error response from the server
-  //       const errorMessage = error.response.data?.message || 'An error occurred while creating the property.';
-  //       const errorDetails = error.response.data?.errors || [];
-        
-  //       console.error('Error details:', errorDetails); // Log error details to the console for debugging
-
-  //       // Display error message to the user
-  //       useNuxtApp().$toast.error(errorMessage, {
-  //         autoClose: 5000,
-  //         dangerouslyHTMLString: true,
-  //       });
-        
-  //     } else if (error.request) {
-  //       // Request made but no response received
-  //       console.error('No response received:', error.request);
-  //       useNuxtApp().$toast.error('No response from the server. Please check your network connection.', {
-  //         autoClose: 5000,
-  //         dangerouslyHTMLString: true,
-  //       });
-  //     } else {
-  //       // Other errors (e.g., unexpected exceptions)
-  //       console.error('Error:', error.message);
-  //       useNuxtApp().$toast.error(`Unexpected error: ${error.message}`, {
-  //         autoClose: 5000,
-  //         dangerouslyHTMLString: true,
-  //       });
-  //     }
-  //   } finally {
-  //     saving.value = false;
-  //   }
-  // };
-
   const save_property = async () => {
     // Remove rooms that have no features array
     const filteredRooms = runtimePayload.rooms.value
@@ -330,19 +251,6 @@ export const use_create_property = () => {
       saving.value = false;
     }
   };
-
-  // const floorObj = computed(() => {
-  //   return flooringsList.value.find((item) => item.id === runtimePayload.flooringTypeId.value)
-  // })
-
-  // const propertyObj = computed(() => {
-  //   return propertyTypesList.value.find((item) => item.id === runtimePayload.houseTypeId.value)
-  // })
-
-//   onMounted(() => {
-//     getPropertyTypes()
-//     geFloorings()
-// })
 
   return { payload: runtimePayload, create_property, loading, saving, save_property, resetPayload };
 };
