@@ -84,7 +84,7 @@
                   alt="settings"
                   class="h-6 w-6"
                 />
-                Settingsssssss
+                Settings
               </a>
               <button
                 @click="showBLogoutModal = true"
