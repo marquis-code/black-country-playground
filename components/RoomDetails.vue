@@ -79,8 +79,8 @@
             v-for="option in availabilityOptions"
             :key="option.value"
             @click="setAvailability(option.value)"
-            :class="{ 'border-[#5B8469] border bg-gray-100': availability === option.value, 'border-gray-200 border': availability !== option.value }"
-            class="rounded-lg text-[#1D2739] text-sm px-6 py-2 cursor-pointer"
+            :class="{ 'border-[#5B8469] text-[#5B8469] border-2 bg-white': availability === option.value, 'border-gray-200 border': availability !== option.value }"
+            class="rounded-lg text-sm px-6 py-2 cursor-pointer"
           >
             {{ option.label }}
           </button>

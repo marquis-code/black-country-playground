@@ -38,8 +38,8 @@
               :for="item.name"
               class="flex cursor-pointer items-start gap-4 rounded-lg p-4 border transition"
               :class="{
-                'bg-green-50 border-green-500': isSelected(item.name, 'interior'),
-                'border-gray-200': !isSelected(item.name, 'interior')
+                'border-[#5B8469] text-[#5B8469] border-2': isSelected(item.name, 'interior'),
+                'border-[#F0F2F5] text-[#171717]': !isSelected(item.name, 'interior')
               }"
             >
             <svg
@@ -89,10 +89,10 @@
               v-for="(item, index) in interiorUnFurnishedAreasList"
               :key="item.name"
               :for="item.name"
-              class="flex cursor-pointer items-start gap-4 rounded-lg p-4 border transition"
+              class="flex cursor-pointer items-start gap-4 rounded-lg py-3 px-4 border transition"
               :class="{
-                'bg-green-50 border-green-500': isSelected(item.name, 'interior'),
-                'border-gray-200': !isSelected(item.name, 'interior')
+                'border-[#5B8469] text-[#5B8469] border-2': isSelected(item.name, 'interior'),
+                'border-[#F0F2F5] text-[#5B8469]': !isSelected(item.name, 'interior')
               }"
             >
             <svg
@@ -136,18 +136,28 @@
                 <strong class="font-medium text-[#171717]">{{ item.name }}</strong>
               </div>
             </label>
+            <button
+            class="text-base text-[#171717] font-medium  flex justify-start items-center gap-x-2"
+            @click="showInteriorInput = !showInteriorInput"
+          >
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 2.6665V13.3332" stroke="#1D2739" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2.66602 8H13.3327" stroke="#1D2739" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+             Add manually
+          </button>
           </div>
         </fieldset>
       </div>
 
       <!-- Add manually (Interior) -->
       <div class="mt-4">
-        <button
+        <!-- <button
           class="text-sm text-[#5B8469]"
           @click="showInteriorInput = !showInteriorInput"
         >
-          + Add manually
-        </button>
+          + Add manually sssssssss
+        </button> -->
 
         <div v-if="showInteriorInput" class="flex items-center space-x-4 mt-4">
           <input
@@ -173,8 +183,8 @@
               :for="item.name"
               class="flex cursor-pointer items-start gap-4 rounded-lg p-4 border transition"
               :class="{
-                'bg-green-50 border-green-500': isSelected(item.name, 'exterior'),
-                'border-gray-200': !isSelected(item.name, 'exterior')
+                'border-[#5B8469] text-[#5B8469] border-2': isSelected(item.name, 'exterior'),
+                'border-[#F0F2F5] text-[#171717]': !isSelected(item.name, 'exterior')
               }"
             >
             <svg
@@ -226,8 +236,8 @@
               :for="item.name"
               class="flex cursor-pointer items-start gap-4 rounded-lg p-4 border transition"
               :class="{
-                'bg-green-50 border-green-500': isSelected(item.name, 'exterior'),
-                'border-gray-200': !isSelected(item.name, 'exterior')
+                'border-[#5B8469] text-[#5B8469] border-2': isSelected(item.name, 'exterior'),
+                'border-[#F0F2F5] text-[#171717]': !isSelected(item.name, 'exterior')
               }"
             >
             <svg
@@ -317,193 +327,6 @@
     <slot name="action-buttons"></slot>
   </main>
 </template>
-<!-- <script lang="ts" setup>
-import { useGetCommonAreas } from '@/composables/modules/property/fetchCommonAreas'
-const { commonAreasList: commonList } = useGetCommonAreas()
-const props = defineProps({
-  commonAreasList: {
-    type: Array,
-    default: () => []
-  },
-  interiorAreas: {
-    type: Array,
-    default: () => []
-  },
-  exteriorAreas: {
-    type: Array,
-    default: () => []
-  },
-  loading: {
-    type: Boolean,
-    default: false
-  },
-  exteriorFurnishedAreasList: {
-    type: Array,
-    default: () => []
-  },
-  exteriorUnFurnishedAreasList: {
-    type: Array,
-    default: () => []
-  },
-  interiorFurnishedAreasList: {
-    type: Array,
-    default: () => []
-  },
-  interiorUnFurnishedAreasList: {
-    type: Array,
-    default: () => []
-  },
-  payload: {
-    type: Object,
-    default: () => {}
-  },
-})
-
-// State for dynamically adding items
-const showInteriorInput = ref(false);
-const showExteriorInput = ref(false);
-const newInteriorItem = ref("");
-const newExteriorItem = ref("");
-
-// Track common areas in an array
-const commonAreas = ref<any[]>([]);
-
-// Current room name being edited
-const currentRoomName = ref<string>('Room 1'); // Initialize with the first room's name
-
-// Initialize with existing common areas selections from props
-onMounted(() => {
-  if (props.payload?.commonAreas?.value) {
-    commonAreas.value = props.payload.commonAreas.value;
-  }
-});
-
-// Emit event to notify parent component
-const emit = defineEmits(['updateCommonAreas', 'updateIsFurnished', 'saveRoomData']);
-
-// Add manual interior item and update the list
-const addInteriorItem = () => {
-  if (newInteriorItem.value.trim()) {
-    const newItem = {
-      name: newInteriorItem.value.trim(),
-      type: "interior",
-      canBeFurnished: isFurnishedCommonArea.value,
-      images: []
-    };
-    
-    if (isFurnishedCommonArea.value) {
-      props.interiorFurnishedAreasList.push(newItem);
-    } else {
-      props.interiorUnFurnishedAreasList.push(newItem);
-    }
-    
-    commonAreas.value.push(newItem);
-
-    newInteriorItem.value = "";
-    showInteriorInput.value = false;
-    emit("updateCommonAreas", commonAreas.value);
-  }
-};
-
-// Add manual exterior item and update the list
-const addExteriorItem = () => {
-  if (newExteriorItem.value.trim()) {
-    const newItem = {
-      name: newExteriorItem.value.trim(),
-      type: "exterior",
-      canBeFurnished: isFurnishedCommonArea.value,
-      images: []
-    };
-
-    if (isFurnishedCommonArea.value) {
-      props.exteriorFurnishedAreasList.push(newItem);
-    } else {
-      props.exteriorUnFurnishedAreasList.push(newItem);
-    }
-    
-    commonAreas.value.push(newItem);
-
-    newExteriorItem.value = "";
-    showExteriorInput.value = false;
-    emit("updateCommonAreas", commonAreas.value);
-  }
-};
-
-// Function to check if an item is already selected
-const isSelected = (item: string, type: string) => {
-  return commonAreas.value.some(
-    (area: any) => area.name === item && area.type === type
-  );
-};
-
-// Function to toggle selection
-const toggleSelection = (item: string, type: string) => {
-  const index = commonAreas.value.findIndex(
-    (area: any) => area.name === item && area.type === type
-  );
-  if (index > -1) {
-    commonAreas.value.splice(index, 1);
-  } else {
-    commonAreas.value.push({
-      name: item,
-      type,
-      canBeFurnished: isFurnishedCommonArea.value,
-      images: []
-    });
-  }
-  emit("updateCommonAreas", commonAreas.value);
-};
-
-
-// Handle furnished status
-const isFurnishedCommonArea = ref(props?.payload?.isFurnishedCommonArea.value);
-
-onMounted(() => {
-  isFurnishedCommonArea.value = props?.payload?.isFurnishedCommonArea.value;
-});
-
-const setFurnishedStatus = (status: boolean) => {
-  // Reset the common areas and the corresponding lists when the status changes
-  if (isFurnishedCommonArea.value !== status) {
-    commonAreas.value = [];
-    props.interiorFurnishedAreasList.splice(0);
-    props.interiorUnFurnishedAreasList.splice(0);
-    props.exteriorFurnishedAreasList.splice(0);
-    props.exteriorUnFurnishedAreasList.splice(0);
-  }
-
-  isFurnishedCommonArea.value = status;
-  props.payload.isFurnishedCommonArea.value = status;
-  emit("updateIsFurnished", status);
-  emit("updateCommonAreas", commonAreas.value);
-};
-
-
-// Save room data function
-const saveRoomData = (roomName: string) => {
-  emit('saveRoomData', roomName);
-};
-
-// Watcher for form changes
-watch([isFurnishedCommonArea, commonAreas], () => {
-  saveRoomData(currentRoomName.value);
-}, { deep: true });
-
-// Method to handle navigation between rooms
-const handleRoomTabChange = (newRoomName: string) => {
-  // Save current room data before switching
-  saveRoomData(currentRoomName.value);
-  currentRoomName.value = newRoomName;
-};
-
-// Method to handle the "Next" button click
-const handleNextButtonClick = () => {
-  // Save current room data
-  saveRoomData(currentRoomName.value);
-  // Logic to navigate to the next room
-};
-</script> -->
-
 
 <script lang="ts" setup>
 // Import the composable
@@ -637,46 +460,6 @@ const isSelected = (item: string, type: string) => {
     (area: any) => area.name === item && area.type === type
   );
 };
-
-// // Function to toggle selection
-// const toggleSelection = (item: string, type: string) => {
-//   const index = commonAreas.value.findIndex(
-//     (area: any) => area.name === item && area.type === type
-//   );
-//   if (index > -1) {
-//     // Remove from all relevant lists
-//     commonAreas.value.splice(index, 1);
-//     removeFromCategorizedLists(item, type);
-//   } else {
-//     // Add to the appropriate list based on furnished status
-//     const newItem = {
-//       name: item,
-//       type,
-//       canBeFurnished: isFurnishedCommonArea.value,
-//       images: []
-//     };
-//     commonAreas.value.push(newItem);
-//     addToCategorizedLists(newItem);
-//   }
-//   emit("updateCommonAreas", commonAreas.value);
-// };
-
-// // Add the new item to the categorized lists
-// const addToCategorizedLists = (item: any) => {
-//   if (item.type === "interior") {
-//     if (item.canBeFurnished) {
-//       props.interiorFurnishedAreasList.push(item);
-//     } else {
-//       props.interiorUnFurnishedAreasList.push(item);
-//     }
-//   } else if (item.type === "exterior") {
-//     if (item.canBeFurnished) {
-//       props.exteriorFurnishedAreasList.push(item);
-//     } else {
-//       props.exteriorUnFurnishedAreasList.push(item);
-//     }
-//   }
-// };
 
 // Function to toggle selection
 const toggleSelection = (item: string, type: string) => {
