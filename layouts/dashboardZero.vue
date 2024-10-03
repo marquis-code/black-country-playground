@@ -411,7 +411,7 @@ const sidebarItems = ref([
   {
     name: "Messages",
     icon: "messages",
-    url: "",
+    url: "/dashboard/messages",
   },
   {
     name: "Finance Management",
