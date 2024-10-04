@@ -312,7 +312,7 @@ const { exportPaginatedData, isDownloading }  = usePaginatedFetchAndDownload()
 // Define the method to handle the download
 const downloadData = (exportType: any) => {
   // Call the export function with the desired format (csv, pdf, or excel)
-  exportPaginatedData('/houses', exportType, 'house_data_export');
+  exportPaginatedData('/houses', exportType, 'house_data_export', ['name', 'houseType.name', 'bedroomCount', 'address']);
 }
 const route = useRoute();
 const router = useRouter();

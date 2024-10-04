@@ -104,9 +104,9 @@
         </div>
       </div>
     </template>
-    <main class="min-h-screen">
+    <MembersTableList />
+    <!-- <main class="min-h-screen">
       <div class="">
-        <!-- Filters and Other Actions -->
         <div class="flex justify-between items-center mb-6">
           <div class="flex space-x-4">
             <button
@@ -138,15 +138,12 @@
               </div>
           </div>
         </div>
-
-        <!-- Placeholder for no members -->
         <div v-if="!!!transactions" class="flex flex-col items-center justify-center h-96 bg-white rounded-lg ">
           <div class="flex items-center justify-center p-6 mb-4">
             <img :src="dynamicIcons('users-illustration')" alt="Icon" />
           </div>
           <p class="text-[#1D2739] font-medium text-sm">You’re yet to invite members</p>
         </div>
-        <!-- Reusable Modal Component -->
         <MembersInviteMemberModal class="" :isOpen="isModalOpen" @close="closeModal" />
       </div>
       <div class="">
@@ -182,7 +179,6 @@
                     class="inline-flex items-center text-sm font-medium text-[#667185] hover:text-black">
                     <img :src="dynamicIcons('more-icon')" />
                   </button>
-                  <!-- Dropdown Menu -->
                   <div v-if="activeDropdown === index"
                     class="absolute right-16 z-50 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
                     <ul class="py-1 text-sm text-gray-700">
@@ -205,11 +201,10 @@
             </tbody>
           </table>
 
-          <!-- Screen Overlay -->
+
           <div v-if="activeDropdown !== null" @click="closeDropdown" class="fixed inset-0 z-40 bg-black opacity-25">
           </div>
 
-          <!-- Pagination -->
           <nav class="flex justify-between items-center mt-4 px-4 py-6">
             <div class="-mt-px flex w-0 flex-1">
               <button class="px-6 text-sm py-2 bg-[#F9FAFB] text-[#545454] border-[0.5px] rounded-md"
@@ -237,7 +232,7 @@
           </nav>
         </div>
       </div>
-    </main>
+    </main> -->
   </Layout>
 </template>
 

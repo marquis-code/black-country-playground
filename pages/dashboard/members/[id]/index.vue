@@ -1,6 +1,23 @@
 <template>
-    <div class="min-h-screen flex justify-center py-10">
-      <div class="max-w-7xl w-full grid grid-cols-12 gap-8">
+  <Layout>
+    <template #header-content>
+        <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6 justify-between">
+          <div class="flex items-center gap-x-4">
+            <button @click="router.back()" class="text-[#1D2739] flex items-center gap-x-3 px-4 py-3 text-sm bg-gray-50 rounded-md">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12.5 5C12.5 5 7.50001 8.68242 7.5 10C7.49999 11.3177 12.5 15 12.5 15" stroke="#292929" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              Back</button>
+       <p>Vivian44</p>
+          </div>
+          <div class="flex items-center gap-x-4 lg:gap-x-6">
+           <button @click="deleteModal = true" class="bg-[#F9FAFB] text-[#292929] px-6 py-3.5 rounded-lg">Remove User</button>
+           <button @click="deactivateModal = true" class="bg-[#292929] text-white px-6 py-3.5 rounded-lg">Deactivate User</button>
+          </div>
+        </div>
+      </template>
+    <div class="min-h-screen flex justify-center">
+      <div class="w-full grid grid-cols-12 gap-8">
   
         <!-- Profile and Recent Activity Section -->
         <aside class="col-span-4 rounded-lg p-6  space-y-7">
@@ -124,20 +141,79 @@
           </main>
       </div>
     </div>
+
+    <CoreReusableModal :loading="deactivating" :isOpen="deactivateModal" @close="deactivateModal = false" @confirm="handleDeactivateConfirm"
+    :title="`${selectedObj.isActive ? 'Deactivate' : 'Activate'} Member`" :message="`${selectedObj.isActive ? 'Deactivating this member will make it unavailable for new inquiries and listings. You can reactivate it at any time.' : 'Activating this member will make it available.. You can de-activate it at any time.'}`"
+    :confirmButtonText="`${selectedObj.isActive ? 'Yes, deactivate' : 'Yes, Activate'}`" cancelButtonText="Cancel" />
+
+    <CoreReusableModal :loading="deleting" :isOpen="deleteModal" @close="deleteModal = false" @confirm="handleDeleteConfirm"
+    title="Remove Member" :message="`By deleting ${selectedObj.firstName} ${selectedObj.lastName}, you will permanently remove this member from the platform. Are you sure you want to proceed?`" confirmButtonText="Yes, delete"
+    cancelButtonText="Cancel" />
+  </Layout>
   </template>
   
   <script lang="ts" setup>
+  import Layout from '@/layouts/dashboard.vue';
     import { dynamicImage } from "@/utils/assets";
-  import { ref, computed } from 'vue';
-  definePageMeta({
-     layout: 'dashboard'
-})
+    import { useDeleteMember } from '@/composables/modules/member/delete'
+import { useDeactivateMember } from '@/composables/modules/member/deactivate'
+const { deleteMember, loading: deleting } = useDeleteMember()
+const {  deactivateMember, loading: deactivating } = useDeactivateMember()
+const router = useRouter()
 
 const firstSection = ref([
   { icon: 'total-properties', value: '0', label: 'Total Listings' },
   { icon: 'total-tenants', value: '0', label: 'Properties rented out' },
   { icon: 'total-income', value: '0', label: 'Rooms rented out' },
 ])
+
+const selectedObj = ref({
+  id: "46839d09-c9b8-4306-bdb8-55d202b92650",
+  firstName: "Prince2",
+  lastName: "Ita",
+  profilePicture: "https://example.com",
+  email: "prince1659@mailinator.com",
+  isEmailVerified: true,
+  group: "ADMIN",
+  isActive: true,
+  createdAt: "2024-09-06T09:27:46.980Z",
+  updatedAt: "2024-09-21T18:59:02.560Z",
+  role: "ADMIN",
+  status: "active"
+})
+
+const handleDeleteConfirm = async () => {
+  if (selectedObj.value.id) {                                
+    await deleteMember(selectedObj.value.id).then(() => {
+      deleteModal.value = false;
+     router.push(`/dashboard/members/${selectedObj.value.id}/delete-success`)
+    })
+  }
+};
+
+
+const handleDeactivateConfirm = async () => {
+  try {
+    const actionType = selectedObj.value.isActive ? 'deactivate' : 'activate';
+    const successRoute = selectedObj.value.isActive 
+      ? `/dashboard/members/${selectedObj.value.id}/deactivate-success` 
+      : `/dashboard/members/${selectedObj.value.id}/activate-success`;
+
+    await deactivateMember(selectedObj.value.id, actionType); // Wait for the action to complete
+
+    deactivateModal.value = false; // Close the modal
+    router.push(successRoute); // Navigate to the success page
+  } catch (error) {
+    useNuxtApp().$toast.error("Error processing member action.", {
+      autoClose: 5000,
+      dangerouslyHTMLString: true,
+    });
+  }
+};
+
+const deleteModal = ref(false);
+const deactivateModal = ref(false);
+
 
 const membersActivities = ref([
   {
@@ -179,7 +255,7 @@ const membersActivities = ref([
     "July", "August", "September", "October", "November", "December"
   ];
   
-  // Computed property to get the current month's name
+  // Computed Member to get the current month's name
   const monthName = computed(() => monthNames[month.value]);
   
   // Function to get the number of days in the current month
@@ -211,7 +287,7 @@ const membersActivities = ref([
     return days;
   };
   
-  // Computed property to get the days in the current month
+  // Computed Member to get the days in the current month
   const calendarDays = computed(() => generateCalendarDays());
   
   // Functions to navigate between months

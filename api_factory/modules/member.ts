@@ -4,4 +4,25 @@ export const member_api = {
         let url = '/invitations'
         return GATEWAY_ENDPOINT.post(url, payload);
       },
+      $_fetch_members: (metadata: { page: number; perPage: number }, filters: any) => {
+        let url = `/members?page=${metadata.page}&perPage=${metadata.perPage}`;
+        if (filters.searchQuery && filters.searchQuery.trim() !== "") {
+          url += `&search=${encodeURIComponent(filters.searchQuery.trim())}`;
+        }
+        if (filters.fromDate) {
+          url += `&fromDate=${encodeURIComponent(filters.fromDate)}`;
+        }
+        if (filters.toDate) {
+          url += `&toDate=${encodeURIComponent(filters.toDate)}`;
+        }
+        return GATEWAY_ENDPOINT.get(url);
+      },
+      $_update_member: (id: any, payload: any) => {
+        const url = `/members/${id}`;
+        return GATEWAY_ENDPOINT.patch(url, payload);
+      },
+      $_delete_member: (id: string | number) => {
+        const url = `/members/${id}`;
+        return GATEWAY_ENDPOINT.delete(url);
+      },
 }
