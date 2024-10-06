@@ -13,11 +13,12 @@
       <div class="flex-1 flex flex-col">
         <!-- Chat Header (Fixed) -->
         <div class="sticky top-0 z-50 bg-white">
-          <ChatHeader :selectedUser="selectedUser" />
+          <ChatHeader :selectedUser="selectedUser || roomChatsList" />
         </div>
+        <!-- {{roomChatsList}} -->
 
         <section
-          v-if="!selectedUser"
+          v-if="!roomChatsList.length"
          class="flex flex-col justify-between mt-32 items-center space-y-2"
        >
          <svg
@@ -153,9 +154,20 @@ watch(selectedUser, (newVal: any) => {
   }
 });
 
+const { $emitter } = useNuxtApp();
+
+// Listen for the 'customEvent' globally
+$emitter.on('customEvent', (payload: any) => {
+  console.log(payload.response)
+  getRoomChats(payload.data);
+  // console.log('Received event:', payload);
+});
+
 const selectUser = (user: any) => {
   selectedUser.value = user;
 };
+
+
 
 const sendMessageToUser = (message: string) => {
   const socketPayload = {

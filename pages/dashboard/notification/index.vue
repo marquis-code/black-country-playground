@@ -289,9 +289,9 @@
           </svg>
         </div>
       </aside>
-      <div class="flex-1 flex flex-col">
+      <div class="flex-1 lg:flex flex-col">
         <header
-          class="bg-white shadow-sm flex justify-between items-center p-4"
+          class="bg-white shadow-sm hidden lg:flex justify-between items-center p-4"
         >
           <div class="text-lg font-semibold text-gray-800">Notification</div>
           <div class="flex items-center space-x-4">
@@ -326,7 +326,6 @@
               <p class="bg-gray-900 text-white p-2 font-semibold rounded-lg">
                 {{ initials }}
               </p>
-              <!-- <div class="bg-gray-300 w-8 h-8 flex items-center justify-center rounded-full text-white font-bold">VG</div> -->
               <div>
                 <p class="text-sm font-medium">
                   {{ user?.firstName }} {{ user?.lastName }}
@@ -336,8 +335,8 @@
             </div>
           </div>
         </header>
-        <div class="flex flex-1 overflow-hidden">
-          <div class="w-1/3 border-r border-gray-200 p-6 overflow-y-auto">
+        <div class="lg:flex space-y-6 w-full flex-1 overflow-hidden">
+          <div class="lg:w-1/3 w-full border-r border-gray-200 p-6 overflow-y-auto h-screen">
             <div class="relative mb-4">
               <input
                 type="text"
@@ -367,7 +366,7 @@
                 />
               </svg>
             </div>
-            <div v-if="notificationList?.length" class="space-y-6">
+            <div v-if="notificationList?.length && !loadingNotification" class="space-y-6">
               <div v-for="(group, index) in groupedNotifications" :key="index">
                 <p
                   class="text-[#1D2739] mb-4 rounded-md px-6 py-3 bg-white text-sm"
@@ -433,6 +432,23 @@
                 </div>
               </div>
             </div>
+            <section v-else-if="!notificationList?.length && loadingNotification">
+              <div class="rounded-md p-4 w-full mx-auto mt-10">
+                <div class="animate-pulse flex space-x-4">
+                  <!-- <div class="rounded-md bg-slate-200 h-44 w-44"></div> -->
+                  <div class="flex-1 space-y-6 py-1">
+                    <div class="h-32 bg-slate-200 rounded"></div>
+                    <div class="space-y-3">
+                      <div class="grid grid-cols-3 gap-4">
+                        <div class="h-32 w-full bg-slate-200 rounded col-span-2"></div>
+                        <div class="h-32 w-full bg-slate-200 rounded col-span-1"></div>
+                      </div>
+                      <div class="h-32 w-full bg-slate-200 rounded"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
             <div
             v-else
             class="flex-1 flex items-center justify-center mt-20"
@@ -510,9 +526,9 @@
           </div>
           <div
             v-if="Object.keys(selectedNotification)?.length"
-            class="flex-1 flex items-center justify-center bg-gray-50"
+            class="hidden flex-1 lg:flex items-center justify-center bg-gray-25"
           >
-            <div class="max-w-2xl mx-auto mt-10 p-4">
+            <div class="max-w-2xl w-full lg:w-[800px] mx-auto mt-10 p-4">
               <div class="relative flex items-center justify-center my-6">
                 <div class="absolute inset-0 flex items-center">
                   <div class="border-t w-full border-gray-100"></div>
@@ -533,7 +549,7 @@
                   {{ selectedNotification?.notification?.content ?? "Nil" }}
                 </p>
                 <NuxtLink
-                  :to="`/dashboard/property/${selectedNotification?.notification?.metadata?.data?.houseId}`"
+                  :to="`/dashboard/listings/${selectedNotification?.notification?.metadata?.data?.houseId}/preview`"
                   class="text-[#326543] underline text-sm font-medium mt-4 inline-block"
                 >
                   Click to view Property created
@@ -543,7 +559,7 @@
           </div>
           <div
             v-else
-            class="flex-1 flex items-center justify-center bg-gray-50"
+            class="flex-1 flex py-20 items-center justify-center bg-gray-50"
           >
             <div
               class="flex justify-center items-center flex-col w-full gap-y-4"
@@ -745,48 +761,6 @@ definePageMeta({
 
 const selectedNotification = ref({}) as any;
 
-// const groupedNotifications = ref([
-//   {
-//     date: "25th March, 2024",
-//     notifications: [
-//       {
-//         id: "eed72390-48b2-4c12-9375-b1ba150927fc",
-//         createdAt: "2024-09-20T16:12:26.621Z",
-//         notification: {
-//           title: "Rent Increase Notice",
-//           content:
-//             "Hi [Tenant's Name], Just a friendly reminder that your rent payment for [Property Address] is due in a few days. Please make sure to submit your payment by [Due Date] to avoid any late fees. Thank you for your cooperation",
-//           metadata: {
-//             type: "due_rent",
-//             data: {
-//               rentAmount: 780000,
-//               houseId: "d7f255ce-e52a-43c3-961a-ea674701dedb",
-//               roomId: "aa2fe801-9f6b-4b36-b102-74b99ed220b0",
-//             },
-//           },
-//         },
-//       },
-//       {
-//         id: "fb66b119-a7e1-4591-8e5b-9492d49a365c",
-//         createdAt: "2024-09-20T16:10:05.906Z",
-//         notification: {
-//           title: "Rent Increase Notice",
-//           content:
-//             "Hi [Tenant's Name], Just a friendly reminder that your rent payment for [Property Address] is due in a few days. Please make sure to submit your payment by [Due Date] to avoid any late fees. Thank you for your cooperation",
-//           metadata: {
-//             type: "due_rent",
-//             data: {
-//               rentAmount: 780000,
-//               houseId: "d7f255ce-e52a-43c3-961a-ea674701dedb",
-//               roomId: "aa2fe801-9f6b-4b36-b102-74b99ed220b0",
-//             },
-//           },
-//         },
-//       },
-//     ],
-//   },
-// ]);
-
 function formatDate(dateString: string) {
   const date = new Date(dateString);
   return date.toLocaleDateString("en-US", {
@@ -800,4 +774,10 @@ const viewNotification = (item: any) => {
   console.log(item, "here");
   selectedNotification.value = item;
 };
+
+watch(notificationList, (newVal) => {
+if (newVal && newVal.length) {
+  formatNotifications(newVal);
+}
+}, { immediate: true });
 </script>

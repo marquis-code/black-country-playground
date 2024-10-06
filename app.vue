@@ -1,4 +1,6 @@
 <template>
+<main>
+  <CoreToast />
   <NuxtLayout>
     <NuxtPage />
 
@@ -19,9 +21,11 @@
       </div>
     </div>
   </NuxtLayout>
+</main>
 </template>
 
 <script setup lang="ts">
+import { provide } from 'vue';
  import { useInactivity } from '@/composables/core/useInactivity';
 
   // Initialize the inactivity composable with a 10-minute timeout and a 1-minute warning time
@@ -31,6 +35,11 @@
 const cancelLogout = () => {
   isWarningVisible.value = false;
 };
+import { visible, toastData, useCustomToast } from '@/composables/core/useCustomToast';
+
+// Provide the toast state globally
+provide('toastVisible', visible);
+provide('toastData', toastData);
 </script>
 
 

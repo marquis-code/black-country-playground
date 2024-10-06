@@ -1,10 +1,12 @@
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { io } from "socket.io-client";
 import { useUser } from "@/composables/auth/user";
+import { useGetRoomChats } from '@/composables/modules/messages/fetchRoomMessages'
 
 export const useWebSocket = () => {
   const { token } = useUser();
   const messages = ref([]) as any;
+  const { getRoomChats, roomChatsList } = useGetRoomChats()
   const newMessage = ref("");
   const baseUrl = "https://tracman-8jhi.onrender.com";
   const socketUrl = `${baseUrl}`;
@@ -83,6 +85,14 @@ export const useWebSocket = () => {
           ...response.data,
           status: "sent",
         });
+
+        getRoomChats(response?.data?.room?.id)
+
+        const { $emitter } = useNuxtApp();
+        $emitter.emit('customEvent', { data: response?.data?.room?.id, response: response?.data });
+
+        // const nuxtApp = useNuxtApp(); // Access the nuxtApp to use the global event emitter
+        // nuxtApp.$emitter.emit('messageSent', response.data);
 
         socket.emit("messages.fetch", {}, (fetchResponse: any) => {
           if (fetchResponse.status === "success") {

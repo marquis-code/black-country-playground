@@ -5,7 +5,7 @@ export const member_api = {
         return GATEWAY_ENDPOINT.post(url, payload);
       },
       $_fetch_members: (metadata: { page: number; perPage: number }, filters: any) => {
-        let url = `/members?page=${metadata.page}&perPage=${metadata.perPage}`;
+        let url = `/admins/members?page=${metadata.page}&perPage=${metadata.perPage}`;
         if (filters.searchQuery && filters.searchQuery.trim() !== "") {
           url += `&search=${encodeURIComponent(filters.searchQuery.trim())}`;
         }

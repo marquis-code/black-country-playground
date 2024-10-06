@@ -1,11 +1,11 @@
 import { rental_api } from "@/api_factory/modules/rental";
+import { useCustomToast } from '@/composables/core/useCustomToast'
 import { useRouter } from "vue-router"; // Make sure to import the router
 
 const loading = ref(false);
 
-// const payload =ref( { id: '', status: '', idDocs: null})
-
 export const useDeclineRental = () => {
+  const { showToast } = useCustomToast();
   const router = useRouter(); // Initialize router
 
   // Function to handle rental action (either cancel or approve)
@@ -15,16 +15,30 @@ export const useDeclineRental = () => {
     try {
       // Make patch request using the payload
       const res = await rental_api.$_cancel_rental_application(id, payload) as any;
-      
-      // Check if the response is not an error
       if (res.type !== 'ERROR') {
-        // Redirect to dashboard after successful cancellation or approval
-        router.push('/dashboard/');
+        showToast({
+          title: "Error",
+          message: 'Rental application was declined successfully.',
+          toastType: "error",
+          duration: 3000
+        });
       } else {
+        console.log(res, 'hello')
+        showToast({
+          title: "Error",
+          message:  res.data.error,
+          toastType: "error",
+          duration: 3000
+        });
         console.error("Failed to update rental status", res.message);
       }
     } catch (error) {
-      console.error("An error occurred while updating the rental status", error);
+      showToast({
+        title: "Error",
+        message:  "An unexpected error occurred.",
+        toastType: "error",
+        duration: 3000
+      });
     } finally {
       loading.value = false;
     }

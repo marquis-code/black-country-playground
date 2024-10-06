@@ -106,12 +106,13 @@
                     :key="column.key"
                     class="py-5 px-5 whitespace-nowrap text-sm text-[#667185] font-semibold relative"
                   >
-                    <p v-if="column.key !== 'isPublished'">{{ getPropertyValue(member, column.key) }}</p>
-                    <!-- <p class="absolute left-0 top-0" v-if="column.key === 'name'">
-                      <span class="bg-[#F7D394] text-[#1D2739] text-sm px-2 py-1" v-if="!property.isPublished">
-                        Draft
+                    <p v-if="column.label !== 'Status'">{{ getPropertyValue(member, column.key) }}</p>
+                    <!-- {{column}} -->
+                    <p class="absolute left-0 top-10" v-if="column.label === 'Status'">
+                      <span :class="[ member.isActive ? 'bg-green-500' : 'bg-red-500']" class="rounded-full  px-3 py-2 text-white text-sm">
+                       {{ member.isActive ? 'active' : 'In Active'}}
                       </span>
-                    </p> -->
+                    </p>
                     <!-- <p v-if="column.key === 'isPublished'">{{ property.isPublished ? 'Published' : 'Draft' }}</p> -->
                   </td>
                   <td class="py-5 px-5 whitespace-nowrap text-sm text-right">
@@ -425,8 +426,8 @@
   const columns = ref([
     { label: "Full Name", key: "fullName", visible: true },
     { label: "Email", key: "email", visible: true },
-    { label: "Role", key: "role", visible: true },
-    { label: "Status", key: "status", visible: true },
+    { label: "Role", key: "group", visible: true },
+    { label: "Status", key: "isActive", visible: true },
     { label: "Last Active", key: "lastActive", visible: false },
     { label: "Group", key: "group", visible: false },
     { label: "Date Added", key: "createdAt", visible: false },

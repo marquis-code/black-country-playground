@@ -69,7 +69,6 @@ export const useFormatNotifications = () => {
       formattedData[dateKey].push(formattedNotification);
     });
 
-    // Convert the grouped data into an array
     groupedNotifications.value = Object.keys(formattedData).map(date => ({
       date,
       notifications: formattedData[date],
@@ -81,3 +80,43 @@ export const useFormatNotifications = () => {
     formatNotifications,
   };
 };
+
+
+// export const useFormatNotifications = () => {
+//   const groupedNotifications = ref<GroupedNotifications[]>([]);
+
+//   const formatNotifications = (notifications: NotificationData[]) => {
+//     const formattedData: { [date: string]: FormattedNotification[] } = {};
+
+//     notifications.forEach(notification => {
+//       const dateKey = format(new Date(notification.createdAt), 'do MMMM, yyyy');
+
+//       const formattedNotification: FormattedNotification = {
+//         id: notification.id,
+//         createdAt: notification.createdAt,
+//         notification: {
+//           title: notification.notification.title,
+//           content: notification.notification.content,
+//           metadata: notification.notification.metadata,
+//         },
+//       };
+
+//       if (!formattedData[dateKey]) {
+//         formattedData[dateKey] = [];
+//       }
+
+//       formattedData[dateKey].push(formattedNotification);
+//     });
+
+//     // Convert the grouped data into an array
+//     groupedNotifications.value = Object.keys(formattedData).map(date => ({
+//       date,
+//       notifications: formattedData[date],
+//     }));
+//   };
+
+//   return {
+//     groupedNotifications,
+//     formatNotifications,
+//   };
+// };

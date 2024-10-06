@@ -47,7 +47,7 @@ export const useGetMembers = () => {
     
             if (res.type !== 'ERROR') {
                 // Sort properties by 'createdAt' in descending order
-                membersList.value = (res?.data?.result ?? []).sort((a: any, b: any) => {
+                membersList.value = (res?.data?.allMembers ?? []).sort((a: any, b: any) => {
                     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
                 });
                 metadata.value = res?.data?.metadata;

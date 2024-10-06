@@ -59,7 +59,9 @@
             <p>ID Type:</p>
             <h3 class="ttext-sm font-medium text-[#1D2739] mb-4 border-[0.5px] py-3 px-3 rounded-lg bg-[#E4E7EC]">ID Card</h3>
           </div>
-          <img v-if="rentalObj?.idDocs?.fileUrls" class="w-96 h- rounded-lg border border-gray-300" v-for="itm in rentalObj?.idDocs?.fileUrls" :key="itm" :src="itm" />
+        <div v-if="rentalObj?.idDocs?.fileUrls" class="grid grid-cols-2 gap-6">
+          <img class="w-96 h- rounded-lg border border-gray-300" v-for="itm in rentalObj?.idDocs?.fileUrls" :key="itm" :src="itm" />
+        </div>
           <img
              v-else
             :src="dynamicImage('id-card.png')"
