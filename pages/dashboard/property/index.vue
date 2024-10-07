@@ -97,14 +97,26 @@
     <PropertyRentalComponent v-if="activeTab === 'rental-applications'" />
 
     <!-- Reusable Modals -->
-    <!-- (no changes needed here) -->
+   <!-- Reusable Modal for Delete Property -->
+   <CoreReusableModal :loading="deleting" :isOpen="deleteModal" @close="deleteModal = false" @confirm="handleDeleteConfirm"
+   title="Delete Property" :message="`By deleting ${selectedObj.name} Co-Living Space, you will permanently remove the listing from the platform. Are you sure you want to proceed?`" confirmButtonText="Yes, delete"
+   cancelButtonText="Cancel" />
+
+ <!-- Reusable Modal for Deactivate Property -->
+ <CoreReusableModal :loading="deactivating" :isOpen="deactivateModal" @close="deactivateModal = false" @confirm="handleDeactivateConfirm"
+   :title="`${selectedObj.isPublished ? 'Deactivate' : 'Activate'} Property`" message="Deactivating this property will make it unavailable for new inquiries and listings. You can reactivate it at any time."
+   :confirmButtonText="`Yes, ${selectedObj.isPublished ? 'Deactivate' : 'Activate'}`" cancelButtonText="Cancel" />
+
+ <!-- Reusable Modal for Duplicate Property -->
+ <CoreReusableModal :loading="duplicating" :isOpen="duplicateModal" @close="duplicateModal = false" @confirm="handleDuplicateConfirm"
+   title="Duplicate Property" :message="`Are you sure you want to duplicate this property, ${selectedObj.name} co-living space ? This will create a new copy of the property, you will retain current information, you can rename it and you can make edits after duplication.`"
+   confirmButtonText="Yes, duplicate" cancelButtonText="Cancel" />
   </Layout>
 </template>
 
 <script lang="ts" setup>
 import Layout from '@/layouts/dashboard.vue';
 import { useRouter, useRoute } from 'vue-router';
-import { ref, onMounted } from 'vue';
 import { useDeleteProperty } from '@/composables/modules/property/delete';
 import { usePropertyDeactivate } from '@/composables/modules/property/deactivate';
 import { useDuplicateProperty } from '@/composables/modules/property/duplicate';
@@ -181,9 +193,15 @@ const handleDeactivateConfirm = async () => {
       ? `/dashboard/property/${selectedObj.value.id}/deactivate-success`
       : `/dashboard/property/${selectedObj.value.id}/activate-success`;
 
-    await deactivateProperty(selectedObj.value.id, actionType);
-    deactivateModal.value = false;
-    router.push(successRoute);
+      deactivateProperty(selectedObj.value.id, actionType).then((res: any) => {
+        if(res !== undefined){
+      deactivateModal.value = false;
+      router.push(successRoute);
+        }
+        deactivateModal.value = false;
+    })
+    // deactivateModal.value = false;
+    // router.push(successRoute);
   } catch (error) {
     useNuxtApp().$toast.error('Error processing property action.', {
       autoClose: 5000,

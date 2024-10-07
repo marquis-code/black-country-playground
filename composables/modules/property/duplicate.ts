@@ -1,4 +1,6 @@
 import { property_api } from "@/api_factory/modules/property";
+import { useCustomToast } from '@/composables/core/useCustomToast'
+const { showToast } = useCustomToast();
 const loading = ref(false)
 
 export const useDuplicateProperty = () => {
@@ -8,7 +10,20 @@ export const useDuplicateProperty = () => {
 
         if (res.type !== 'ERROR') {
 			useRouter().push('/dashboard/property')
-        }
+			showToast({
+				title: "Success",
+				message: 'Success!',
+				toastType: "success",
+				duration: 3000
+			  });
+        } else {
+			showToast({
+				title: "Error",
+				message: res?.data?.error || "An error occured",
+				toastType: "error",
+				duration: 3000
+			  });
+		}
         loading.value = false
 	}
 
