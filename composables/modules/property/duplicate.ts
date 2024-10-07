@@ -12,10 +12,11 @@ export const useDuplicateProperty = () => {
 			useRouter().push('/dashboard/property')
 			showToast({
 				title: "Success",
-				message: 'Success!',
+				message: 'Property was duplicated successfully!',
 				toastType: "success",
 				duration: 3000
 			  });
+			  return res
         } else {
 			showToast({
 				title: "Error",
@@ -23,6 +24,7 @@ export const useDuplicateProperty = () => {
 				toastType: "error",
 				duration: 3000
 			  });
+
 		}
         loading.value = false
 	}

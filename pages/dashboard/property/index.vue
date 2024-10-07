@@ -179,9 +179,12 @@ const openDuplicateModal = (data: any) => {
 
 const handleDeleteConfirm = async () => {
   if (selectedObj.value.id) {
-    await deleteProperty(selectedObj.value.id).then(() => {
-      deleteModal.value = false;
+    await deleteProperty(selectedObj.value.id).then((res) => {
+      console.log(res, 'res')
+      if(res !== undefined){
       router.push(`/dashboard/property/${selectedObj.value.id}/delete-success`);
+      }
+      deleteModal.value = false;
     });
   }
 };
@@ -200,8 +203,8 @@ const handleDeactivateConfirm = async () => {
         }
         deactivateModal.value = false;
     })
-    // deactivateModal.value = false;
-    // router.push(successRoute);
+    deactivateModal.value = false;
+    router.push(successRoute);
   } catch (error) {
     useNuxtApp().$toast.error('Error processing property action.', {
       autoClose: 5000,
@@ -211,7 +214,8 @@ const handleDeactivateConfirm = async () => {
 };
 
 const handleDuplicateConfirm = async () => {
-  await duplicateProperty(selectedObj.value.id).then(() => {
+  await duplicateProperty(selectedObj.value.id).then((res) => {
+    console.log(res)
     duplicateModal.value = false;
     router.push(`/dashboard/property/${selectedObj.value.id}/duplicate-success`);
   });

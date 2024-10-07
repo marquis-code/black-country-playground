@@ -16,6 +16,7 @@ export const useDeleteProperty = () => {
 				toastType: "success",
 				duration: 3000
 			  });
+			  return res
         } else {
 			showToast({
 				title: "Error",
