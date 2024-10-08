@@ -26,6 +26,7 @@
     "@mapbox/mapbox-sdk": "^0.16.0",
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@vuepic/vue-datepicker": "^9.0.2",
+    "@vueup/vue-quill": "^1.2.0",
     "@vueuse/core": "^11.1.0",
     "apexcharts": "^3.49.0",
     "axios": "^1.7.7",
