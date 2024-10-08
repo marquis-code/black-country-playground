@@ -179,32 +179,16 @@ const openDuplicateModal = (data: any) => {
 
 const handleDeleteConfirm = async () => {
   if (selectedObj.value.id) {
-    await deleteProperty(selectedObj.value.id).then((res) => {
-      console.log(res, 'res')
-      if(res !== undefined){
-      router.push(`/dashboard/property/${selectedObj.value.id}/delete-success`);
-      }
-      deleteModal.value = false;
-    });
+    await deleteProperty(selectedObj.value.id, selectedObj)
+    deleteModal.value = false;
   }
 };
 
 const handleDeactivateConfirm = async () => {
   try {
     const actionType = selectedObj.value.isPublished ? 'deactivate' : 'activate';
-    const successRoute = selectedObj.value.isPublished
-      ? `/dashboard/property/${selectedObj.value.id}/deactivate-success`
-      : `/dashboard/property/${selectedObj.value.id}/activate-success`;
-
-      deactivateProperty(selectedObj.value.id, actionType).then((res: any) => {
-        if(res !== undefined){
+      await deactivateProperty(selectedObj.value.id, actionType, selectedObj.value)
       deactivateModal.value = false;
-      router.push(successRoute);
-        }
-        deactivateModal.value = false;
-    })
-    deactivateModal.value = false;
-    router.push(successRoute);
   } catch (error) {
     useNuxtApp().$toast.error('Error processing property action.', {
       autoClose: 5000,
@@ -214,11 +198,8 @@ const handleDeactivateConfirm = async () => {
 };
 
 const handleDuplicateConfirm = async () => {
-  await duplicateProperty(selectedObj.value.id).then((res) => {
-    console.log(res)
-    duplicateModal.value = false;
-    router.push(`/dashboard/property/${selectedObj.value.id}/duplicate-success`);
-  });
+  await duplicateProperty(selectedObj.value.id, selectedObj)
+  duplicateModal.value = false;
 };
 </script>
 
