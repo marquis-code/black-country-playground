@@ -4,7 +4,7 @@
     <LayoutWithoutSidebar>
       <template #header-content>
         <header
-          class="bg-white px-4 flex items-center justify-between container mx-auto"
+          class="bg-white px-4 flex items-center justify-between container mx-auto h-16"
         >
           <div
             @click="router.push('/dashboard')"

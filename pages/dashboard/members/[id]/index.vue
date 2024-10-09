@@ -8,7 +8,7 @@
                 <path d="M12.5 5C12.5 5 7.50001 8.68242 7.5 10C7.49999 11.3177 12.5 15 12.5 15" stroke="#292929" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               Back</button>
-       <p>Vivian44</p>
+          <p>{{memberObj?.firstName ?? 'Nil'}} {{memberObj?.lastName ?? 'Nil'}}</p>
           </div>
           <div class="flex items-center gap-x-4 lg:gap-x-6">
            <button @click="deleteModal = true" class="bg-[#F9FAFB] text-[#292929] px-6 py-3.5 rounded-lg">Remove User</button>
@@ -16,7 +16,7 @@
           </div>
         </div>
       </template>
-    <div class="min-h-screen flex justify-center">
+    <div v-if="Object.keys(memberObj).length && !loading" class="min-h-screen flex justify-center">
       <div class="w-full grid grid-cols-12 gap-8">
   
         <!-- Profile and Recent Activity Section -->
@@ -24,25 +24,32 @@
          <section class="bg-white rounded-lg p-4">
             <div class="text-center mb-6">
                 <img
-                  :src="dynamicImage('avatar.png')"
-                  alt="User profile picture"
-                  class="mx-auto rounded-full h-20 w-20"
-                />
-                <h2 class="mt-4 text-lg font-semibold text-gray-900">Vivian44</h2>
+                v-if="memberObj.profilePicture"
+                :src="memberObj.profilePicture"
+                alt="User profile picture"
+                class="mx-auto rounded-full h-20 w-20"
+              />
+              <img
+              v-else
+              :src="dynamicImage('avatar.png')"
+              alt="User profile picture"
+              class="mx-auto rounded-full h-20 w-20"
+            />
+                <h2 class="mt-4 text-lg font-semibold text-gray-900">{{memberObj?.firstName ?? 'Nil'}} {{memberObj?.lastName ?? 'Nil'}}</h2>
                 <p class="text-sm text-[#667185]">Agent</p>
               </div>
               <ul class="space-y-4 text-sm text-gray-600">
                 <li class="flex justify-between items-center text-sm text-[#1D2739]">
-                  <span class="font-medium text-[#667185] text-sm">Last active:</span> 02/04/2024
+                  <span class="font-medium text-[#667185] text-sm">Last active:</span> {{memberObj?.createdAt ?? 'Nil'}}
                 </li>
                 <li class="flex justify-between items-center text-sm text-[#1D2739]">
-                  <span class="font-medium text-[#667185] text-sm">Email:</span> vivian44@blackcountry.com
+                  <span class="font-medium text-[#667185] text-sm">Email:</span> {{memberObj?.email ?? 'Nil'}}
                 </li>
                 <li class="flex justify-between items-center text-sm text-[#1D2739]">
-                  <span class="font-medium text-[#667185] text-sm">Phone number:</span> 081000000000
+                  <span class="font-medium text-[#667185] text-sm">Phone number:</span> {{memberObj?.phone ?? 'Nil'}}
                 </li>
                 <li class="flex justify-between items-center text-sm text-[#1D2739]">
-                  <span class="font-medium text-[#667185] text-sm">Location:</span> Ikeja, Lagos
+                  <span class="font-medium text-[#667185] text-sm">Location:</span> {{memberObj?.address ?? 'Nil'}}
                 </li>
               </ul>
          </section>
@@ -142,23 +149,43 @@
       </div>
     </div>
 
+    <section v-else>
+      <div class="rounded-md p-4 w-full mx-auto mt-10">
+        <div class="animate-pulse flex space-x-4">
+          <!-- <div class="rounded-md bg-slate-200 h-44 w-44"></div> -->
+          <div class="flex-1 space-y-6 py-1">
+            <div class="h-32 bg-slate-200 rounded"></div>
+            <div class="space-y-3">
+              <div class="grid grid-cols-3 gap-4">
+                <div class="h-32 w-full bg-slate-200 rounded col-span-2"></div>
+                <div class="h-32 w-full bg-slate-200 rounded col-span-1"></div>
+              </div>
+              <div class="h-32 w-full bg-slate-200 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+     </section>
+
     <CoreReusableModal :loading="deactivating" :isOpen="deactivateModal" @close="deactivateModal = false" @confirm="handleDeactivateConfirm"
-    :title="`${selectedObj.isActive ? 'Deactivate' : 'Activate'} Member`" :message="`${selectedObj.isActive ? 'Deactivating this member will make it unavailable for new inquiries and listings. You can reactivate it at any time.' : 'Activating this member will make it available.. You can de-activate it at any time.'}`"
-    :confirmButtonText="`${selectedObj.isActive ? 'Yes, deactivate' : 'Yes, Activate'}`" cancelButtonText="Cancel" />
+    :title="`${memberObj.isActive ? 'Deactivate' : 'Activate'} Member`" :message="`${memberObj.isActive ? 'Deactivating this member will make it unavailable for new inquiries and listings. You can reactivate it at any time.' : 'Activating this member will make it available.. You can de-activate it at any time.'}`"
+    :confirmButtonText="`${memberObj.isActive ? 'Yes, deactivate' : 'Yes, Activate'}`" cancelButtonText="Cancel" />
 
     <CoreReusableModal :loading="deleting" :isOpen="deleteModal" @close="deleteModal = false" @confirm="handleDeleteConfirm"
-    title="Remove Member" :message="`By deleting ${selectedObj.firstName} ${selectedObj.lastName}, you will permanently remove this member from the platform. Are you sure you want to proceed?`" confirmButtonText="Yes, delete"
+    title="Remove Member" :message="`By deleting ${memberObj.firstName} ${memberObj.lastName}, you will permanently remove this member from the platform. Are you sure you want to proceed?`" confirmButtonText="Yes, delete"
     cancelButtonText="Cancel" />
   </Layout>
   </template>
   
   <script lang="ts" setup>
   import Layout from '@/layouts/dashboard.vue';
+  import { useFetchMemberDetails } from '@/composables/modules/member/details'
     import { dynamicImage } from "@/utils/assets";
     import { useDeleteMember } from '@/composables/modules/member/delete'
 import { useDeactivateMember } from '@/composables/modules/member/deactivate'
 const { deleteMember, loading: deleting } = useDeleteMember()
 const {  deactivateMember, loading: deactivating } = useDeactivateMember()
+const {  memberObj, loading } = useFetchMemberDetails()
 const router = useRouter()
 
 const firstSection = ref([
@@ -167,26 +194,26 @@ const firstSection = ref([
   { icon: 'total-income', value: '0', label: 'Rooms rented out' },
 ])
 
-const selectedObj = ref({
-  id: "46839d09-c9b8-4306-bdb8-55d202b92650",
-  firstName: "Prince2",
-  lastName: "Ita",
-  profilePicture: "https://example.com",
-  email: "prince1659@mailinator.com",
-  isEmailVerified: true,
-  group: "ADMIN",
-  isActive: true,
-  createdAt: "2024-09-06T09:27:46.980Z",
-  updatedAt: "2024-09-21T18:59:02.560Z",
-  role: "ADMIN",
-  status: "active"
-})
+// const memberObj = ref({
+//   id: "46839d09-c9b8-4306-bdb8-55d202b92650",
+//   firstName: "Prince2",
+//   lastName: "Ita",
+//   profilePicture: "https://example.com",
+//   email: "prince1659@mailinator.com",
+//   isEmailVerified: true,
+//   group: "ADMIN",
+//   isActive: true,
+//   createdAt: "2024-09-06T09:27:46.980Z",
+//   updatedAt: "2024-09-21T18:59:02.560Z",
+//   role: "ADMIN",
+//   status: "active"
+// })
 
 const handleDeleteConfirm = async () => {
-  if (selectedObj.value.id) {                                
-    await deleteMember(selectedObj.value.id).then(() => {
+  if (memberObj.value.id) {                                
+    await deleteMember(memberObj.value.id).then(() => {
       deleteModal.value = false;
-     router.push(`/dashboard/members/${selectedObj.value.id}/delete-success`)
+     router.push(`/dashboard/members/${memberObj.value.id}/delete-success`)
     })
   }
 };
@@ -194,12 +221,12 @@ const handleDeleteConfirm = async () => {
 
 const handleDeactivateConfirm = async () => {
   try {
-    const actionType = selectedObj.value.isActive ? 'deactivate' : 'activate';
-    const successRoute = selectedObj.value.isActive 
-      ? `/dashboard/members/${selectedObj.value.id}/deactivate-success` 
-      : `/dashboard/members/${selectedObj.value.id}/activate-success`;
+    const actionType = memberObj.value.isActive ? 'deactivate' : 'activate';
+    const successRoute = memberObj.value.isActive 
+      ? `/dashboard/members/${memberObj.value.id}/deactivate-success` 
+      : `/dashboard/members/${memberObj.value.id}/activate-success`;
 
-    await deactivateMember(selectedObj.value.id, actionType); // Wait for the action to complete
+    await deactivateMember(memberObj.value.id, actionType); // Wait for the action to complete
 
     deactivateModal.value = false; // Close the modal
     router.push(successRoute); // Navigate to the success page

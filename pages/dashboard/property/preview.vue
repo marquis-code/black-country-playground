@@ -1,7 +1,7 @@
 <template>
   <LayoutWithoutSidebar>
     <header
-    class="px-4 py-5 flex items-center justify-between container mx-auto fixed top-0 left-0 right-0 z-50"
+    class="px-4 py-5 flex items-center justify-between container mx-auto fixed top-0 left-0 right-0 z-10"
   >
     <div
       @click="router.push('/dashboard')"
@@ -80,6 +80,7 @@ const handleSaveAndExit = () => {
 };
 
 const handlePublish = () => {
+  console.log('I am called')
   create_property();
 };
 

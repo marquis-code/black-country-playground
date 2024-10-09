@@ -19,8 +19,7 @@
           <div class="space-y-1">
             <label class="block text-sm font-medium text-[#1D2739]">Property name</label>
             <select class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none">
-              <option>Select property</option>
-              <!-- Add more options as needed -->
+              <option v-for="item in  propertiesList" :key="item.id">{{item.name}}</option>
             </select>
           </div>
   
@@ -46,7 +45,13 @@
   </template>
   
   <script setup lang="ts">
+  import { useGetProperties } from "@/composables/modules/property/fetchProperties";
   import { ref, defineEmits } from 'vue';
+  const router = useRouter()
+  const {
+  loadingProperties,
+  propertiesList
+} = useGetProperties();
   
   const emit = defineEmits(['close']);
   
@@ -61,8 +66,7 @@
   };
   
   const applyFilters = () => {
-    // Logic to apply filters
-    console.log('Filters applied');
+    router.push('/dashboard/property/lease-documents/create')
     closeModal();
   };
   

@@ -25,4 +25,8 @@ export const member_api = {
         const url = `/members/${id}`;
         return GATEWAY_ENDPOINT.delete(url);
       },
+      $_member_details: (id: string | number) => {
+        const url = `/admins/members/${id}?group=ADMIN`;
+        return GATEWAY_ENDPOINT.get(url);
+      },
 }

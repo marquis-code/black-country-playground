@@ -5,6 +5,8 @@ import { useRouter } from "vue-router";
 import { useGetFloorings } from '@/composables/modules/property/fetchFloorings'
 import { useGetPropertyTypes } from '@/composables/modules/property/fetchPropertyTypes'
 const { propertyTypesList, getPropertyTypes } = useGetPropertyTypes()
+import { useCustomToast } from '@/composables/core/useCustomToast'
+const { showToast } = useCustomToast();
 const { flooringsList, geFloorings  } = useGetFloorings()
 
 // Initialize payload with useStorage to persist the data
@@ -86,6 +88,7 @@ export const use_create_property = () => {
   const saving = ref(false)
 
   const create_property = async () => {
+    console.log('Ewooooooooo')
     // Remove rooms that have no features array
     const filteredRooms = runtimePayload.rooms.value
       .filter((room) => Array.isArray(room.features) && room.features.length > 0)
@@ -125,11 +128,22 @@ export const use_create_property = () => {
     loading.value = true;
     try {
       const res = await property_api.$_create(finalPayload) as any
-      console.log(res, 'Hello')
       if (res.type !== "ERROR") {
-        // Property created successfully, reset the payload
+        showToast({
+          title: "Success",
+          message: "Property was created successfully",
+          toastType: "success",
+          duration: 3000
+        });
         resetPayload();
         Router.push("/dashboard/property/success");
+      } else {
+        showToast({
+          title: "Error",
+          message: res?.data?.error || "An error occured",
+          toastType: "error",
+          duration: 3000
+        });
       }
     } catch (error) {
       // console.log(error.response)

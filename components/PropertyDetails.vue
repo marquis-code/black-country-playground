@@ -592,3 +592,4 @@ const handleNextButtonClick = () => {
   // Logic to navigate to the next room
 };
 </script>
+

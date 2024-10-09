@@ -1,38 +1,93 @@
 <template>
-  <LayoutWithoutSidebar>
-    <div class="flex min-h-screen">
-      <!-- Left Side: Text Editor -->
-      <div class="flex-1 p-6 bg-white">
-        <h2 class="text-2xl font-semibold text-gray-800 text-center mb-4">Lease Agreement</h2>
-        <p class="text-center text-gray-500 mb-6">
-          This is a legally binding agreement. If not Understood, consult an Attorney.
-        </p>
-        <div contenteditable="true" class="border border-gray-300 p-4 rounded-lg shadow-sm min-h-[300px]" ref="editor">
-          Start editing your text here...
+<main>
+  <div class="bg-gray-100">
+    <!-- Header with back button and template title -->
+    <div class="flex justify-between items-center bg-white p-4 shadow px-10">
+      <div class="flex items-center space-x-2">
+        <button @click="router.back()" class="text-gray-600 bg-gray-100 text-sm py-3 px-4 rounded-md hover:text-black">
+          <span>&larr;</span> Back
+        </button>
+        <h1 class="text-lg font-semibold">{{ templateTitle }}</h1>
+      </div>
+      <div class="relative">
+        <!-- Preview and Use Template Buttons -->
+        <div class="flex space-x-4">
+          <button @click="previewDocument" class="bg-transparent text-green-600 hover:underline">
+            Preview
+          </button>
+          <button @click="useTemplate" class="bg-black text-sm text-white px-4 py-3 rounded-md">
+            Use Template
+          </button>
+          <!-- More options button -->
+          <button
+            class="text-gray-600 hover:bg-gray-100 p-2 rounded-full"
+            @click="toggleDropdown"
+          >
+            &#8942;
+          </button>
         </div>
-        <div class="mt-4">
-          <button @click="previewDocument" class="px-4 py-2 bg-blue-500 text-white rounded-md">Preview</button>
-          <button @click="useTemplate" class="ml-2 px-4 py-2 bg-green-500 text-white rounded-md">Use Template</button>
+
+        <!-- Dropdown modal -->
+        <div
+          v-if="dropdownVisible"
+          class="absolute right-0 z-50 mt-2 w-40 bg-white shadow-lg rounded-md overflow-hidden"
+        >
+          <ul>
+            <li
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+              @click="sendNow"
+            >
+              Send now
+            </li>
+            <li
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+              @click="saveAndExit"
+            >
+            {{loading ? 'processing..' : ' Save and exit'}}
+            </li>
+            <li
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+              @click="duplicateTemplate"
+            >
+              Duplicate
+            </li>
+            <li
+              class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 cursor-pointer"
+              @click="deleteTemplate"
+            >
+              Delete
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <LayoutWithoutSidebar class="h-0 bg-gray-300">
+    <div class="flex min-h-screen bg-gray-25">
+      <!-- Left Side: Text Editor -->
+      <div class="flex-1 p-10 bg-gray-25">
+        <div contenteditable="true" class="border border-gray-300 px-10 bg-white p-4 outline-none border-none rounded-lg shadow-sm min-h-[500px]" ref="editor">
+          Start editing your text here...
         </div>
       </div>
   
       <!-- Right Side: Settings Panel -->
-      <div class="w-1/3 p-6 bg-gray-50 border-l border-gray-200">
+      <div class="w-1/3 p-6 bg-white rounded-lg mt-10 mr-10 ">
         <h3 class="text-xl font-semibold text-gray-800 mb-4">Settings</h3>
         <p class="text-gray-500 mb-6">Edit template according to your liking</p>
   
         <div class="space-y-6">
           <!-- Status -->
-          <div>
+          <div class="flex justify-between itemskkk">
             <p class="text-gray-500 text-sm mb-1">Status</p>
-            <span class="px-4 py-2 bg-gray-200 text-gray-700 rounded-full">Drafted</span>
+            <span class="px-4 py-2 text-sm bg-gray-200 text-gray-700 rounded-full">Drafted</span>
           </div>
   
           <!-- Alignment -->
           <div>
-            <p class="text-gray-500 text-sm mb-1">Alignment</p>
-            <div class="flex space-x-2">
-              <button @click="setAlignment('justify')" class="p-2 border rounded-md bg-[#5B8469] text-white text-xs flex justify-center items-center flex-col">
+            <p class="text-gray-900 text-sm mb-1">Alignment</p>
+            <div class="flex space-x-4">
+              <button :class="[alignmentPosition === 'justify' ? 'bg-[#5B8469] text-white' : 'bg-gray-25 text-gray-500']" @click="setAlignment('justify')" class="p-2 border-[0.5px] gap-y-2 border-gray-25 rounded-md  text-xs flex justify-center items-center flex-col">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3 3H21" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M3 9H21" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -41,7 +96,7 @@
                   </svg>
                   
                 Justify</button>
-              <button @click="setAlignment('left')" class="p-2 border rounded-md hover:bg-[#5B8469] text-white text-xs flex justify-center items-center flex-col">
+              <button :class="[alignmentPosition === 'left'  ? 'bg-[#5B8469] text-white' : 'bg-gray-25 text-gray-500']" @click="setAlignment('left')" class="p-2 border-[0.5px] gap-y-2 border-gray-25 rounded-md text-xs flex justify-center items-center flex-col">
                 <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3.16797 3H11.168" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M3.16797 9H11.168" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -50,7 +105,7 @@
                   </svg>
                   
                 Left align</button>
-              <button @click="setAlignment('center')" class="p-2 border rounded-md hover:bg-[#5B8469] text-white text-xs flex justify-center items-center flex-col">
+              <button :class="[alignmentPosition === 'center'  ? 'bg-[#5B8469] text-white' : 'bg-gray-25 text-gray-500']" @click="setAlignment('center')" class="p-2 border-[0.5px] gap-y-2 border-gray-25 rounded-md text-xs flex justify-center items-center flex-col">
                 <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3.5 3H21.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M8.5 9H16.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -59,7 +114,7 @@
                   </svg>
                   
                 Center</button>
-              <button @click="setAlignment('right')" class="p-2 border rounded-md hover:bg-[#5B8469] text-white text-xs flex justify-center items-center flex-col">
+              <button :class="[alignmentPosition === 'right'  ? 'bg-[#5B8469] text-white' : 'bg-gray-25 text-gray-500']" @click="setAlignment('right')" class="p-2 border-[0.5px] gap-y-2 border-gray-25 rounded-md text-xs flex justify-center items-center flex-col">
                 <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M13.832 3H21.832" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M13.832 9H21.832" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -74,8 +129,8 @@
           <!-- Listing -->
           <div>
             <p class="text-gray-500 text-sm mb-1">Listing</p>
-            <div class="flex space-x-2">
-              <button @click="setList('ordered')" class="p-2 border rounded-md hover:bg-[#5B8469] text-white text-xs flex justify-center items-center flex-col">
+            <div class="flex space-x-5">
+              <button  :class="[listingPosition === 'ordered' ? 'bg-[#5B8469] text-white' : 'bg-gray-50 text-gray-500']" @click="setList('ordered')" class="p-2  border-gray-200 rounded-md gap-y-2 border-[0.5px] gap-y-2 border-gray-25 text-xs flex justify-center items-center flex-col">
                 <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M8.5 5H20.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round"/>
                   <path d="M4.5 5H4.50898" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -86,7 +141,7 @@
                   </svg>
                   
                 Ordered List</button>
-              <button @click="setList('unordered')" class="p-2 border rounded-md hover:bg-[#5B8469] text-white text-xs flex justify-center items-center flex-col">
+              <button  :class="[listingPosition === 'unordered' ? 'bg-[#5B8469] text-white' : 'bg-gray-50 text-gray-500']" @click="setList('unordered')" class="p-2  border-gray-200 rounded-md gap-y-2 border-[0.5px] gap-y-2 border-gray-25 text-xs flex justify-center items-center flex-col">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M11 6H21" stroke="white" stroke-width="2" stroke-linecap="round"/>
                   <path d="M11 12H21" stroke="white" stroke-width="2" stroke-linecap="round"/>
@@ -102,13 +157,13 @@
           <!-- Font Style & Size -->
           <div>
             <p class="text-gray-500 text-sm mb-1">Font style & size</p>
-            <div class="flex space-x-2 items-center">
-              <select v-model="selectedFont" class="p-2 border rounded-md">
+            <div class="flex space-x-2 items-center pb-3">
+              <select v-model="selectedFont" class="p-2 border-[0.5px] rounded-md outline-none border-gray-100">
                 <option value="Arial">Arial</option>
                 <option value="Times New Roman">Times New Roman</option>
                 <option value="Courier New">Courier New</option>
               </select>
-              <input type="number" v-model="fontSize" class="w-16 p-2 border rounded-md" min="8" max="48" />
+              <input type="number" v-model="fontSize" class="w-16 p-2 border-[0.5px] outline-none border-gray-100 rounded-md" min="8" max="48" />
             </div>
             <div class="flex space-x-2 mt-2">
               <button @click="setBold" class="p-2 border rounded-md hover:bg-gray-100">
@@ -119,8 +174,13 @@
                   
               </button>
               <button @click="setUnderline" class="p-2 border rounded-md hover:bg-gray-100">U</button>
-              <button @click="setItalic" class="p-2 border rounded-md hover:bg-gray-100">I</button>
-              <input type="color" v-model="fontColor" class="p-2 border rounded-md" />
+              <button @click="setItalic" class="p-2 border rounded-md hover:bg-gray-100"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 3.33301H15.8333" stroke="#1D2739" stroke-width="2" stroke-linecap="round"/>
+                <path d="M6.66797 16.6663L13.3346 3.33301" stroke="#1D2739" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4.16797 16.667H10.0013" stroke="#1D2739" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                </button>
+              <input type="color" v-model="fontColor" class="p-2 border rounded-md">
             </div>
           </div>
   
@@ -128,7 +188,7 @@
           <div>
             <p class="text-gray-500 text-sm mb-1">Paragraph format</p>
             <div class="flex space-x-2">
-              <button @click="setHeading('p')" class="p-2 border rounded-md hover:bg-gray-100">
+              <button :class="[paragraphPosition === 'p' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('p')" class="p-2 border-[0.5px] border-gray-100 rounded-md">
                 <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M6 4.5V20.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M18 4.5V20.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -136,7 +196,7 @@
                   </svg>
                   
               </button>
-              <button @click="setHeading('h1')" class="p-2 border rounded-md hover:bg-gray-100">
+              <button :class="[paragraphPosition === 'h1' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('h1')" class="p-2 border-[0.5px] border-gray-100 rounded-md">
                 <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M4 5.5V19.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M14 5.5V19.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -145,7 +205,7 @@
                   </svg>
                   
               </button>
-              <button @click="setHeading('h2')" class="p-2 border rounded-md hover:bg-gray-100">
+              <button :class="[paragraphPosition === 'h2' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('h2')" class="p-2 border-[0.5px] border-gray-100 rounded-md">
                 <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3.5 5.5V19.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M13.5 5.5V19.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -154,7 +214,7 @@
                   </svg>
                   
               </button>
-              <button @click="setHeading('h3')" class="p-2 border rounded-md hover:bg-gray-100">
+              <button :class="[paragraphPosition === 'h3' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('h3')" class="p-2 border-[0.5px] border-gray-100 rounded-md">
                 <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M4 5V19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M14 5V19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -163,7 +223,7 @@
                   </svg>
                   
               </button>
-              <button @click="setHeading('h4')" class="p-2 border rounded-md hover:bg-gray-100">
+              <button :class="[paragraphPosition === 'h4' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('h4')" class="p-2 border-[0.5px] border-gray-100 rounded-md">
                 <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3.5 5.5V19.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M13.5 5.5V19.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -172,7 +232,7 @@
                   </svg>
                   
               </button>
-              <button @click="setHeading('h5')" class="p-2 border rounded-md hover:bg-gray-100">
+              <button :class="[paragraphPosition === 'h5' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('h5')" class="p-2 border-[0.5px] border-gray-100 rounded-md">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3.5 5V19" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M13.5 5V19" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -181,7 +241,7 @@
                   </svg>
                   
               </button>
-              <button @click="setHeading('h6')" class="p-2 border rounded-md hover:bg-gray-100">
+              <button :class="[paragraphPosition === 'h6' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('h6')" class="p-2 border-[0.5px] border-gray-100 rounded-md">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3.5 5V19" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M13.5 5V19" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -229,33 +289,156 @@
     <!-- Preview Modal -->
     <div v-if="showPreview" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
       <div class="bg-white p-6 rounded-lg max-w-2xl w-full">
-        <h2 class="text-xl font-semibold mb-4">Preview Document</h2>
-        <div v-html="previewContent" class="border border-gray-300 p-4 rounded-lg shadow-sm min-h-[300px]"></div>
+        <h2 class="text- font-semibold mb-4">Preview Document</h2>
+        <div v-html="previewContent" class="p-4 rounded-lg shadow-sm min-h-[300px]"></div>
         <button @click="showPreview = false" class="mt-4 px-4 py-2 bg-red-500 text-white rounded-md">Close</button>
       </div>
     </div>
   </LayoutWithoutSidebar>
+</main>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
 import LayoutWithoutSidebar from '@/layouts/dashboardWithoutSidebar.vue';
+import { useCustomToast } from '@/composables/core/useCustomToast'
+import { useCreateLeaseTemplate } from '@/composables/modules/lease/create'
+const {  createLeaseTemplate, loading, payload, setPayloadObj } = useCreateLeaseTemplate()
+const { showToast } = useCustomToast();
 
 const editor = ref<HTMLElement | null>(null);
 const selectedFont = ref('Arial');
 const fontSize = ref(14);
-const fontColor = ref('#000000');
+const fontColor = ref('#z000000');
 const showPreview = ref(false);
 const previewContent = ref('');
+const templateTitle = 'Lease Agreement';
+const dropdownVisible = ref(false);
+const alignmentPosition = ref('justify')
+const listingPosition = ref('ordered')
+const paragraphPosition = ref('p')
+
+// const leaseAgreementContent = `
+//   <h2 class="text-2xl font-semibold text-gray-800 text-center mb-4">Lease Agreement</h2>
+//   <p class="text-center text-gray-500 mb-6">
+//     This is a legally binding agreement. If not Understood, consult an Attorney.
+//   </p>
+//   <ol class="list-decimal space-y-6">
+//     <li>
+//       <strong>Parties:</strong>
+//       This Lease Agreement is entered into on [Date] between: [Homeowner's Name], hereinafter referred to as the "Landlord", and [Tenant's Name], hereinafter referred to as the "Tenant".
+//     </li>
+//     <li>
+//       <strong>Property:</strong>
+//       The Landlord agrees to lease to the Tenant, and the Tenant agrees to rent from the Landlord, located at [Property location].
+//     </li>
+//     <li>
+//       <strong>Terms of Lease:</strong>
+//       The lease shall commence on [Start Date] and continue until [End Date], unless terminated earlier as provided in this agreement.
+//     </li>
+//     <li>
+//       <strong>Rent and Payments:</strong>
+//       <ul class="list-disc ml-4">
+//         <li>The Tenant agrees to pay rent in the amount of [Monthly Rent] per month, due on the [Day of the Month] of each month.</li>
+//         <li>Rent payments shall be made by [Accepted Payment Method], to be delivered to the Landlord or as directed by the Landlord.</li>
+//       </ul>
+//     </li>
+//     <li>
+//       <strong>Security Deposit:</strong>
+//       <ul class="list-disc ml-4">
+//         <li>The Tenant shall provide a security deposit in the amount of [Security Deposit Amount] upon execution of this agreement.</li>
+//         <li>The security deposit shall be held by the Landlord as security for the performance of the Tenant's obligations under this lease.</li>
+//       </ul>
+//     </li>
+//     <li>
+//       <strong>Use of Property:</strong>
+//       <ul class="list-disc ml-4">
+//         <li>The Tenant shall use the property solely for residential purposes and shall not engage in any illegal activities on the premises.</li>
+//         <li>The Tenant shall comply with all applicable laws, rules, and regulations governing the use of the property.</li>
+//       </ul>
+//     </li>
+//     <li>
+//       <strong>Maintenance and Repairs:</strong>
+//       Details of maintenance and repair responsibilities.
+//     </li>
+//   </ol>
+// `;
+
+const leaseAgreementContent = `
+  <h2 style="font-size: 1.5rem; font-weight: 600; color: #2D3748; text-align: center; margin-bottom: 1rem;">Lease Agreement</h2>
+  <p style="text-align: center; color: #718096; margin-bottom: 1.5rem;">
+    This is a legally binding agreement. If not understood, consult an Attorney.
+  </p>
+  <ol style="list-style-type: decimal; margin-left: 1rem; space-y: 1.5rem;">
+    <li>
+      <strong>Parties:</strong>
+      This Lease Agreement is entered into on [Date] between: [Homeowner's Name], hereinafter referred to as the "Landlord", and [Tenant's Name], hereinafter referred to as the "Tenant".
+    </li>
+    <li>
+      <strong>Property:</strong>
+      The Landlord agrees to lease to the Tenant, and the Tenant agrees to rent from the Landlord, located at [Property location].
+    </li>
+    <li>
+      <strong>Terms of Lease:</strong>
+      The lease shall commence on [Start Date] and continue until [End Date], unless terminated earlier as provided in this agreement.
+    </li>
+    <li>
+      <strong>Rent and Payments:</strong>
+      <ul style="list-style-type: disc; margin-left: 1rem;">
+        <li>The Tenant agrees to pay rent in the amount of [Monthly Rent] per month, due on the [Day of the Month] of each month.</li>
+        <li>Rent payments shall be made by [Accepted Payment Method], to be delivered to the Landlord or as directed by the Landlord.</li>
+      </ul>
+    </li>
+    <li>
+      <strong>Security Deposit:</strong>
+      <ul style="list-style-type: disc; margin-left: 1rem;">
+        <li>The Tenant shall provide a security deposit in the amount of [Security Deposit Amount] upon execution of this agreement.</li>
+        <li>The security deposit shall be held by the Landlord as security for the performance of the Tenant's obligations under this lease.</li>
+      </ul>
+    </li>
+    <li>
+      <strong>Use of Property:</strong>
+      <ul style="list-style-type: disc; margin-left: 1rem;">
+        <li>The Tenant shall use the property solely for residential purposes and shall not engage in any illegal activities on the premises.</li>
+        <li>The Tenant shall comply with all applicable laws, rules, and regulations governing the use of the property.</li>
+      </ul>
+    </li>
+    <li>
+      <strong>Maintenance and Repairs:</strong>
+      Details of maintenance and repair responsibilities.
+    </li>
+  </ol>
+`;
+
+
+onMounted(() => {
+  if (editor.value) {
+    editor.value.innerHTML = leaseAgreementContent;
+  }
+});
+
+const deleteTemplate = () => {
+  if (editor.value) {
+    editor.value.innerHTML = leaseAgreementContent;
+  }
+
+  showToast({
+          title: "Success",
+          message: 'Lease Template was reset successfully',
+          toastType: "success",
+          duration: 3000
+        });
+}
 
 const setAlignment = (alignment: string) => {
   if (editor.value) {
+    alignmentPosition.value = alignment
     document.execCommand('justify' + alignment, false, '');
   }
 };
 
 const setList = (listType: string) => {
   if (editor.value) {
+    listingPosition.value = listType
     document.execCommand(listType === 'ordered' ? 'insertOrderedList' : 'insertUnorderedList', false, '');
   }
 };
@@ -280,6 +463,7 @@ const setItalic = () => {
 
 const setHeading = (tag: string) => {
   if (editor.value) {
+    paragraphPosition.value = tag
     document.execCommand('formatBlock', false, tag);
   }
 };
@@ -347,6 +531,32 @@ watch(fontColor, (newColor) => {
     document.execCommand('foreColor', false, newColor);
   }
 });
+  
+  const toggleDropdown = () => {
+    dropdownVisible.value = !dropdownVisible.value;
+  };
+  
+  const sendNow = () => {
+    const payload = {
+      body: previewContent.value || leaseAgreementContent,
+      documentName: 'TEST'
+    }
+    setPayloadObj(payload)
+    createLeaseTemplate()
+  };
+  
+  const saveAndExit = () => {
+    const payload = {
+      body: previewContent.value || leaseAgreementContent,
+      documentName: 'TEST'
+    }
+    setPayloadObj(payload)
+    createLeaseTemplate()
+  };
+  
+  const duplicateTemplate = () => {
+    // Logic to handle duplicating the template
+  };
 </script>
 
 <style scoped>
