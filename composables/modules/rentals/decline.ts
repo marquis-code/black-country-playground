@@ -17,11 +17,12 @@ export const useDeclineRental = () => {
       const res = await rental_api.$_cancel_rental_application(id, payload) as any;
       if (res.type !== 'ERROR') {
         showToast({
-          title: "Error",
+          title: "Success",
           message: 'Rental application was declined successfully.',
-          toastType: "error",
+          toastType: "success",
           duration: 3000
         });
+        router.push('/dashboard/property/rental-applications/decline-success')
       } else {
         console.log(res, 'hello')
         showToast({

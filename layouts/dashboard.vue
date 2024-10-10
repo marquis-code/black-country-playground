@@ -38,23 +38,6 @@
               <ul role="list" class="flex flex-1 flex-col gap-y-7">
                 <li>
                   <ul role="list" class="-mx-2 space-y-1">
-                    <!-- <li v-for="(item, idx) in sidebarItems" :key="idx">
-                      <NuxtLink
-                        @click.native="isOpen = false"
-                        :to="item.url"
-                        class="group flex gap-x-3 rounded-md bg-gray-800 p-2 text-sm font-semibold leading-6 text-white"
-                      >
-                      <img
-                      :src="dynamicIcons(item.icon)"
-                        :alt="item.name"
-                        class="h-6 w-6"
-                      />
-                        <span class="flex justify-between items w-full">
-                          {{ item.name }}
-                          <span v-if="item.name === 'Messages'" class="bg-[#BA110B] text-white rounded-full h-3 w-3 p-3 flex justify-center items-center">1</span>
-                         </span>
-                      </NuxtLink>
-                    </li> -->
                     <li v-for="(item, idx) in sidebarItems" :key="idx">
                       <NuxtLink
                         :to="item.url"

@@ -74,9 +74,11 @@ instanceArray.forEach((instance) => {
     },
     (err: any) => {
       if (typeof err.response === "undefined") {
-        useNuxtApp().$toast.error("kindly check your network connection", {
-          autoClose: 5000,
-          dangerouslyHTMLString: true,
+        showToast({
+          title: "Error",
+          message: "kindly check your network connection",
+          toastType: "error",
+          duration: 3000
         });
         return {
           type: "ERROR",

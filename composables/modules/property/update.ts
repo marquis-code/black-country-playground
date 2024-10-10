@@ -10,6 +10,7 @@ export const useEditProperty = () => {
     name: useStorage('property_name', null),
     description: useStorage('property_description', null),
     houseTypeId: useStorage('property_houseTypeId', null),
+    cityId: useStorage('property_cityId', null),
     flooringTypeId: useStorage('property_flooringTypeId', null),
     size: useStorage('property_size', null),
     sizeUnit: useStorage('property_sizeUnit', 'sq ft'),
@@ -53,6 +54,7 @@ export const useEditProperty = () => {
     payload.name.value = data.name || "";
     payload.description.value = data.description || "";
     payload.houseTypeId.value = data.houseTypeId || "";
+    payload.cityId.value = data.cityId || "";
     payload.flooringTypeId.value = data.flooringTypeId || "";
     payload.size.value = data.size || "";
     payload.sizeUnit.value = data.sizeUnit || "";
@@ -102,6 +104,7 @@ export const useEditProperty = () => {
       name: payload.name.value,
       description: payload.description.value,
       houseTypeId: payload.houseTypeId.value,
+      cityId: payload.cityId.value,
       flooringTypeId: payload.flooringTypeId.value,
       size: Number(payload.size.value),
       sizeUnit: payload.sizeUnit.value,

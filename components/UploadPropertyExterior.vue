@@ -208,7 +208,9 @@ function removeImage(index: number) {
           @drop.prevent="handleDrop"
           class="flex flex-col justify-center items-center w-full h-64 rounded-lg border-2 border-dashed border-gray-300 cursor-pointer relative"
         >
-          <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 rounded-lg"></div>
+          <div v-if="loading" class="absolute animate-pulse inset-0 flex items-center justify-center bg-white bg-opacity-75 rounded-lg">
+            
+          </div>
   
           <!-- Upload Placeholder -->
           <div v-if="images.length === 0 && !loading" class="flex flex-col items-center justify-center">
@@ -236,6 +238,8 @@ function removeImage(index: number) {
   <script setup lang="ts">
   import { useBatchUploadFile } from '@/composables/core/batchUpload';
   import { ref, reactive, onMounted, watch } from 'vue';
+  import { useCustomToast } from '@/composables/core/useCustomToast'
+const { showToast } = useCustomToast();
   
   const { uploadFiles, uploadResponse, loading } = useBatchUploadFile();
   
@@ -313,16 +317,24 @@ function removeImage(index: number) {
   
       if (Array.isArray(props.payload.images.value)) {
         props.payload.images.value = [...images];
+        showToast({
+          title: "Success",
+          message: "Property  Exterior and Street View Images was uploaded successfully!",
+          toastType: "success",
+          duration: 3000
+        });
       } else {
         props.payload.images.value = uploadedUrls;
       }
     } catch (error) {
       progress.value = 100;
       uploadFailed.value = true;
-      useNuxtApp().$toast.error(error || 'Something went wrong', {
-        autoClose: 5000,
-        dangerouslyHTMLString: true,
-      });
+      showToast({
+          title: "Error",
+          message: error || 'Something went wrong',
+          toastType: "error",
+          duration: 3000
+        });
     }
   }
   

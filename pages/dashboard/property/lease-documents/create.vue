@@ -2,12 +2,12 @@
 <main>
   <div class="bg-gray-100">
     <!-- Header with back button and template title -->
-    <div class="flex justify-between items-center bg-white p-4 shadow px-10">
+    <div class="flex flex-wrap justify-between items-center bg-white p-4 shadow px-10">
       <div class="flex items-center space-x-2">
         <button @click="router.back()" class="text-gray-600 bg-gray-100 text-sm py-3 px-4 rounded-md hover:text-black">
           <span>&larr;</span> Back
         </button>
-        <h1 class="text-lg font-semibold">{{ templateTitle }}</h1>
+        <h1 class="text-lg font-semibold">{{payload.documentName}}</h1>
       </div>
       <div class="relative">
         <!-- Preview and Use Template Buttons -->
@@ -15,16 +15,19 @@
           <button @click="previewDocument" class="bg-transparent text-green-600 hover:underline">
             Preview
           </button>
-          <button @click="useTemplate" class="bg-black text-sm text-white px-4 py-3 rounded-md">
-            Use Template
+          <button type="button" :disabled="processingSaveAndExit"  @click="proceedSaveAndExit" class="bg-gray-400  disabled:cursor-not-allowed disabled:opacity-25 text-sm text-white px-4 py-3 rounded-md">
+             {{ processingSaveAndExit ? 'processing...' : 'Save & Exit'}}
+          </button>
+          <button type="button" :disabled="processingSaveAndSend" @click="proceedSaveAndSend" class="bg-black disabled:cursor-not-allowed disabled:opacity-25 text-sm text-white px-4 py-3 rounded-md">
+             {{ processingSaveAndSend ? 'processing...' : 'Save & Send'}}
           </button>
           <!-- More options button -->
-          <button
+          <!-- <button
             class="text-gray-600 hover:bg-gray-100 p-2 rounded-full"
             @click="toggleDropdown"
           >
             &#8942;
-          </button>
+          </button> -->
         </div>
 
         <!-- Dropdown modal -->
@@ -63,29 +66,76 @@
     </div>
   </div>
   <LayoutWithoutSidebar class="h-0 bg-gray-300">
-    <div class="flex min-h-screen bg-gray-25">
+    <div class="lg:flex items-start min-h-screen bg-gray-25">
       <!-- Left Side: Text Editor -->
-      <div class="flex-1 p-10 bg-gray-25">
-        <div contenteditable="true" class="border border-gray-300 px-10 bg-white p-4 outline-none border-none rounded-lg shadow-sm min-h-[500px]" ref="editor">
+      <div class="flex-1 lg:w-6/12 lg:p-10 bg-gray-25">
+        <div contenteditable="true" class="border border-gray-300 lg:px-10 bg-white p-4 outline-none border-none rounded-lg shadow-sm min-h-[500px]" ref="editor">
           Start editing your text here...
+        </div>
+        <div contenteditable="true" class="border border-gray-300 lg:px-10 bg-white pb-4 px-4 outline-none border-none rounded-lg shadow-sm min-h-[500px]" ref="signatureSection">
+          <h2 class="text-sm font-medium mb-2">Signature</h2>
+          <p class="text-gray-500 mb-6 text-sm">
+            The parties hereto have executed this Lease Agreement as of the date first above written.
+          </p>
+      
+          <div class="mb-4">
+            <h3 class="text-sm font-medium mb-2">Landlord/Property Manager:</h3>
+            <label class="block text-sm text-gray-500 mb-1">Signature</label>
+            <img :src="emittedAgreementData.signature" alt="Signature" class="w-full border-b-2 border-dotted py-2 mb-4 bg-transparent outline-none placeholder-gray-400" />
+            <label class="block text-sm text-gray-500 mb-1">Full Name</label>
+            <div class="border-b-2 border-dotted text-gray-800 py-2 mb-4">
+              {{user.firstName}}  {{user.lastName}}
+            </div>
+            <label class="block text-sm text-gray-500 mb-1">Date</label>
+            <div class="border-b-2 border-dotted text-gray-800 py-2 mb-8">
+              {{new Date().toLocaleString()}}
+            </div>
+          </div>
+      
+          <div class="mb-4 space-y-6">
+            <h3 class="text-base font-medium mb-2">Tenant:</h3>
+            <input
+              type="text"
+              disabled
+              :value="emittedAgreementData.fullName"
+              placeholder="Full name"
+              class="w-full border-b-2 border-dotted py-2 mb-4 bg-transparent outline-none placeholder-gray-400"
+            />
+
+            <input
+            type="text"
+            diabled
+            :value="emittedAgreementData.date"
+            placeholder="Signature"
+            class="w-full border-b-2 border-dotted py-2 mb-4 bg-transparent outline-none placeholder-gray-400"
+          />
+            <!-- <img :src="emittedAgreementData.signature" alt="Signature" class="w-full border-b-2 border-dotted py-2 mb-4 bg-transparent outline-none placeholder-gray-400" /> -->
+            <input
+              type="text"
+              diabled
+              :value="emittedAgreementData.date"
+              placeholder="Date"
+              class="w-full border-b-2 border-dotted py-2 mb-4 bg-transparent outline-none placeholder-gray-400"
+            />
+          </div>
         </div>
       </div>
   
       <!-- Right Side: Settings Panel -->
-      <div class="w-1/3 p-6 bg-white rounded-lg mt-10 mr-10 ">
+      <div class="lg:w-1/3 p-6 bg-white rounded-lg lg:mt-10 lg:mr-10">
         <h3 class="text-xl font-semibold text-gray-800 mb-4">Settings</h3>
         <p class="text-gray-500 mb-6">Edit template according to your liking</p>
   
         <div class="space-y-6">
           <!-- Status -->
-          <div class="flex justify-between itemskkk">
-            <p class="text-gray-500 text-sm mb-1">Status</p>
-            <span class="px-4 py-2 text-sm bg-gray-200 text-gray-700 rounded-full">Drafted</span>
+          <div class="flex justify-between items-center">
+            <p class="text-[#1A47C5] text-sm mb-1">Status</p>
+            <span class="px-4 py-2 text-sm bg-gray-200 text-gray-700 rounded-full">Draft</span>
           </div>
   
           <!-- Alignment -->
           <div>
-            <p class="text-gray-900 text-sm mb-1">Alignment</p>
+            <p class="text-[#1A47C5] text-sm mb-1">Alignment</p>
             <div class="flex space-x-4">
               <button :class="[alignmentPosition === 'justify' ? 'bg-[#5B8469] text-white' : 'bg-gray-25 text-gray-500']" @click="setAlignment('justify')" class="p-2 border-[0.5px] gap-y-2 border-gray-25 rounded-md  text-xs flex justify-center items-center flex-col">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -128,7 +178,7 @@
   
           <!-- Listing -->
           <div>
-            <p class="text-gray-500 text-sm mb-1">Listing</p>
+            <p class="text-[#1A47C5] text-sm mb-1">Listing</p>
             <div class="flex space-x-5">
               <button  :class="[listingPosition === 'ordered' ? 'bg-[#5B8469] text-white' : 'bg-gray-50 text-gray-500']" @click="setList('ordered')" class="p-2  border-gray-200 rounded-md gap-y-2 border-[0.5px] gap-y-2 border-gray-25 text-xs flex justify-center items-center flex-col">
                 <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -156,7 +206,7 @@
   
           <!-- Font Style & Size -->
           <div>
-            <p class="text-gray-500 text-sm mb-1">Font style & size</p>
+            <p class="text-[#1A47C5] text-sm mb-1">Font style & size</p>
             <div class="flex space-x-2 items-center pb-3">
               <select v-model="selectedFont" class="p-2 border-[0.5px] rounded-md outline-none border-gray-100">
                 <option value="Arial">Arial</option>
@@ -166,19 +216,20 @@
               <input type="number" v-model="fontSize" class="w-16 p-2 border-[0.5px] outline-none border-gray-100 rounded-md" min="8" max="48" />
             </div>
             <div class="flex space-x-2 mt-2">
-              <button @click="setBold" class="p-2 border rounded-md hover:bg-gray-100">
+              <button @click="setBold" class="p-2 border rounded-md flex justify-center items-center hover:bg-gray-100 py-0 text-sm px-6">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M4.16797 5C4.16797 3.82149 4.16797 3.23223 4.53409 2.86612C4.9002 2.5 5.48946 2.5 6.66797 2.5H10.4837C12.5185 2.5 14.168 4.17893 14.168 6.25C14.168 8.32107 12.5185 10 10.4837 10H4.16797V5Z" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M10.3585 10H11.3902C13.3846 10 15.0013 11.6789 15.0013 13.75C15.0013 15.8211 13.3846 17.5 11.3902 17.5H6.66797C5.48946 17.5 4.9002 17.5 4.53409 17.1339C4.16797 16.7677 4.16797 16.1785 4.16797 15V10" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                  
+                  Bold
               </button>
-              <button @click="setUnderline" class="p-2 border rounded-md hover:bg-gray-100">U</button>
+              <button @click="setUnderline" class="p-2 border rounded-md hover:bg-gray-100 text-sm">U underline</button>
               <button @click="setItalic" class="p-2 border rounded-md hover:bg-gray-100"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M10 3.33301H15.8333" stroke="#1D2739" stroke-width="2" stroke-linecap="round"/>
                 <path d="M6.66797 16.6663L13.3346 3.33301" stroke="#1D2739" stroke-width="2" stroke-linecap="round"/>
                 <path d="M4.16797 16.667H10.0013" stroke="#1D2739" stroke-width="2" stroke-linecap="round"/>
                 </svg>
+                Italic
                 </button>
               <input type="color" v-model="fontColor" class="p-2 border rounded-md">
             </div>
@@ -186,99 +237,107 @@
   
           <!-- Paragraph Format -->
           <div>
-            <p class="text-gray-500 text-sm mb-1">Paragraph format</p>
-            <div class="flex space-x-2">
-              <button :class="[paragraphPosition === 'p' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('p')" class="p-2 border-[0.5px] border-gray-100 rounded-md">
+            <p class="text-[#1A47C5] text-sm mb-1">Paragraph format</p>
+            <div class="flex flex-wrap gap-2">
+              <button :class="[paragraphPosition === 'p' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('p')" class="p-2 border-[0.5px] border-gray-100 rounded-md bg-[#F9FAFB] flex justify-center flex-col items-center text-sm">
                 <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M6 4.5V20.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M18 4.5V20.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M6 12.5H18" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                  
+                  None  
               </button>
-              <button :class="[paragraphPosition === 'h1' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('h1')" class="p-2 border-[0.5px] border-gray-100 rounded-md">
+              <button :class="[paragraphPosition === 'h1' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('h1')" class="p-2 border-[0.5px] border-gray-100 rounded-md bg-[#F9FAFB] flex justify-center flex-col items-center text-sm">
                 <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M4 5.5V19.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M14 5.5V19.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M17 19.5H18.5M18.5 19.5H20M18.5 19.5V11.5L17 12.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M4 12.5H14" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                  
+                  Heading 1
               </button>
-              <button :class="[paragraphPosition === 'h2' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('h2')" class="p-2 border-[0.5px] border-gray-100 rounded-md">
+              <button :class="[paragraphPosition === 'h2' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('h2')" class="p-2 border-[0.5px] border-gray-100 rounded-md bg-[#F9FAFB] flex justify-center flex-col items-center text-sm">
                 <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3.5 5.5V19.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M13.5 5.5V19.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M20.5 19.5H16.5V19.1907C16.5 18.7521 16.5 18.5327 16.5865 18.3385C16.673 18.1443 16.836 17.9976 17.1621 17.7041L19.7671 15.3596C20.2336 14.9397 20.5 14.3416 20.5 13.714V13.5C20.5 12.3954 19.6046 11.5 18.5 11.5C17.3954 11.5 16.5 12.3954 16.5 13.5V13.9" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M3.5 12.5H13.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                  
+                  Heading 2
               </button>
-              <button :class="[paragraphPosition === 'h3' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('h3')" class="p-2 border-[0.5px] border-gray-100 rounded-md">
+              <button :class="[paragraphPosition === 'h3' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('h3')" class="p-2 border-[0.5px] border-gray-100 rounded-md bg-[#F9FAFB] flex justify-center flex-col items-center text-sm">
                 <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M4 5V19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M14 5V19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M17 17C17 18.1046 17.8954 19 19 19C20.1046 19 21 18.1046 21 17C21 15.8954 20.1046 15 19 15C20.1046 15 21 14.1046 21 13C21 11.8954 20.1046 11 19 11C17.8954 11 17 11.8954 17 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M4 12H14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                  
+                  Heading 3
               </button>
-              <button :class="[paragraphPosition === 'h4' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('h4')" class="p-2 border-[0.5px] border-gray-100 rounded-md">
+              <button :class="[paragraphPosition === 'h4' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('h4')" class="p-2 border-[0.5px] border-gray-100 rounded-md bg-[#F9FAFB] flex justify-center flex-col items-center text-sm">
                 <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3.5 5.5V19.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M13.5 5.5V19.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M16.5 11.5V15.5H20.5M20.5 15.5V19.5M20.5 15.5V11.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M3.5 12.5H13.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                  
+                  Heading 4
               </button>
-              <button :class="[paragraphPosition === 'h5' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('h5')" class="p-2 border-[0.5px] border-gray-100 rounded-md">
+              <button :class="[paragraphPosition === 'h5' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('h5')" class="p-2 border-[0.5px] border-gray-100 rounded-md bg-[#F9FAFB] flex justify-center flex-col items-center text-sm">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3.5 5V19" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M13.5 5V19" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M16.5 16.5V17C16.5 18.1046 17.3954 19 18.5 19C19.6046 19 20.5 18.1046 20.5 17V16.5C20.5 15.1193 19.3807 14 18 14H16.5V11H20.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M3.5 12H13.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                  
+                  Heading 5
               </button>
-              <button :class="[paragraphPosition === 'h6' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('h6')" class="p-2 border-[0.5px] border-gray-100 rounded-md">
+              <button :class="[paragraphPosition === 'h6' ? 'bg-[#5B8469] text-white' : 'bg-gray-100 text-gray-500']" @click="setHeading('h6')" class="p-2 border-[0.5px] border-gray-100 rounded-md bg-[#F9FAFB] flex justify-center flex-col items-center text-sm">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3.5 5V19" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M13.5 5V19" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M16.5 17C16.5 18.1046 17.3954 19 18.5 19C19.6046 19 20.5 18.1046 20.5 17C20.5 15.8954 19.6046 15 18.5 15C17.3954 15 16.5 15.8954 16.5 17ZM16.5 17V13C16.5 11.8954 17.3954 11 18.5 11C19.6046 11 20.5 11.8954 20.5 13" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M3.5 12H13.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                  
+                  Heading 6   
               </button>
             </div>
           </div>
   
           <!-- Insert Options -->
           <div>
-            <p class="text-gray-500 text-sm mb-1">Insert</p>
+            <p class="text-[#1A47C5] text-sm mb-1">Insert</p>
             <div class="flex space-x-2">
-              <button @click="insertImage" class="p-2 border rounded-md hover:bg-gray-100">
+              <button @click="isModalOpen = true" class="p-2 border-[0.5px] border-gray-100 text-sm rounded-md px-5 bg-[#F9FAFB] flex justify-center items-center flex-col gap-y-2 hover:bg-gray-100">
+                <svg class="flex justify-center items-center" width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22 13.1344C18 16.6465 17.4279 11.121 15.3496 11.5165C13 11.9637 11.5 16.9445 13 16.9445C14.5 16.9445 12.5 11 10.5 13.0556C8.5 15.1111 7.85936 17.7946 6.23526 15.8025C-1.5 6.31446 4.99998 -0.649937 8.16322 3.95685C10.1653 6.87256 6.5 17.4769 2 22.5" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M9 21.5H19" stroke="#141B34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                 Signature              
+                  
+              </button>
+              <button @click="insertImage" class="p-2 border-[0.5px] border-gray-100 text-sm rounded-md px-5 bg-[#F9FAFB] flex justify-center flex-col items-center gap-y-2 hover:bg-gray-100">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M11.5095 2.99023C7.02664 2.99023 4.78525 2.99023 3.39262 4.38232C2 5.77441 2 8.01494 2 12.496C2 16.977 2 19.2176 3.39262 20.6097C4.78525 22.0018 7.02664 22.0018 11.5095 22.0018C15.9922 22.0018 18.2336 22.0018 19.6263 20.6097C21.0189 19.2176 21.0189 16.977 21.0189 12.496V11.9957" stroke="#1D2739" stroke-width="2" stroke-linecap="round"/>
                   <path d="M5 20.9902C9.20998 16.2389 13.9412 9.9377 21 14.6636" stroke="#1D2739" stroke-width="2"/>
                   <path d="M17.9939 1.99805V10.0062M21.9995 5.97704L13.9883 5.99193" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                  
+                  Image
               </button>
-              <button @click="insertLine" class="p-2 border rounded-md hover:bg-gray-100">
+              <button @click="insertLine" class="p-2 border-[0.5px] border-gray-100 text-sm rounded-md px-5 bg-[#F9FAFB] flex justify-center flex-col items-center gap-y-2 hover:bg-gray-100">
                 <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3 12H22.0002" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                  
+                  Solid line
               </button>
-              <button @click="insertTable" class="p-2 border rounded-md hover:bg-gray-100">
+              <button @click="insertTable" class="p-2 border-[0.5px] border-gray-100 text-sm rounded-md px-5 bg-[#F9FAFB] flex justify-center flex-col items-center gap-y-2 hover:bg-gray-100">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M20.1087 20.1088C18.7175 21.5 16.4784 21.5 12 21.5C7.52165 21.5 5.28248 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4784 2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89125C5.28248 2.5 7.52165 2.5 12 2.5C16.4784 2.5 18.7175 2.5 20.1087 3.89125C21.4999 5.28249 21.4999 7.52166 21.4999 12C21.4999 16.4784 21.4999 18.7175 20.1087 20.1088Z" stroke="#1D2739" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M9 21.5V2.5" stroke="#1D2739" stroke-width="2"/>
                   <path d="M21.4999 8H2.5" stroke="#1D2739" stroke-width="2"/>
                   <path d="M21.4999 16H2.5" stroke="#1D2739" stroke-width="2"/>
                   </svg>
-                  
+                  Table
               </button>
             </div>
           </div>
@@ -290,22 +349,37 @@
     <div v-if="showPreview" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
       <div class="bg-white p-6 rounded-lg max-w-2xl w-full">
         <h2 class="text- font-semibold mb-4">Preview Document</h2>
-        <div v-html="previewContent" class="p-4 rounded-lg shadow-sm min-h-[300px]"></div>
+        <div v-html="previewContent" class="p-4 rounded-lg shadow-sm h-[500px] overflow-y-auto min-h-[300px]"></div>
         <button @click="showPreview = false" class="mt-4 px-4 py-2 bg-red-500 text-white rounded-md">Close</button>
       </div>
     </div>
   </LayoutWithoutSidebar>
+
+  <CoreModal :isOpen="isModalOpen" @close="isModalOpen = false">
+    <SignatureComponent @agreementData="handleAgreement" @close="closeModal" class="w-full" />
+  </CoreModal>
 </main>
 </template>
 
 <script setup lang="ts">
+import { useSaveAndSend } from '@/composables/modules/lease/saveAndSend'
+import { useSaveAndExit } from '@/composables/modules/lease/saveAndExit'
+// import { useAssignLeaseToProperty } from '@/composables/modules/lease/assignLeaseToProperty'
 import LayoutWithoutSidebar from '@/layouts/dashboardWithoutSidebar.vue';
 import { useCustomToast } from '@/composables/core/useCustomToast'
 import { useCreateLeaseTemplate } from '@/composables/modules/lease/create'
 const {  createLeaseTemplate, loading, payload, setPayloadObj } = useCreateLeaseTemplate()
+// const { assignLeaseToProperty, assignPayload, loading: processing, setAssignPayloadObj } = useAssignLeaseToProperty()
 const { showToast } = useCustomToast();
+import { useUser } from "@/composables/auth/user";
+const { user } = useUser();
+const router = useRouter()
+
+const { setSaveAndSendPayloadObj, handleSaveAndSend, processingSaveAndSend  } = useSaveAndSend()
+const { handleSaveAndExit, setSaveAndExitPayloadObj, processingSaveAndExit } = useSaveAndExit()
 
 const editor = ref<HTMLElement | null>(null);
+const signatureSection = ref<HTMLElement | null>(null);
 const selectedFont = ref('Arial');
 const fontSize = ref(14);
 const fontColor = ref('#z000000');
@@ -316,13 +390,27 @@ const dropdownVisible = ref(false);
 const alignmentPosition = ref('justify')
 const listingPosition = ref('ordered')
 const paragraphPosition = ref('p')
+const localData = ref({})
+
+const isModalOpen = ref(false);
+  const signedSignature = ref<string | null>(null);
+
+  const emittedAgreementData = ref({}) as any
+  
+  const openModal = () => {
+    isModalOpen.value = true;
+  };
+
+  const closeModal = () => {
+    isModalOpen.value = false
+  }
 
 // const leaseAgreementContent = `
-//   <h2 class="text-2xl font-semibold text-gray-800 text-center mb-4">Lease Agreement</h2>
-//   <p class="text-center text-gray-500 mb-6">
-//     This is a legally binding agreement. If not Understood, consult an Attorney.
+//   <h2 style="font-size: 1.5rem; font-weight: 600; color: #2D3748; text-align: center; margin-bottom: 1rem;">Lease Agreement</h2>
+//   <p style="text-align: center; color: #718096; margin-bottom: 1.5rem;">
+//     This is a legally binding agreement. If not understood, consult an Attorney.
 //   </p>
-//   <ol class="list-decimal space-y-6">
+//   <ol style="list-style-type: decimal; margin-left: 1rem; space-y: 1.5rem;">
 //     <li>
 //       <strong>Parties:</strong>
 //       This Lease Agreement is entered into on [Date] between: [Homeowner's Name], hereinafter referred to as the "Landlord", and [Tenant's Name], hereinafter referred to as the "Tenant".
@@ -337,30 +425,87 @@ const paragraphPosition = ref('p')
 //     </li>
 //     <li>
 //       <strong>Rent and Payments:</strong>
-//       <ul class="list-disc ml-4">
+//       <ul style="list-style-type: disc; margin-left: 1rem;">
 //         <li>The Tenant agrees to pay rent in the amount of [Monthly Rent] per month, due on the [Day of the Month] of each month.</li>
 //         <li>Rent payments shall be made by [Accepted Payment Method], to be delivered to the Landlord or as directed by the Landlord.</li>
 //       </ul>
 //     </li>
 //     <li>
 //       <strong>Security Deposit:</strong>
-//       <ul class="list-disc ml-4">
+//       <ul style="list-style-type: disc; margin-left: 1rem;">
 //         <li>The Tenant shall provide a security deposit in the amount of [Security Deposit Amount] upon execution of this agreement.</li>
 //         <li>The security deposit shall be held by the Landlord as security for the performance of the Tenant's obligations under this lease.</li>
 //       </ul>
 //     </li>
 //     <li>
 //       <strong>Use of Property:</strong>
-//       <ul class="list-disc ml-4">
+//       <ul style="list-style-type: disc; margin-left: 1rem;">
 //         <li>The Tenant shall use the property solely for residential purposes and shall not engage in any illegal activities on the premises.</li>
 //         <li>The Tenant shall comply with all applicable laws, rules, and regulations governing the use of the property.</li>
 //       </ul>
 //     </li>
 //     <li>
 //       <strong>Maintenance and Repairs:</strong>
-//       Details of maintenance and repair responsibilities.
+//       <ul style="list-style-type: disc; margin-left: 1rem;">
+//           <li>The Landlord shall be responsible for maintaining the property in good repair, including repairs to the structure, plumbing, heating, and electrical systems.</li>
+//           <li>The Tenant shall be responsible for maintaining the property in a clean and sanitary condition and promptly reporting any maintenance issues to the Landlord.</li>
+//       </ul>
+//     </li>
+
+//     <li>
+//       <strong>Termination</strong>
+//       <ul style="list-style-type: disc; margin-left: 1rem;">
+//         <li>Either party may terminate this lease agreement by providing [Notice Period] written notice to the other party.</li>
+//         <li>In the event of termination, the Tenant shall vacate the premises and return possession of the property to the Landlord in the same condition as at the commencement of the lease.</li>
+//       </ul>
 //     </li>
 //   </ol>
+
+//   <div class="">
+//               <h2 class="text-lg font-medium mb-2">Signature</h2>
+//               <p class="text-gray-500 mb-6">
+//                 The parties hereto have executed this Lease Agreement as of the date first above written.
+//               </p>
+          
+//               <div class="mb-4">
+//                 <h3 class="text-sm font-medium mb-2">Landlord/Property Manager:</h3>
+//                 <label class="block text-sm text-gray-500 mb-1">Signature</label>
+//                 <div class="border-b-2 border-dotted h-12 flex items-center mb-4">
+//                   <img src="@/assets/icons/signature.svg" alt="Signature" class="h-full object-contain" />
+//                 </div>
+//                 <label class="block text-sm text-gray-500 mb-1">Full Name</label>
+//                 <div class="border-b-2 border-dotted text-gray-800 py-2 mb-4">
+//                   Nwachukwu Jacob
+//                 </div>
+//                 <label class="block text-sm text-gray-500 mb-1">Date</label>
+//                 <div class="border-b-2 border-dotted text-gray-800 py-2 mb-8">
+//                   05/04/2024
+//                 </div>
+//               </div>
+          
+//               <div class="mb-4">
+//                 <h3 class="text-base font-medium mb-2">Tenant:</h3>
+//                 <label class="block text-sm text-gray-500 mb-1">Full Name</label>
+//                 <input
+//                   type="text"
+//                   disabled
+//                   :value="emittedAgreementData.fullName"
+//                   placeholder="Full name"
+//                   class="w-full border-b-2 border-dotted py-2 mb-4 bg-transparent outline-none placeholder-gray-400"
+//                 />
+//                 <label class="block text-sm text-gray-500 mb-1">Signature</label>
+//                 <img :src="emittedAgreementData.signature" alt="Signature" class="w-full border-b-2 border-dotted py-2 mb-4 bg-transparent outline-none placeholder-gray-400" />
+//                 <label class="block text-sm text-gray-500 mb-1">Date</label>
+//                 <input
+//                   type="text"
+//                   diabled
+//                   :value="emittedAgreementData.date"
+//                   placeholder="Date"
+//                   class="w-full border-b-2 border-dotted py-2 mb-4 bg-transparent outline-none placeholder-gray-400"
+//                 />
+//               </div>
+//             </div>
+  
 // `;
 
 const leaseAgreementContent = `
@@ -368,52 +513,81 @@ const leaseAgreementContent = `
   <p style="text-align: center; color: #718096; margin-bottom: 1.5rem;">
     This is a legally binding agreement. If not understood, consult an Attorney.
   </p>
-  <ol style="list-style-type: decimal; margin-left: 1rem; space-y: 1.5rem;">
-    <li>
+  <ol style="list-style-type: decimal; margin-left: 1rem; margin-bottom: 1.5rem;">
+    <li style="margin-bottom: 1.5rem;">
       <strong>Parties:</strong>
       This Lease Agreement is entered into on [Date] between: [Homeowner's Name], hereinafter referred to as the "Landlord", and [Tenant's Name], hereinafter referred to as the "Tenant".
     </li>
-    <li>
+    <li style="margin-bottom: 1.5rem;">
       <strong>Property:</strong>
       The Landlord agrees to lease to the Tenant, and the Tenant agrees to rent from the Landlord, located at [Property location].
     </li>
-    <li>
+    <li style="margin-bottom: 1.5rem;">
       <strong>Terms of Lease:</strong>
       The lease shall commence on [Start Date] and continue until [End Date], unless terminated earlier as provided in this agreement.
     </li>
-    <li>
+    <li style="margin-bottom: 1.5rem;">
       <strong>Rent and Payments:</strong>
       <ul style="list-style-type: disc; margin-left: 1rem;">
         <li>The Tenant agrees to pay rent in the amount of [Monthly Rent] per month, due on the [Day of the Month] of each month.</li>
         <li>Rent payments shall be made by [Accepted Payment Method], to be delivered to the Landlord or as directed by the Landlord.</li>
       </ul>
     </li>
-    <li>
+    <li style="margin-bottom: 1.5rem;">
       <strong>Security Deposit:</strong>
       <ul style="list-style-type: disc; margin-left: 1rem;">
         <li>The Tenant shall provide a security deposit in the amount of [Security Deposit Amount] upon execution of this agreement.</li>
         <li>The security deposit shall be held by the Landlord as security for the performance of the Tenant's obligations under this lease.</li>
       </ul>
     </li>
-    <li>
+    <li style="margin-bottom: 1.5rem;">
       <strong>Use of Property:</strong>
       <ul style="list-style-type: disc; margin-left: 1rem;">
         <li>The Tenant shall use the property solely for residential purposes and shall not engage in any illegal activities on the premises.</li>
         <li>The Tenant shall comply with all applicable laws, rules, and regulations governing the use of the property.</li>
       </ul>
     </li>
-    <li>
+    <li style="margin-bottom: 1.5rem;">
       <strong>Maintenance and Repairs:</strong>
-      Details of maintenance and repair responsibilities.
+      <ul style="list-style-type: disc; margin-left: 1rem;">
+        <li>The Landlord shall be responsible for maintaining the property in good repair, including repairs to the structure, plumbing, heating, and electrical systems.</li>
+        <li>The Tenant shall be responsible for maintaining the property in a clean and sanitary condition and promptly reporting any maintenance issues to the Landlord.</li>
+      </ul>
+    </li>
+    <li style="margin-bottom: 1.5rem;">
+      <strong>Termination:</strong>
+      <ul style="list-style-type: disc; margin-left: 1rem;">
+        <li>Either party may terminate this lease agreement by providing [Notice Period] written notice to the other party.</li>
+        <li>In the event of termination, the Tenant shall vacate the premises and return possession of the property to the Landlord in the same condition as at the commencement of the lease.</li>
+      </ul>
     </li>
   </ol>
+  </div>
 `;
 
+const handleAgreement = (data: any) => {
+  showToast({
+          title: "Success",
+          message: 'Signature was saved successfully.',
+          toastType: "success",
+          duration: 3000
+        });
+  emittedAgreementData.value = data
+}
 
 onMounted(() => {
-  if (editor.value) {
-    editor.value.innerHTML = leaseAgreementContent;
-  }
+    const localStorageObj = JSON.parse(localStorage.getItem('templateObj'))
+    localData.value = localStorageObj
+
+    if(Object.keys(localStorageObj).length){
+      editor.value.innerHTML = localStorageObj.body;
+    } else {
+      editor.value.innerHTML = leaseAgreementContent;
+    }
+
+  // if (editor.value) {
+  //   editor.value.innerHTML = leaseAgreementContent;
+  // }
 });
 
 const deleteTemplate = () => {
@@ -500,18 +674,54 @@ const insertTable = () => {
 
 const previewDocument = () => {
   if (editor.value) {
-    previewContent.value = editor.value.innerHTML;
+    previewContent.value = editor.value.innerHTML + signatureSection.value.innerHTML;
     showPreview.value = true;
   }
 };
 
-const useTemplate = () => {
-  if (editor.value) {
-    const htmlContent = editor.value.innerHTML;
-    // Send the htmlContent to the backend here...
-    alert('Template content saved and sent to backend!');
+// const useTemplate = (item: any) => {
+
+
+//   if(item === 'save&exit'){
+
+//   }
+
+//   // if (editor.value) {
+//   //   const htmlContent = editor.value.innerHTML;
+//   //   // Send the htmlContent to the backend here...
+//   //   alert('Template content saved and sent to backend!');
+//   // }
+// };
+
+const proceedSaveAndExit = () => {
+  const reqPayload = {
+      leaseAgreement: Object.keys(localData?.value).length ? localData?.value?.body : leaseAgreementContent,
+      isPublished: false
+    }
+    setSaveAndExitPayloadObj(reqPayload)
+    handleSaveAndExit(payload.value.tenantId, payload.value.propertyId)
+}
+
+const proceedSaveAndSend = () => {
+  if(!!!emittedAgreementData.value.signature){
+    showToast({
+          title: "Error",
+          message: 'You need to sign before you can send the lease agreement.',
+          toastType: "error",
+          duration: 3000
+        });  
+  } else {
+    const reqPayload = {
+      leaseAgreement: Object.keys(localData?.value).length ? localData?.value?.body : leaseAgreementContent,
+      isPublished: true
+    }
+    setSaveAndSendPayloadObj(reqPayload)
+    handleSaveAndSend(payload.value.tenantId, payload.value.propertyId)
   }
-};
+}
+
+
+
 
 // Watch font style and size changes
 watch(selectedFont, (newFont) => {

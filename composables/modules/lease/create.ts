@@ -4,7 +4,9 @@ const { showToast } = useCustomToast();
 const loading = ref(false)
 const payload = ref({
     body: "<html></html>",
-    documentName: "template 1"
+    documentName: "",
+    propertyId: "",
+    tenantId: ""
 })
 const router = useRouter()
 

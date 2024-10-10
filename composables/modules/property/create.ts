@@ -14,6 +14,7 @@ const persistedPayload = {
   name: useStorage('property_name', null),
   description: useStorage('property_description', null),
   houseTypeId: useStorage('property_houseTypeId', null),
+  cityId: useStorage('property_cityId', null),
   flooringTypeId: useStorage('property_flooringTypeId', null),
   size: useStorage('property_size', null),
   sizeUnit: useStorage('property_sizeUnit', null),
@@ -37,6 +38,7 @@ const runtimePayload = {
   name: ref(null),
   description: ref(null),
   houseTypeId: ref(null),
+  cityId: ref(null),
   flooringTypeId: ref(null),
   size: ref(null), // Remove `Number` here, keep it as `ref`
   sizeUnit: ref('sq ft'),
@@ -88,7 +90,6 @@ export const use_create_property = () => {
   const saving = ref(false)
 
   const create_property = async () => {
-    console.log('Ewooooooooo')
     // Remove rooms that have no features array
     const filteredRooms = runtimePayload.rooms.value
       .filter((room) => Array.isArray(room.features) && room.features.length > 0)
@@ -123,8 +124,6 @@ export const use_create_property = () => {
     // Set the cleaned and filtered rooms into the final payload
     finalPayload.rooms = filteredRooms;
 
-    console.log(finalPayload);
-
     loading.value = true;
     try {
       const res = await property_api.$_create(finalPayload) as any
@@ -146,35 +145,20 @@ export const use_create_property = () => {
         });
       }
     } catch (error) {
-      // console.log(error.response)
-      // // console.error('Error creating property:', error);
-      // useNuxtApp().$toast.error(error || 'An error occurred while creating property.', {
-      //   autoClose: 5000,
-      //   dangerouslyHTMLString: true,
-      // });
       if (error.response) {
         // Error response from the server
         const errorMessage = error.response.data?.message || 'An error occurred while creating the property.';
-        const errorDetails = error.response.data?.errors || [];
-        
-        console.error('Error details:', errorDetails); // Log error details to the console for debugging
-
-        // Display error message to the userppersonal
         useNuxtApp().$toast.error(errorMessage, {
           autoClose: 5000,
           dangerouslyHTMLString: true,
         });
         
       } else if (error.request) {
-        // Request made but no response received
-        console.error('No response received:', error.request);
         useNuxtApp().$toast.error('No response from the server. Please check your network connection.', {
           autoClose: 5000,
           dangerouslyHTMLString: true,
         });
       } else {
-        // Other errors (e.g., unexpected exceptions)
-        console.error('Error:', error.message);
         useNuxtApp().$toast.error(`Unexpected error: ${error.message}`, {
           autoClose: 5000,
           dangerouslyHTMLString: true,
@@ -221,24 +205,32 @@ export const use_create_property = () => {
     // Set the cleaned and filtered rooms into the final payload
     finalPayload.rooms = filteredRooms;
   
-    console.log(finalPayload);
-  
     saving.value = true;
     try {
       const res = await property_api.$_create(finalPayload) as any
-      console.log(res, 'Hello')
+      console.log(res, 'saving rse')
       if (res.type !== "ERROR") {
-        // Property created successfully, reset the payload
+        showToast({
+          title: "Success",
+          message: "Property was successfully saved as draft.",
+          toastType: "success",
+          duration: 3000
+        });
         resetPayload();
-        Router.push("/dashboard/property/draft-success");
+        // Router.push("/dashboard/property/draft-success");
+      } else {
+        showToast({
+          title: "Error",
+          message: res?.data?.error || "An error occured",
+          toastType: "error",
+          duration: 3000
+        });
       }
     } catch (error) {
       if (error.response) {
         // Error response from the server
         const errorMessage = error.response.data?.message || 'An error occurred while creating the property.';
         const errorDetails = error.response.data?.errors || [];
-        
-        console.error('Error details:', errorDetails); // Log error details to the console for debugging
   
         // Display error message to the user
         useNuxtApp().$toast.error(errorMessage, {
@@ -248,14 +240,12 @@ export const use_create_property = () => {
         
       } else if (error.request) {
         // Request made but no response received
-        console.error('No response received:', error.request);
         useNuxtApp().$toast.error('No response from the server. Please check your network connection.', {
           autoClose: 5000,
           dangerouslyHTMLString: true,
         });
       } else {
         // Other errors (e.g., unexpected exceptions)
-        console.error('Error:', error.message);
         useNuxtApp().$toast.error(`Unexpected error: ${error.message}`, {
           autoClose: 5000,
           dangerouslyHTMLString: true,

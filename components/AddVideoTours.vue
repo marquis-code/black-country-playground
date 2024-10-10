@@ -47,6 +47,8 @@
     
     <script setup lang="ts">    
     import { ref, onMounted, watch, defineProps } from 'vue';
+    import { useCustomToast } from '@/composables/core/useCustomToast'
+const { showToast } = useCustomToast();
     
     const tabs = ref<string[]>([]); // Array to hold room names
     const activeTab = ref(''); // To track the active tab
@@ -92,11 +94,13 @@ function handleImages({ images, roomName, featureName }: { images: string[], roo
       
       // Aggregate all images from all features into room.images
       room.images = room.features.flatMap((f: any) => f.images || []);
-      
-      useNuxtApp().$toast.success(`Images updated for ${roomName} - ${featureName}:`, {
-        autoClose: 5000,
-        dangerouslyHTMLString: true,
-      });
+
+      showToast({
+          title: "Success",
+          message: `Images updated for ${roomName} - ${featureName}:`,
+          toastType: "success",
+          duration: 3000
+        });
     }
   }
 }

@@ -161,15 +161,43 @@
       </div>
 
       <!-- Custom Rule Input -->
-      <div>
-        <h3 class="text-sm font-medium mb-2">Add Additional house rules</h3>
-        <input
-          v-model="newCustomRule"
-          placeholder="Enter custom rule"
-          class="w-full p-3 border-[0.5px] bg-[#F0F2F5] border-gray-300 outline-none text-sm rounded-md"
-        />
-      </div>
+   <section class="flex justify-between items-center">
+    <div class="w-10/12">
+      <h3 class="text-sm font-medium mb-2">Add Additional house rules</h3>
+      <input
+        v-model="newCustomRule"
+        placeholder="Enter custom rule"
+        class="w-full p-3 border-[0.5px] bg-[#F0F2F5] border-gray-300 outline-none text-sm rounded-md"
+      />
+    </div>
+    <button
+    @click="addCustomRule"
+    class="mt-4 text-[#1D2739] font-medium bg-[#F0F2F5] border py-2.5 flex justify-between items-center gap-x-3 text-sm px-3 rounded-lg"
+  >
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M6 2V10"
+        stroke="#1D2739"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M2 6H10"
+        stroke="#1D2739"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+    Add rule
+  </button>
 
+   </section>
       <!-- Custom Rules List -->
       <div v-if="rules.length > 0">
         <div class="space-y-4">
@@ -197,33 +225,6 @@
           </div>
         </div>
       </div>
-
-      <button
-        @click="addCustomRule"
-        class="mt-4 text-[#1D2739] font-medium bg-[#F0F2F5] border py-2.5 flex justify-between items-center gap-x-3 text-sm px-3 rounded-lg"
-      >
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M6 2V10"
-            stroke="#1D2739"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M2 6H10"
-            stroke="#1D2739"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        Add rule
-      </button>
     </div>
     <slot name="action-buttons"></slot>
   </main>
@@ -235,6 +236,8 @@ const emit = defineEmits(['updateRules']);
 const smokingAllowed = ref(false);
 const petsAllowed = ref(false);
 const newCustomRule = ref<string>('');
+  import { useCustomToast } from '@/composables/core/useCustomToast'
+const { showToast } = useCustomToast();
 
 // State for rules list (both predefined and custom rules)
 const rules = ref<{ rule: string; options?: string[]; answer?: string }[]>([]);
@@ -302,6 +305,12 @@ function setAnswer(ruleName: string, answer: string) {
 function addCustomRule() {
   if (newCustomRule.value.trim()) {
     rules.value.push({ rule: newCustomRule.value.trim() });
+    showToast({
+          title: "Success",
+          message: `${newCustomRule.value.trim()} rule was added successfully!`,
+          toastType: "success",
+          duration: 3000
+        });
     newCustomRule.value = '';
   }
 }

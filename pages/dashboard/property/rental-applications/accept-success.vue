@@ -18,7 +18,7 @@
     >
     Send lease agreement now
     </button>
-      <button @click="router.push('/dashboard/property?activeTab=rental-applications')"
+      <button @click="router.push('/dashboard/property/lease-documents')"
         class="bg-[#EBE5E0] w-full text-[#292929] py-3.5 text-sm px-4 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50"
       >
       I’ll do it later

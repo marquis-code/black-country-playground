@@ -1,21 +1,21 @@
 <template>
   <Layout>
     <template #header-content>
-      <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6 justify-between">
+      <div class="flex z-10 flex-1 gap-x-4 self-stretch lg:gap-x-6 justify-between">
         <!-- Header left side -->
-        <div class="flex items-center gap-x-4">
+        <div class="flex items-center gap-x-4 z-10">
           <h4 class="text-[#1D2739] text-sm">Property Management</h4>
     
           <!-- Desktop View Buttons -->
           <div class="hidden lg:flex gap-x-4">
-            <button @click="setActiveTab('listings')" :class="[activeTab === 'listings' ? 'bg-[#5B8469] text-white' : 'text-[#292929] text-xs bg-[#F0F2F5]']"
-              class="font-medium text-xs px-4 py-2 rounded-md ">Listings</button>
+            <button @click="setActiveTab('listings')" :class="[activeTab === 'listings' ? 'bg-[#5B8469] text-white' : 'text-[#292929] text-sm bg-[#F0F2F5]']"
+              class="font-medium text-sm px-4 py-2 rounded-md ">Listings</button>
             <button @click="setActiveTab('rental-applications')"
-              :class="[activeTab === 'rental-applications' ? 'bg-[#5B8469] text-white' : 'text-[#292929] text-xs bg-[#F0F2F5]']"
-              class=" px-4 py-2 text-xs rounded-md">Rental applications</button>
+              :class="[activeTab === 'rental-applications' ? 'bg-[#5B8469] text-white' : 'text-[#292929] text-sm bg-[#F0F2F5]']"
+              class=" px-4 py-2 text-sm rounded-md">Rental applications</button>
             <button @click="setActiveTab('lease-documents')"
               :class="[activeTab === 'lease-documents' ? 'bg-[#5B8469] text-white' : 'bg-[#F0F2F5] text-[#292929]']"
-              class="font-medium text-xs  px-4 py-2 rounded-md">Lease Documents</button>
+              class="font-medium text-sm  px-4 py-2 rounded-md">Lease Documents</button>
           </div>
     
           <!-- Mobile View Hamburger Menu -->
@@ -37,10 +37,10 @@
     
       <!-- Mobile View Dropdown Menu -->
       <!-- (no changes needed here) -->
-      <div v-if="isMobileMenuOpen" class="relative z-50 lg:hidden" role="dialog" aria-modal="true">
+      <div v-if="isMobileMenuOpen" class="relative z-10 lg:hidden" role="dialog" aria-modal="true">
         <div class="fixed inset-0 bg-gray-900/80" aria-hidden="true"></div>
         <div class="fixed inset-0 flex">
-          <div class="relative mr-16 flex w-full max-w-xs flex-1">
+          <div class="relative mr-16 flex w-full max-w-sm flex-1">
             <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
               <button @click="isMobileMenuOpen = false" type="button" class="-m-2.5 p-2.5">
                 <span class="sr-only">Close sidebar</span>

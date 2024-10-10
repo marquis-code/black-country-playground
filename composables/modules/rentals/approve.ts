@@ -21,11 +21,12 @@ export const useApproveRental = () => {
       // Check if the response is not an error
       if (res.type !== 'ERROR') {
         showToast({
-          title: "Error",
+          title: "Success",
           message: 'Rental application was approved successfully.',
-          toastType: "error",
+          toastType: "success",
           duration: 3000
         });
+        router.push('/dashboard/property/rental-applications/accept-success')
       } else {
         showToast({
           title: "Error",

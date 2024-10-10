@@ -16,4 +16,13 @@ export const lease_api = {
         const url = `/admins/lease-agreement-templates`;
         return GATEWAY_ENDPOINT.post(url, payload);
       },
+      $_fetch_lease_agreement: () => {
+        let url = '/lease-agreements?status=PENDING_SIGNAGE,DRAFT, REJECTED,CANCELLED,SIGNED';
+        return GATEWAY_ENDPOINT.get(url);
+      },
+      $_assign_lease_to_property: (tenantId: any, houseId: any, payload: any) => {
+        const url = `/tenants/${tenantId}/houses/${houseId}/lease-agreements`;
+        return GATEWAY_ENDPOINT.post(url, payload);
+      },
 }
+ 
