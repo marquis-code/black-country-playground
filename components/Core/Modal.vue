@@ -30,6 +30,11 @@
       type: String,
       default: 'Modal Title',
     },
+    showTitle: {
+      type: Boolean,
+      required: false,
+      default: true 
+    },
     showCloseBtn: {
       type: Boolean,
       required: false,

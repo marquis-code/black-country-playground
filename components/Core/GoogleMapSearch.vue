@@ -243,33 +243,54 @@ const typeMapping: Record<string, string> = {
           icon: userIcon 
         }" 
       />
-      <!-- <Marker
-        v-for="(marker, index) in markers"
-        :key="index"
-        :options="{
-          position: marker.location, 
-          icon: amenityIcon 
-        }"
-      /> -->
     </GoogleMap>
 
-    <CoreModal :isOpen="isLocationModalOpen" @close="isLocationModalOpen = false" title="City Selection">
+    <CoreModal :isOpen="isLocationModalOpen" @close="isLocationModalOpen = false" title="Confirm property's address">
+      <p class="text-xs text-[#667185]">Please review the address and ensure that all fields marked with '*' are completed</p>
       <div class="space-y-4">
+        <!-- <div>
+          <p class="text-xs text-[#667185]">Please review the address and ensure that all fields marked with '*' are completed</p>
+        </div> -->
+       <section>
+        <label class="text-xs mb-2 text-[#1D2739]">Country *</label>
+        <select class="w-full py-3 text-sm pl-3 border rounded-lg outline-none border-gray-100">
+          <option value="NG">
+            Nigeria
+          </option>
+        </select>
+       </section>
+
+      <section>
+        <label class="text-xs mb-2 text-[#1D2739]">Street *</label>
+        <input :value="payload.address.value" class="w-full py-3 text-sm pl-3 border rounded-lg outline-none border-gray-100" />
+      </section>
+
+       <section>
+        <label class="text-xs mb-2 text-[#1D2739]">State *</label>
         <select class="w-full py-3 text-sm pl-3 border rounded-lg outline-none border-gray-100" v-model="selectedState" @change="handleStateChange(selectedState)">
           <option v-for="state in states" :key="state.stateCode" :value="state.stateCode">
             {{ state.name }}
           </option>
         </select>
-        <!-- <div v-if="loadingCities" class="text-sm">Loading cities...</div> -->
-        <div v-if="loadingCities" class="h-10 w-full bg-slate-200 rounded"></div>
-        <select v-else v-model="selectedCity" class="w-full py-3 text-sm pl-3 border rounded-lg outline-none border-gray-100">
+       </section>
+
+       <section  v-if="!loadingCities">
+        <label class="text-xs mb-2 text-[#1D2739]">City/Town *</label>
+        <select v-model="selectedCity" class="w-full py-3 text-sm pl-3 border rounded-lg outline-none border-gray-100">
           <option v-for="city in cities" :key="city.id" :value="city.id">
             {{ city.name }}
           </option>
         </select>
+       </section>
+       <div v-if="loadingCities" class="h-10 animate-pulse w-full bg-slate-200 rounded"></div>
+        <section>
+          <label class="text-xs mb-2">Postcode (Optional)</label>
+        <input type="tel" class="w-full py-3 text-sm pl-3 border rounded-lg outline-none border-gray-100" />
+        </section>
 
-        <div class="w-full pt-6">
-          <button @click="isLocationModalOpen = false" class="bg-black text-white w-full  text-sm rounded-md py-2.5">Continue</button>
+        <div class="w-full pt-6 flex justify-between items-center gap-x-6">
+          <button type="button" @click="isLocationModalOpen = false" class="bg-[#EBE5E0] text-[#292929] w-full  text-sm rounded-md py-3">Cancel</button>
+          <button type="button" @click="isLocationModalOpen = false" class="bg-[#292929] text-white w-full  text-sm rounded-md py-3">Save & Continue</button>
         </div>
       </div>
     </CoreModal>
@@ -281,8 +302,11 @@ import { GoogleMap, Marker } from "vue3-google-map";
 import { Loader } from "@googlemaps/js-api-loader";
 import { useGetLocation } from "@/composables/core/useGetLocation";
 import { ref, toRefs } from 'vue';
+import { useCustomToast } from '@/composables/core/useCustomToast'
+const { showToast } = useCustomToast();
 
 // const { states, cities, loadingStates, loadingCities, handleStateChange, selectedState, selectedCity } = useGetLocation();
+
 
 const typeMapping = {
   school: "Schools",
@@ -491,6 +515,16 @@ export default {
     };
   },
 };
+
+const handleSavePropertyAddress = () => {
+  showToast({
+          title: "Success",
+          message: "Property's address was saved successfully",
+          toastType: "success",
+          duration: 3000
+        });
+  isLocationModalOpen.value = false
+}
 </script>
 
 <style>
