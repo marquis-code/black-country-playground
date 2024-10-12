@@ -33,29 +33,6 @@
       </div>
       <div class="mb-4">
         <h3 class="mb-2">Interior area</h3>
-        <!-- <div class="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
-          <label
-            v-for="item in roomFeaturesList"
-            :key="item.name"
-            :for="item.name"
-            class="flex text-sm cursor-pointer pl-3 py-3 items-start gap-4 rounded-lg border transition"
-            :class="{
-              'bg-green-50 border-green-500': isSelected(item.name, 'interior'),
-              'border-gray-200': !isSelected(item.name, 'interior')
-            }"
-          >
-            <input
-              type="checkbox"
-              class="hidden rounded border-gray-300"
-              :id="item.name"
-              :checked="isSelected(item.name, 'interior')"
-              @change="toggleSelection(item.name, 'interior')"
-            />
-            <div>
-              <strong class="font-medium text-sm text-[#171717]">{{ item.name }}</strong>
-            </div>
-          </label>
-        </div> -->
         <div class="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
           <label
             v-for="item in filteredRoomFeatures"

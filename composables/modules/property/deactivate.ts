@@ -17,6 +17,10 @@ export const usePropertyDeactivate = () => {
     const updatedData = {
       isPublished: actionType !== 'deactivate'
     };
+    // const updatedData = {
+    //   status: actionType === 'deactivate' ? 'hidden' : 'published'
+    // };
+
 
     await updateProperty(id, updatedData);
   };

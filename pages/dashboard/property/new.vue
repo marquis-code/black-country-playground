@@ -309,6 +309,8 @@ import { use_create_property } from '@/composables/modules/property/create'
 import LayoutWithoutSidebar from "@/layouts/dashboardWithoutSidebar.vue";
 import { useFetchAgents } from '@/composables/modules/agents/fetch'
 import { useIsEmptyObject } from '@/composables/core/useIsEmptyObject'
+import { useCustomToast } from '@/composables/core/useCustomToast'
+const { showToast } = useCustomToast();
 const { payload, resetPayload, loading, saving, save_property } = use_create_property()
 const { agentsList, loading: loadingAgents } = useFetchAgents()
 const { loading: loadingCommonAreas, commonAreasList, interiorAreas, exteriorAreas, exteriorFurnishedAreas, exteriorUnfurnishedAreas, interiorFurnishedAreas, interiorUnfurnishedAreas } = useGetCommonAreas()
@@ -754,22 +756,172 @@ const validateBasicPropertyInformationStep = () => {
     return (
       payload.address.value &&
       payload.longitude.value !== null &&
-      payload.latitude.value !== null
+      payload.latitude.value !== null &&
+      payload.cityId.value !== null
     );
   }
   return true;
 };
 
+const validateRooms = (rooms: any[]): string[] => {
+  const validationErrors: string[] = [];
+
+  rooms.forEach((room, index) => {
+    const roomName = room.name || `Room ${index + 1}`;
+
+    if (room.availability === 'available_now') {
+      if (!room.rentFrequency) {
+        validationErrors.push(`${roomName}: Rent frequency must be set when the room is available now.`);
+      }
+      if (!room.rentAmount) {
+        validationErrors.push(`${roomName}: Rent amount must be set when the room is available now.`);
+      }
+    }
+
+    if (room.availability === 'unavailable') {
+      if (!room.rentFrequency) {
+        validationErrors.push(`${roomName}: Rent frequency must be set when the room is unavailable.`);
+      }
+      if (!room.occupantName) {
+        validationErrors.push(`${roomName}: Occupant name must be set when the room is unavailable.`);
+      }
+    }
+
+    if (room.availability === 'available_from_date') {
+      if (!room.rentFrequency) {
+        validationErrors.push(`${roomName}: Rent frequency must be set when the room is available from a specific date.`);
+      }
+      if (!room.occupantName) {
+        validationErrors.push(`${roomName}: Occupant name must be set when the room is available from a specific date.`);
+      }
+      if (!room.rentAmount) {
+        validationErrors.push(`${roomName}: Rent amount must be set when the room is available from a specific date.`);
+      }
+      if (!room.availableFrom) {
+        validationErrors.push(`${roomName}: Availability date must be set when the room is available from a specific date.`);
+      }
+    }
+  });
+
+  return validationErrors;
+};
+
 const validateDetailedPropertyInformationStep = () => {
   if (propertyDetailsStep.value === 1) {
-    // Validate "Details about Common areas"
     return payload.commonAreas.value.length > 0;
   } else if (propertyDetailsStep.value === 2) {
-    // Validate "Details about the private rooms"
-    return payload.rooms.value.length > 0;
+    if (payload.rooms.value.length > 0) {
+      const roomValidationErrors = validateRooms(payload.rooms.value);
+      
+      if (roomValidationErrors.length > 0) {
+        // Display all validation errors using the showToast composable
+        roomValidationErrors.forEach(error => {
+          showToast({
+            title: "Error",
+            message: error,  // Dynamically set the error message
+            toastType: "error",
+            duration: 4000 // Adjust duration if needed
+          });
+        });
+        return false;
+      }
+      
+      return true;
+    }
   }
   return true;
 };
+
+// Watcher to automatically trigger validation when `rooms` change
+watch(
+  () => payload.rooms.value, 
+  (newRooms) => {
+    console.log('Rooms data changed:', newRooms);
+    validateDetailedPropertyInformationStep(); // Automatically validate when rooms change
+  },
+  { deep: true }
+);
+
+// const validateRooms = (rooms: any[]): string[] => {
+//   const validationErrors: string[] = [];
+
+//   rooms.forEach((room, index) => {
+//     const roomName = room.name || `Room ${index + 1}`;
+
+//     if (room.availability === 'available_now') {
+//       if (!room.rentFrequency) {
+//         validationErrors.push(`${roomName}: Rent frequency must be set when the room is available now.`);
+//       }
+//       if (!room.rentAmount) {
+//         validationErrors.push(`${roomName}: Rent amount must be set when the room is available now.`);
+//       }
+//     }
+
+//     if (room.availability === 'unavailable') {
+//       if (!room.rentFrequency) {
+//         validationErrors.push(`${roomName}: Rent frequency must be set when the room is unavailable.`);
+//       }
+//       if (!room.occupantName) {
+//         validationErrors.push(`${roomName}: Occupant name must be set when the room is unavailable.`);
+//       }
+//     }
+
+//     if (room.availability === 'available_from_date') {
+//       if (!room.rentFrequency) {
+//         validationErrors.push(`${roomName}: Rent frequency must be set when the room is available from a specific date.`);
+//       }
+//       if (!room.occupantName) {
+//         validationErrors.push(`${roomName}: Occupant name must be set when the room is available from a specific date.`);
+//       }
+//       if (!room.rentAmount) {
+//         validationErrors.push(`${roomName}: Rent amount must be set when the room is available from a specific date.`);
+//       }
+//       if (!room.availableFrom) {
+//         validationErrors.push(`${roomName}: Availability date must be set when the room is available from a specific date.`);
+//       }
+//     }
+//   });
+
+//   return validationErrors;
+// };
+
+// const validateDetailedPropertyInformationStep = () => {
+//   if (propertyDetailsStep.value === 1) {
+//     // Validate "Details about Common areas"
+//     return payload.commonAreas.value.length > 0;
+//   } else if (propertyDetailsStep.value === 2) {
+//     // Validate "Details about the private rooms"
+//     if (payload.rooms.value.length > 0) {
+//       // Perform detailed room validation
+//       const roomValidationErrors = validateRooms(payload.rooms.value);
+//       console.log(roomValidationErrors, 'here ooooo')
+      
+//       if (roomValidationErrors.length > 0) {
+//         // Handle or display the validation errors (you can adjust this to show in your UI)
+//         roomValidationErrors.forEach(error => {
+//           console.error(error); // For now, we'll log it to the console
+//         });
+//         return false; // Return false if validation fails
+//       }
+      
+//       return true; // Return true if validation passes
+//     }
+//   }
+//   return true; // If not in any specific step, return true by default
+// };
+
+
+
+// const validateDetailedPropertyInformationStep = () => {
+//   if (propertyDetailsStep.value === 1) {
+//     // Validate "Details about Common areas"
+//     return payload.commonAreas.value.length > 0;
+//   } else if (propertyDetailsStep.value === 2) {
+//     // Validate "Details about the private rooms"
+//     return payload.rooms.value.length > 0;
+//   }
+//   return true;
+// };
 
 const validateAddVisualsStep = () => {
   if (visualsStep.value === 1) {

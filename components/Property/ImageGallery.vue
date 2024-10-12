@@ -1,9 +1,16 @@
 <template>
 <main>
-  <div v-if="allImages" class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6 p-6 lg:p-0">
+  <section v-if="loading">
+    <div class="rounded-md p-4 w-full mx-auto ">
+      <div class="animate-pulse flex space-x-4">
+        <div class="h-44 w-full bg-slate-200 rounded col-span-1"></div>
+      </div>
+    </div>
+   </section>
+  <div v-else-if="allImages && !loading" class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6 p-6 lg:p-0">
     <!-- Main Image -->
     <div>
-      <img :src=" allImages[0]" alt="Main Image" class="rounded-lg w-full" />
+      <img :src="allImages[0]" alt="Main Image" class="rounded-lg w-full" />
     </div>
 
     <!-- Smaller Images on the right -->
@@ -20,7 +27,7 @@
       <!-- 'View all' overlay for the last image if there are more than 5 images -->
       <div v-if="remainingImagesCount > 0" class="relative cursor-pointer" @click="navigateToAllImages">
         <img
-          :src=" allImages[4]"
+          :src="allImages[4]"
           alt="Image 5"
           class="rounded-lg w-full"
         />
@@ -30,7 +37,7 @@
       </div>
     </div>
   </div>
-  <img v-else src="@/assets/img/image-placeholder.jpg" alt="placeholder" class="rounded-lg w-full" />
+  <!-- <img v-else src="@/assets/img/image-placeholder.jpg" alt="placeholder" class="rounded-lg w-full" /> -->
 </main>
   </template>
   
@@ -47,6 +54,7 @@
   // Accept the images as a prop
   interface Props {
     images: string[];
+    loading: boolean;
     propertyObj: Object
   }
   
