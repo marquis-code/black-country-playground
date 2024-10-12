@@ -9,7 +9,7 @@
               <XIcon class="w-6 h-6" />
             </button>
           </div>
-          <div>
+          <div class="mb-6">
             <slot />
           </div>
         </div>

@@ -25,7 +25,7 @@
       <div v-if="images.length > 1" class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10">
         <button @click="prevImage" class="bg-gray-300 p-1 rounded-full">&larr;</button>
       </div>
-      <img :src="images[currentImageIndex]" alt="Uploaded Image" class="w-full h-auto rounded-md" />
+      <img :src="images[currentImageIndex]" alt="Uploaded Image" class="w-full h-44 object-cover rounded-md" />
       <div v-if="images.length > 1" class="absolute right-0 top-1/2 transform -translate-y-1/2 z-10">
         <button @click="nextImage" class="bg-gray-300 p-1 rounded-full">&rarr;</button>
       </div>

@@ -11,7 +11,7 @@
     <main class="min-h-screen pb-20">
       <!-- Header Section -->
       <div class="max-w-3xl mx-auto py-10 px-6">
-        <h2 class="text-xl font-semibold mb-6">
+        <h2 class="text-lg font-semibold mb-6">
           Follow these steps to add a new listing and showcase available property
           to potential tenants:
         </h2>
@@ -52,8 +52,8 @@
               }}</span>
             </div>
             <div>
-              <h3 class="text-lg font-medium text-[#171717]">{{ step.title }}</h3>
-              <p class="text-[#171717] text-sm lg:text-base font-light">{{ step.description }}</p>
+              <h3 class="text- font-medium text-[#171717]">{{ step.title }}</h3>
+              <p class="text-[#171717] text-sm font-light">{{ step.description }}</p>
             </div>
           </div>
         </div>

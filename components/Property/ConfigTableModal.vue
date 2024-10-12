@@ -4,7 +4,7 @@
     @click.self="closeModal"
   >
     <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full">
-      <h2 class="text-lg font-semibold mb-4">Configure table</h2>
+      <h2 class="text- font-semibold mb-4">Configure table</h2>
       <div class="space-y-4">
         <CoreToggleSwitch
           id="masterBedroom"

@@ -1,18 +1,17 @@
 <template>
-  <main>
-
-    <div class="flex justify-between items-center mb-4">
+  <main class="">
+    <div class="flex flex-wrap gap-3  justify-between items-center mb-4">
       <!-- Left: Filter and Search -->
       <div class="flex space-x-2">
         <!-- Filter Button -->
-        <button @click="propertyFilterModal = true" class="flex items-center text-xs space-x-1 bg-[#F0F2F5] border-[#F0F2F5] border text-gray-700 px-2 py-2 rounded transition-all">
+        <button @click="propertyFilterModal = true" class="flex items-center text-sm space-x-1 bg-[#F0F2F5] border-[#F0F2F5] border-2 text-gray-700 px-6 py-2 rounded transition-all">
           <img :src="dynamicIcons('gray-filter')" />
           <span>Filter</span>
         </button>
   
         <!-- Search Bar -->
         <div class="relative">
-          <input  v-model="filters.searchQuery" type="text" placeholder="Search properties by name..." class="bg-[#F0F2F5] pl-10 border-[#F0F2F5] border text-xs text-gray-700 px-4 py-3 rounded w-full sm:w-64 focus:outline-none focus:bg-white transition-all"/>
+          <input  v-model="filters.searchQuery" type="text" placeholder="Search properties by name..." class="bg-[#F0F2F5] pl-10 border-[#F0F2F5] border text-sm text-gray-700 px-4 py-3 rounded w-full sm:w-[500px] focus:outline-none focus:bg-white transition-all"/>
           <span class="absolute inset-y-0 left-3 flex items-center pr-2">
             <img
             class=""
@@ -25,13 +24,13 @@
       <!-- Right: Configure Table, Export, and New Property -->
       <div class="flex space-x-2">
         <!-- Configure Table Button -->
-        <button @click="showModal = true" class="flex items-center space-x-1 text-xs px-2  bg-[#F0F2F5] border-[#F0F2F5] border text-gray-700 py-2 rounded hover:bg-gray-200 transition-all">
+        <button @click="showModal = true" class="flex items-center space-x-1 text-sm px-2  bg-[#F0F2F5] border-[#F0F2F5] border text-gray-700 py-2 rounded hover:bg-gray-200 transition-all">
           <img :src="dynamicIcons('gray-settings')" />
           <span>Configure table</span>
         </button>
   
         <!-- Export Button -->
-        <button  @click="toggleDownloadDropdown" class="flex items-center space-x-1 text-xs px-2 bg-[#F0F2F5] border-[#F0F2F5] border text-gray-700 py-2 rounded hover:bg-gray-200 transition-all">
+        <button  @click="toggleDownloadDropdown" class="flex items-center space-x-1 text-sm px-2 bg-[#F0F2F5] border-[#F0F2F5] border text-gray-700 py-2 rounded hover:bg-gray-200 transition-all">
           <img :src="dynamicIcons('gray-download')" />
           <span>Export</span>
         </button>
@@ -74,25 +73,24 @@
       </div>
   
         <!-- New Property Button -->
-        <button @click="router.push('/dashboard/property/create-steps')" class="bg-[#292929] px-2 flex items-center text-xs text-white py-2 rounded hover:bg-gray-800 transition-all">
+        <button @click="router.push('/dashboard/property/create-steps')" class="bg-[#292929] px-2 flex items-center text-sm text-white py-2 rounded hover:bg-gray-800 transition-all">
           <img :src="dynamicIcons('white-add')" /> New Property
         </button>
       </div>
     </div>
-
+    <!-- v-if="propertiesList && !loadingProperties" -->
     <div>
       <div
-        v-if="propertiesList && !loadingProperties"
         class="bg-white rounded-lg overflow-hidden"
       >
-        <div class="custom-scrollbar-container">
-          <table class="min-w-full bg-white">
+        <div class="custom-scrollbar-container w-full">
+          <table class="min-w-full bg-white w-full">
             <thead class="border-b-[0.5px] border-gray-50 z-30 bg-gray-25 sticky top-0">
               <tr>
                 <th
                   v-for="column in visibleColumns"
                   :key="column.key"
-                  class="py-5 px-5 text-left text-xs font-medium text-gray-500 tracking-wider"
+                  class="py-5 px-5 text-left text-sm font-medium text-gray-500 tracking-wider"
                 >
                   {{ column.label }}
                 </th>
@@ -101,7 +99,7 @@
                 </th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-50 z-10">
+            <tbody  v-if="!loadingProperties" class="divide-y divide-gray-50 z-10">
               <tr
                 class="cursor-pointer"
                 v-for="(property, index) in propertiesList"
@@ -111,11 +109,11 @@
                   @click.prevent="handleDropdownClick('view', property)"
                   v-for="column in visibleColumns"
                   :key="column.key"
-                  class="py-5 px-5 whitespace-nowrap text-xs text-[#667185] font-semibold relative"
+                  class="py-5 px-5 whitespace-nowrap text-sm text-[#667185] font-semibold relative"
                 >
                   <p v-if="column.key !== 'isPublished'">{{ getPropertyValue(property, column.key) }}</p>
                   <p class="absolute left-0 top-0" v-if="column.key === 'name'">
-                    <span class="bg-[#F7D394] text-[#1D2739] text-xs px-2 py-1" v-if="!property.isPublished">
+                    <span class="bg-[#F7D394] text-[#1D2739] text-sm px-2 py-1" v-if="!property.isPublished">
                       Draft
                     </span>
                   </p>
@@ -217,6 +215,13 @@
               </tr>
             </tbody>
           </table>
+          <section id="loader" class="w-full" v-if="loadingProperties">
+            <div class="rounded-md p-4 w-full">
+              <div class="animate-pulse flex space-x-4 w-full">
+                <div class="h-44 w-full bg-slate-200 rounded"></div>
+              </div>
+            </div>
+          </section>
         </div>
         <div
           v-if="activeDropdown !== null"
@@ -232,19 +237,28 @@
           @page-changed="handlePageChange"
         />
       </div>
-      <div
+      <!-- <div
         v-if="loadingProperties && propertiesList.length === 0"
         class="h-32 bg-slate-200 rounded animate-pulse w-full m-3"
-      ></div>
+      ></div> -->
       <div
         v-if="!loadingProperties && propertiesList.length === 0"
         class="flex justify-center items-center flex-col my-20"
       >
-        <div class="flex justify-center items-center">
-          <!-- SVG and text content for "No properties found" -->
+        <div class="flex justify-center flex-col items-center gap-y-4 items-center">
+          <img src="@/assets/icons/activities-empty-state.svg" />
+          <p class="font-medium text-gray-400">No property found for search key <span class="text-gray-800">"{{filters.searchQuery}}"</span></p>
         </div>
       </div>
     </div>
+
+    <!-- <section v-if="loadingProperties">
+      <div class="rounded-md p-4 w-full mx-auto mt-10">
+        <div class="animate-pulse flex space-x-4">
+          <div class="h-44 w-full bg-slate-200 rounded"></div>
+        </div>
+      </div>
+     </section> -->
     
 
     <PropertyConfigTableModal
@@ -257,7 +271,7 @@
       @applyFilters="handleApplyFilters"
     />
 
-    <CoreModal :showCloseBtn="false" title="Configure Table" :isOpen="showModal" @close="showModal = false">
+    <CoreModal :showCloseBtn="true" title="Configure Table" :isOpen="showModal" @close="showModal = false">
       <div>
         <div
           v-for="(column, index) in columns"

@@ -2,6 +2,8 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUser } from "@/composables/auth/user";
 import { auth_api } from "@/api_factory/modules/auth";
+import { useCustomToast } from '@/composables/core/useCustomToast'
+const { showToast } = useCustomToast();
 
 const credential = {
   email: ref(""),
@@ -31,13 +33,23 @@ export const use_auth_login = () => {
       if(res.status == 200 || res.status == 201){
         console.log(res, 'res here');
         useUser().createUser(res.data);
+        showToast({
+          title: "Success",
+          message: "Login was successful!",
+          toastType: "success",
+          duration: 3000
+        });
         router.push("/dashboard");
         window.location.href = "/dashboard"
       }
 
     } catch (error) {
-      console.error("Login failed:", error);
-      // Handle login error (e.g., show an error message)
+      showToast({
+        title: "Error",
+        message: "Login Error",
+        toastType: "error",
+        duration: 3000
+      });
     } finally {
       loading.value = false;
     }

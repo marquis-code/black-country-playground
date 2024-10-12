@@ -1,10 +1,10 @@
 <template>
-  <Layout>
+  <Layout class="bg-red-500">
     <template #header-content>
       <div class="flex z-10 flex-1 gap-x-4 self-stretch lg:gap-x-6 justify-between">
         <!-- Header left side -->
         <div class="flex items-center gap-x-4 z-10">
-          <h4 class="text-[#1D2739] text-sm">Property Management</h4>
+          <h4 class="text-[#1D2739] text-sm font-semibold">Property Management</h4>
     
           <!-- Desktop View Buttons -->
           <div class="hidden lg:flex gap-x-4">

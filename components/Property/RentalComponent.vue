@@ -94,8 +94,6 @@
         <p class="text-gray-500">No applications found for {{ activeTab }} status.</p>
       </div>
     </div>
-
-    <!-- Loader for loading state -->
     <section v-else>
       <div class="rounded-md p-4 w-full mx-auto ">
         <div class="animate-pulse flex space-x-4">

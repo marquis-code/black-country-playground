@@ -53,8 +53,12 @@
   
   <script setup lang="ts">
   import { useGetProperties } from '@/composables/modules/property/fetchProperties'
+  import { useGetTenants } from '@/composables/modules/tenants/fetch'
+  import { useGetMembers } from '@/composables/modules/member/fetch'
   import { dynamicIcons } from '@/utils/assets'; // assuming you have a dynamicIcons function in utils
-  const { loadingProperties, propertiesList } = useGetProperties()
+  const { loadingProperties, propertiesList, metadata } = useGetProperties()
+  const { metadata: tenantMetadata, tenantsList } = useGetTenants()
+  const { membersList, metadata: memberMetadata } = useGetMembers()
   const router = useRouter()
   const firstSection = ref([
   { icon: 'total-properties', value: '0', label: 'Total Properties', path: '/dashboard/property' },
@@ -86,7 +90,36 @@ watch(
     const totalProperties = newList.length; // Adjust based on how the count should be derived
     const propertiesItem = firstSection.value.find(item => item.label === 'Total Properties');
     if (propertiesItem) {
-      propertiesItem.value = totalProperties;
+      propertiesItem.value = metadata.value.total;
+    }
+  },
+  { immediate: true }
+);
+
+// Watch for changes in tenantsList and update the total tenants count
+watch(
+  tenantsList,
+  (newList) => {
+    const tenantsItem = firstSection.value.find(item => item.label === 'Total tenants');
+    if (tenantsItem) {
+      tenantsItem.value = tenantMetadata.value.total;
+    }
+  },
+  { immediate: true }
+);
+
+// Watch for changes in membersList and update the total members count
+watch(
+  membersList,
+  () => {
+    const membersItem = secondSection.value.find(item => item.label === 'Total members');
+    if (membersItem) {
+      // Calculate the total number of members from memberMetadata
+      const totalMembers = memberMetadata?.value?.admins?.total +
+                           memberMetadata?.value?.serviceProviders?.total +
+                           memberMetadata?.value?.agents?.total +
+                           memberMetadata?.value?.invitations?.total;
+      membersItem.value = totalMembers.toString();
     }
   },
   { immediate: true }
