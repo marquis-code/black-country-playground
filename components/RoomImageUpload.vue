@@ -2,7 +2,7 @@
     <div class="w-full h-full bg-[#EBE5E0] border rounded-lg p-4 flex flex-col items-center justify-center">
       <div v-if="images.length === 0" class="flex flex-col h-64 bg-[#EBE5E0] rounded-lg p-4 w-full relative">
         <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 rounded-lg">
-          <!-- Spinner -->
+
           <div class="loader"></div>
         </div>
         <div v-if="!loading" class="flex justify-center items-center flex-grow">
@@ -20,7 +20,7 @@
         <div v-if="images.length > 1" class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10">
           <button @click="prevImage" class="bg-gray-300 p-1 rounded-full">&larr;</button>
         </div>
-        <img :src="images[currentImageIndex]" alt="Uploaded Image" class="w-full h-auto rounded-md" />
+        <img :src="images[currentImageIndex]" alt="Uploaded Image" class="w-full h-44 object-cover rounded-md" />
         <div v-if="images.length > 1" class="absolute right-0 top-1/2 transform -translate-y-1/2 z-10">
           <button @click="nextImage" class="bg-gray-300 p-1 rounded-full">&rarr;</button>
         </div>
