@@ -37,9 +37,9 @@ const persistedPayload = {
 const runtimePayload = {
   name: ref(null),
   description: ref(null),
-  houseTypeId: ref(null),
+  houseTypeId: ref(''),
   cityId: ref(null),
-  flooringTypeId: ref(null),
+  flooringTypeId: ref(''),
   size: ref(null), // Remove `Number` here, keep it as `ref`
   sizeUnit: ref('sq ft'),
   bedroomCount: ref(null), // Remove `Number` here, keep it as `ref`

@@ -29,17 +29,18 @@
           <label for="property-type" class="block font-medium text-[#1D2739] text-sm"
             >Building/property type</label
           >
-          <select
-          name="property-type"
-          id="property-type"
+        <select
+            name="property-type"
+            id="property-type"
           v-model="payload.houseTypeId.value"
-          class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none"
-          >
-           <option value="">Select property type</option>
-           <option :value="item.id" v-for="(item, idx) in propertyTypesList" :key="idx">
+          class="w-full py-3.5 rounded-md border-[0.5px] outline-none pl-2 text-sm bg-[#F0F2F5]" 
+          required
+        >
+          <option value="" disabled>Select property type</option>
+          <option :value="item.id" v-for="(item, idx) in propertyTypesList" :key="idx">
             {{ item.name }}
-           </option>
-          </select>
+          </option> 
+        </select>
         </div>
         <div class="space-y-1">
           <label for="flooring-type" class="block font-medium text-[#1D2739] text-sm">Flooring type</label>
@@ -49,6 +50,7 @@
           v-model="payload.flooringTypeId.value"
           class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none"
           >
+          <option value="" disabled>Select floor type</option>
            <option :value="item.id" v-for="(item, idx) in flooringsList" :key="idx">
             {{ item.name }}
            </option>
@@ -75,7 +77,7 @@
               id="property-size"
               v-model.number="payload.size.value"
               class="w-full px-4 py-3.5 pl-32 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none"
-              placeholder="e.g 1000"
+              placeholder="please enter property size"
             />
           </div>
         </div>
@@ -236,3 +238,9 @@ const computedFloor = computed(() => {
 })
 
 </script>
+
+<style>
+select option[value=""] {
+  color: #999; /* Light gray for the placeholder */
+}
+</style>

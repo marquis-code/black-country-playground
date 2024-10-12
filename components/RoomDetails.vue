@@ -33,14 +33,14 @@
       </div>
       <div class="mb-4">
         <h3 class="mb-2">Interior area</h3>
-        <div class="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+        <div class="grid grid-cols-3 gap-4">
           <label
             v-for="item in filteredRoomFeatures"
             :key="item"
             :for="item"
-            class="flex text-sm cursor-pointer pl-3 py-3 items-start gap-4 rounded-lg border transition"
+            class="flex text-sm block cursor-pointer pl-3 py-3.5 items-start gap-4 rounded-lg border transition"
             :class="{
-              'bg-green-50 border-green-500': isSelected(item, 'interior'),
+              'bg-white border-2 border-[#5B8469]': isSelected(item, 'interior'),
               'border-gray-200': !isSelected(item, 'interior')
             }"
           >
@@ -51,8 +51,9 @@
               :checked="isSelected(item, 'interior')"
               @change="toggleSelection(item, 'interior')"
             />
-            <div>
-              <strong class="font-medium text-sm text-[#171717]">{{ item }}</strong>
+            <div class="flex items-center gap-x-2">
+              <img src="@/assets/img/roomBg.png" alt="Icon" class="w-6 h-6" />
+              <span class="text-sm">{{ item }}</span>
             </div>
           </label>
         </div>

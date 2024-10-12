@@ -31,13 +31,13 @@
             </div>
                   <div class="text-[#667185]">Floor number <span class="font-medium text-[#1D2739]">{{property?.floorNumber ?? 'Nil'}}</span></div>
             <div class="flex justify-between items-center">
-              <div class="text-[#667185]">Architecture <span class="font-medium text-[#1D2739]">Apartment</span></div>
+              <div class="text-[#667185]">Architecture <span class="font-medium text-[#1D2739]">{{property?.houseType?.name ?? 'Nil'}}</span></div>
               <div class="text-[#667185]">{{property?.availableRoomsCount ?? 'Nil'}} rooms available <span class="text-[#326543]">Now</span></div>
             </div>
                 </div>
         
                 <!-- Co-living with -->
-                  <h2 class="text-sm font-medium text-[#667185] mt-6 border-[0.5px] py-3 px-3 rounded-lg border-gray-50 text-sm text-[#1D2739] font-medium bg-white border-[0.5px] px-3 py-3 rounded-sm border-gray-100">Co-living with <span class="text-[#1D2739]">{{property.bedroomCount - 1}} Persons</span></h2>
+                  <h2 class="text-sm font-medium text-[#667185] mt-6 border-[0.5px] py-3 px-3 rounded-lg border-gray-50 text-sm text-[#1D2739] font-medium bg-white border-[0.5px] px-3 py-3 rounded-sm border-gray-100">Co-living with <span class="text-[#1D2739]">{{occupiedRoomsCount ?? 'Nil'}} Person {{occupiedRoomsCount > 1 ? 's' : ''}}</span></h2>
 
                 <div>
                   <table class="w-full mt-2 table-fixed text-sm">
@@ -93,9 +93,15 @@
               <h2 v-if="property?.rules?.length" class="text-sm font-medium text-[#1D2739] mt-6 border-[0.5px] py-3 px-3 rounded-lg border-gray-50">House Rules</h2>
               <div class="">
                 <ul v-if="property?.rules?.length" class="space-y-1">
-                  <p class="border-[0.5px] rounded-lg border-gray-50 py-3 text-sm pl-4">{{property?.rules[0]?.rule }}</p>
-                  <p class="border-[0.5px] rounded-lg border-gray-50 py-3 text-sm pl-4">{{property?.rules[1]?.rule }}</p>
-                  <div class="border-[0.5px] rounded-lg border-gray-50 py-3">
+                  <div class="flex justify-between items-center">
+                    <p class="border-[0.5px] rounded-lg border-gray-50 py-3 text-sm pl-4">{{property?.rules[0]?.rule }}</p>
+                    <p>{{property?.rules[0]?.answer}}</p>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <p class="border-[0.5px] rounded-lg border-gray-50 py-3 text-sm pl-4">{{property?.rules[1]?.rule }}</p>
+                    <p>{{property?.rules[1]?.answer}}</p>
+                  </div>
+                  <div v-if="otherRules?.length" class="border-[0.5px] rounded-lg border-gray-50 py-3">
                       <p class="py-3 text-sm pl-4">Other rules</p>
                     <div class="pl-5">
                       <ul class="list-disc ml-5 space-y-4 text-sm">
@@ -116,6 +122,7 @@
 </template>
 
 <script setup lang="ts">
+import { useRoomOccupantCount } from '@/composables/core/useRoomOccupantCount';
 const showBookingModal = ref(false);
 const props = defineProps({
     property: {
@@ -132,6 +139,7 @@ const props = defineProps({
 
 
   console.log(props.property.rooms)
+  const { occupiedRoomsCount } = useRoomOccupantCount(props?.property?.rooms);
 
 
   // Computed property to format room data

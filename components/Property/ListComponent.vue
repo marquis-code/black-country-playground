@@ -139,7 +139,7 @@
   <p v-else-if="column.key === 'isPublished'">{{ property.isPublished ? 'Published' : 'Draft' }}</p>
   <p v-else>{{ getPropertyValue(property, column.key) }}</p>
 </td>
-                <td class="py-5 px-5 whitespace-nowrap text-sm text-right">
+                <td class="py-5 px-5 relative whitespace-nowrap text-sm text-right">
                   <button
                     @click="toggleDropdown(index)"
                     class="inline-flex items-center text-sm font-medium text-[#667185] hover:text-black"
@@ -174,9 +174,9 @@
                       />
                     </svg>
                   </button>
-                  <div
+                   <div
                     v-if="activeDropdown === index"
-                    class="absolute right-16 z-50 mt-2 w- bg-white border border-gray-200 rounded-md shadow-lg"
+                    class="absolute -top-2 right-10 z-50 mt-2 w-60 bg-white border border-gray-200 rounded-md shadow-lg"
                   >
                     <ul class="py-1 text-sm text-gray-700 divide divide-y-[0.5px]">
                       <li>
@@ -193,7 +193,7 @@
                         <a
                           @click.prevent="handleDropdownClick('edit', property)"
                           href="#"
-                          class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+                          class="block flex items-center gap-x-2 px-4 py-3 text-sm hover:bg-gray-100 text-start"
                         >
                           <img :src="dynamicIcons('edit-property')" />
                           Edit property
@@ -203,7 +203,7 @@
                         <a
                           @click.prevent="handleDropdownClick('duplicate', property)"
                           href="#"
-                          class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+                          class="block flex items-center gap-x-2 px-4 py-3 text-sm hover:bg-gray-100 text-start"
                         >
                           <img :src="dynamicIcons('duplicate-property')" />
                           Duplicate property & edit
@@ -213,7 +213,7 @@
                         <a
                           @click.prevent="handleDropdownClick('deactivate', property)"
                           href="#"
-                          class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+                          class="block flex items-center gap-x-2 px-4 py-3 text-sm hover:bg-gray-100 text-start"
                         >
                           <img :src="dynamicIcons('deactivate-property')" />
                           {{property.isPublished ? 'Deactivate property' : 'Activate property'}}
@@ -223,7 +223,7 @@
                         <a
                           @click.prevent="handleDropdownClick('delete', property)"
                           href="#"
-                          class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+                          class="block flex items-center gap-x-2 px-4 py-3 text-sm hover:bg-gray-100 text-start"
                         >
                           <img :src="dynamicIcons('delete-property')" />
                           Delete property

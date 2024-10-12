@@ -1,19 +1,19 @@
 <template>
-  <div class="p-8">
+  <div class="">
     <div class="mb-4 flex items-center justify-between">
-      <label>Is the common area furnished?</label>
+      <label class="text-[#1D2739]">Is the common area furnished?</label>
       <div class="flex space-x-2 mt-2">
         <button
           @click="toggleFurnished(true)"
-          :class="{ 'bg-black text-white': isFurnished, 'bg-gray-100': !isFurnished }"
-          class="px-4 py-2 rounded"
+          :class="{ 'bg-[#292929] text-white': isFurnished, 'bg-[#F0F2F5]': !isFurnished }"
+          class="px-6 py-2.5 rounded"
         >
           Yes
         </button>
         <button
           @click="toggleFurnished(false)"
-          :class="{ 'bg-black text-white': !isFurnished, 'bg-gray-100': isFurnished }"
-          class="px-4 py-2 rounded"
+          :class="{ 'bg-[#292929] text-white': !isFurnished, 'bg-[#F0F2F5]': isFurnished }"
+          class="px-6 py-2.5 rounded"
         >
           No
         </button>
@@ -27,10 +27,10 @@
           :key="area.id"
           @click="toggleAreaSelection(area)"
           :class="{
-            'bg-green-100 border-green-500': isSelected(area),
-            'bg-white': !isSelected(area)
+            'bg-white border-2 border-[#5B8469]': isSelected(area),
+            'bg-white border-[0.5px] border-gray-200': !isSelected(area)
           }"
-          class="p-4 border rounded cursor-pointer flex items-center space-x-2"
+          class="p-4 border rounded-xl cursor-pointer flex items-center space-x-2"
         >
         <img src="@/assets/img/roomBg.png" alt="Icon" class="w-6 h-6" />
           <span class="text-sm">{{ area.name }}</span>
@@ -39,11 +39,11 @@
       <input
         v-model="newAreaNames[index]"
         :placeholder="'e.g ' + category.example"
-        class="border p-2 text-sm border-gray-200 mt-2 w-full py-3 rounded-md"
+        class="border px-2 text-sm border-gray-100 outline-none bg-[#F0F2F5] mt-4 w-full py-3.5 rounded-md"
       />
       <button
         @click="addCommonArea(category.type, category.canBeFurnished, index)"
-        class="text-blue-500 mt-2"
+        class="text-[#171717] mt-3 font-medium"
       >
         + Add manually
       </button>
@@ -136,7 +136,8 @@ function isSelected(area: CommonArea) {
 
 const categories = computed(() => [
   {
-    title: 'Interior Furnished',
+    // title: 'Interior Furnished',
+    title: 'Interior area',
     type: 'interior',
     canBeFurnished: true,
     example: 'Living room',
@@ -149,7 +150,8 @@ const categories = computed(() => [
     ),
   },
   {
-    title: 'Interior Not Furnished',
+    // title: 'Interior Not Furnished',
+    title: 'Interior area',
     type: 'interior',
     canBeFurnished: false,
     example: 'Storage area',
@@ -162,7 +164,8 @@ const categories = computed(() => [
     ),
   },
   {
-    title: 'Exterior Furnished',
+    // title: 'Exterior Furnished',
+    title: 'Exterior area',
     type: 'exterior',
     canBeFurnished: true,
     example: 'Balcony',
@@ -175,7 +178,8 @@ const categories = computed(() => [
     ),
   },
   {
-    title: 'Exterior Not Furnished',
+    // title: 'Exterior Not Furnished',
+    title: 'Exterior area',
     type: 'exterior',
     canBeFurnished: false,
     example: 'Garden',

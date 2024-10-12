@@ -49,7 +49,7 @@
     <section class="grid grid-cols-3 gap-6 max-w-10xl mx-auto">
       <section v-for="(image, index) in previewImages" :key="index" :src="image">
         <div>
-          <img :src="image" class="rounded-md" />
+          <CoreImageZoom class="cursor-pointer" :src="image" />
         </div>
       </section>
     </section>

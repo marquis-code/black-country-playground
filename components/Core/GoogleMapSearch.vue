@@ -195,6 +195,7 @@ export default {
       this.searchNearbyAmenities();
     },
     populateSelectedLocationData(place) {
+      console.log(place, 'plave here')
     const addressComponents = place.address_components;
 
     // Extract state and country from the address components
@@ -248,112 +249,9 @@ export default {
     this.isLocationModalOpen = true;
     this.payload.latitude.value = place.geometry.location.lat();
     this.payload.longitude.value = place.geometry.location.lng();
-    this.payload.address.value = place.formatted_address || place.name;
+    this.payload.address.value = place.name || place.formatted_address;
   },
-  //   populateSelectedLocationData(place) {
-  //   const addressComponents = place.address_components;
-
-  //   // Extract state and country from the address components
-  //   const stateComponent = addressComponents.find((component) =>
-  //     component.types.includes('administrative_area_level_1')
-  //   );
-  //   const countryComponent = addressComponents.find((component) =>
-  //     component.types.includes('country')
-  //   );
-
-  //   // Update selectedCountry if a country is found
-  //   if (countryComponent) {
-  //     const countryCode = countryComponent.short_name; // Use the short_name for the country code (e.g., 'NG')
-  //     this.selectedCountry = countryCode; // Update selectedCountry field with the code
-  //   }
-
-  //   // Update selectedState if a state is found and country is Nigeria (NG)
-  //   if (stateComponent && countryComponent && countryComponent.short_name === 'NG') {
-  //     const stateName = stateComponent.long_name || stateComponent.short_name;
-  //     const matchedState = this.states.find(
-  //       (state) => state.name === stateName || state.stateCode === stateName
-  //     );
-
-  //     if (matchedState) {
-  //       this.selectedState = matchedState.stateCode;
-  //       this.handleStateChange(this.selectedState); // Fetch cities based on the selected state
-  //     }
-  //   }
-
-  //   // Update payload with the selected address data
-  //   this.$emit("update:payload", {
-  //     ...this.payload,
-  //     latitude: { value: place.geometry.location.lat() },
-  //     longitude: { value: place.geometry.location.lng() },
-  //     address: { value: place.formatted_address || place.name },
-  //     neighbouringLandmarks: { value: [] },
-  //   });
-
-  //   this.locationSelected = true;
-  //   this.isLocationModalOpen = true;
-  //   this.payload.latitude.value = place.geometry.location.lat();
-  //   this.payload.longitude.value = place.geometry.location.lng();
-  //   this.payload.address.value = place.formatted_address || place.name;
-  // },
-  //   populateSelectedLocationData(place) {
-  //   const addressComponents = place.address_components;
-
-  //   // Extract state from the address components
-  //   const stateComponent = addressComponents.find((component) =>
-  //     component.types.includes('administrative_area_level_1')
-  //   );
-  //   const countryComponent = addressComponents.find((component) =>
-  //     component.types.includes('country')
-  //   );
-
-  //   // Update selectedCountry if a country is found
-  //   if (countryComponent) {
-  //     const countryName = countryComponent.long_name || countryComponent.short_name;
-  //     this.selectedCountry = countryName; // Update selected country field
-  //   }
-
-  //   // Update selectedState if a state is found and country is Nigeria (NG)
-  //   if (stateComponent && countryComponent && countryComponent.short_name === 'NG') {
-  //     const stateName = stateComponent.long_name || stateComponent.short_name;
-  //     const matchedState = this.states.find(
-  //       (state) => state.name === stateName || state.stateCode === stateName
-  //     );
-
-  //     if (matchedState) {
-  //       this.selectedState = matchedState.stateCode;
-  //       this.handleStateChange(this.selectedState); // Fetch cities based on the selected state
-  //     }
-  //   }
-
-  //   // Update payload with the selected address data
-  //   this.$emit("update:payload", {
-  //     ...this.payload,
-  //     latitude: { value: place.geometry.location.lat() },
-  //     longitude: { value: place.geometry.location.lng() },
-  //     address: { value: place.formatted_address || place.name },
-  //     neighbouringLandmarks: { value: [] },
-  //   });
-
-  //   this.locationSelected = true;
-  //   this.isLocationModalOpen = true;
-  //   this.payload.latitude.value = place.geometry.location.lat();
-  //   this.payload.longitude.value = place.geometry.location.lng();
-  //   this.payload.address.value = place.formatted_address || place.name;
-  // },
-    // populateSelectedLocationData(place) {
-    //   this.$emit("update:payload", {
-    //     ...this.payload,
-    //     latitude: { value: place.geometry.location.lat() },
-    //     longitude: { value: place.geometry.location.lng() },
-    //     address: { value: place.formatted_address || place.name },
-    //     neighbouringLandmarks: { value: [] },
-    //   });
-    //   this.locationSelected = true;
-    //   this.isLocationModalOpen = true
-    //   this.payload.latitude.value = place.geometry.location.lat();
-    //   this.payload.longitude.value = place.geometry.location.lng();
-    //   this.payload.address.value = place.formatted_address || place.name;
-    // },
+  
     searchNearbyAmenities() {
       if (!this.placesService) return;
       this.markers = [];

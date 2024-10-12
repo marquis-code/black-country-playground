@@ -10,7 +10,7 @@
       </div>
       <div class="hidden md:-mt-px md:flex">
         <button v-for="page in pageNumbers" :key="page" @click="changePage(page)"
-          :class="['px-6 py-2 rounded font-semibold', currentPage === page ? 'text-[#5B8469]' : 'text-gray-500']">
+          :class="['px-6 py-2 rounded font-semibold', currentPage === page ? 'bg-[#5B8469] text-white' : 'text-gray-500']">
           {{ page }}
         </button>
       </div>

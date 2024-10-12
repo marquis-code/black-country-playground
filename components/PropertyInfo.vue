@@ -62,18 +62,22 @@
         v-if="activeTab === 'common-areas'"
       />
       <div v-if="activeTab !== 'property-overview' && activeTab !== 'common-areas'" class=" max-w-3xl mx-auto">
-        <div @click="previewRoomImages(activeTab)" class="flex cursor-pointer mb-3 items-center border-[0.5px] border-gray-50 space-x-4 bg-white p-4 rounded-lg">
-          <img :src="dynamicImage('placeholder.png')" alt="Gallery" class="w-12 h-12 rounded-full">
-          <div class="flex-1">
-            <h3 class="text-lg font-medium">Gallery</h3>
-            <p class="text-gray-500 text-sm">Click to view photos of {{selectedRoomObj.name}}</p>
+        <button :disabled="!selectedRoomObj?.images?.length" @click="previewRoomImages(activeTab)" class="flex justify-between disabled:cursor-not-allowed disabled:opacity-25 w-full cursor-pointer mb-3 items-center border-[0.5px] border-gray-50 space-x-4 bg-white p-4 rounded-lg">
+          <div class="flex">
+            <img :src="dynamicImage('placeholder.png')" alt="Gallery" class="w-12 h-12 rounded-full">
+            <div class="pl-2">
+              <h3 class="text-lg font-medium text-start">Gallery</h3>
+              <p class="text-gray-500 text-sm text-start">Click to view photos of {{selectedRoomObj.name}}</p>
+            </div>
           </div>
+        <div>
           <button class="text-gray-500">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
           </button>
         </div>
+        </button>
         <!-- Availability and Rent Details -->
         <div class="flex flex-col space-y-1 mb-6 bg-white rounded-lg border-gray-50 p-3 border-[0.5px] text-sm">
           <p class="text-[#1D2739] text-sm font-medium">Available <span class="text-[#326543]">{{selectedRoomObj?.availability === 'available_now' ? 'Now' : selectedRoomObj?.availability === 'unavailable' ? 'Unavailable' : selectedRoomObj?.availability === 'available_from_date' ? 'Not Available For Now' : ''}}</span></p>
