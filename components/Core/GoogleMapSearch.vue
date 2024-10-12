@@ -1,215 +1,3 @@
-<!-- <template>
-  <div>
-    <div class="relative">
-      <svg class="absolute left-3 top-4" width="20" height="20" viewBox="0 0 20 20" fill="none">
-
-      </svg>
-
-      <input
-        ref="searchInput"
-        type="text"
-        placeholder="Search for a location"
-        class="py-3 w-full pl-10 outline-none border border-gray-100 rounded-t-md"
-      />
-
-      <svg v-if="locationSelected" class="absolute right-3 top-4" width="20" height="20" viewBox="0 0 20 20" fill="none">
-
-      </svg>
-    </div>
-
-    <GoogleMap
-      :api-key="googleMapsApiKey"
-      style="width: 100%; height: 500px"
-      :center="center"
-      :zoom="zoom"
-    >
-      <Marker :options="{ position: center, icon: userIcon }" />
-    </GoogleMap>
-
-    <CoreModal :isOpen="isLocationModalOpen" title="City Selection">
-      <div class="space-y-3">
-        <select class="w-full py-3 border rounded-lg outline-none border-gray-100" v-model="selectedState" @change="handleStateChange(selectedState)">
-          <option v-for="state in states" :key="state.stateCode" :value="state.stateCode">
-            {{ state.name }}
-          </option>
-        </select>
-{{ selectedCity }}
-        <div v-if="loadingCities">Loading cities...</div>
-        <select v-model="selectedCity" class="w-full py-3 border rounded-lg outline-none border-gray-100" v-if="!loadingCities">
-          <option v-for="city in cities" :key="city.id" :value="city.id">
-            {{ city.name }}
-          </option>
-        </select>
-
-        <div class="w-full pt-6">
-          <button class="bg-black text-white w-full  text-sm rounded-md py-2.5">Continue</button>
-        </div>
-      </div>
-    </CoreModal>
-  </div>
-</template>
-
-<script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
-import { GoogleMap, Marker } from 'vue3-google-map';
-import { Loader } from '@googlemaps/js-api-loader';
-import { useGetLocation } from '@/composables/core/useGetLocation';
-
-const { states, cities, loadingStates, loadingCities, handleStateChange, selectedState, selectedCity } = useGetLocation();
-
-const center = ref<{ lat: number; lng: number } | null>(null);
-const isLocationModalOpen = ref(false);
-const locationSelected = ref(false);
-const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-const zoom = ref(15);
-const userIcon = ref<any>(); // Define your icon if needed
-const searchInput = ref<HTMLInputElement | null>(null);
-const placesService = ref<google.maps.places.PlacesService | null>(null);
-const autocomplete = ref<google.maps.places.Autocomplete | null>(null);
-const markers = ref<{ name: string; location: { lat: number; lng: number } }[]>([]);
-
-onMounted(() => {
-  setCurrentLocation();
-  initAutocomplete();
-});
-
-const setCurrentLocation = () => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        center.value = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        };
-        zoom.value = 15;
-      },
-      (error) => console.error('Error getting user location:', error)
-    );
-  } else {
-    console.error('Geolocation is not supported by this browser.');
-  }
-};
-
-const initAutocomplete = () => {
-  const loader = new Loader({
-    apiKey: googleMapsApiKey,
-    version: 'weekly',
-    libraries: ['places'],
-  });
-
-  loader.load().then(() => {
-    if (searchInput.value) {
-      autocomplete.value = new google.maps.places.Autocomplete(searchInput.value);
-      autocomplete.value.addListener('place_changed', onPlaceChanged);
-      const map = new google.maps.Map(document.createElement('div'));
-      placesService.value = new google.maps.places.PlacesService(map);
-    }
-  });
-};
-
-const onPlaceChanged = () => {
-  if (!autocomplete.value) return;
-
-  const place = autocomplete.value.getPlace();
-  if (!place.geometry) return;
-
-  center.value = {
-    lat: place.geometry.location.lat(),
-    lng: place.geometry.location.lng(),
-  };
-  populateSelectedLocationData(place);
-  zoom.value = 15;
-  searchNearbyAmenities();
-};
-
-const populateSelectedLocationData = (place: google.maps.places.PlaceResult) => {
-  if (!place.geometry) return;
-
-  const { lat, lng } = place.geometry.location;
-
-  // Emit or use the updated data
-  locationSelected.value = true;
-  isLocationModalOpen.value = true;
-
-  // Update payload or use selected location data
-};
-
-const searchNearbyAmenities = () => {
-  if (!placesService.value || !center.value) return;
-
-  markers.value = [];
-  const request: google.maps.places.PlaceSearchRequest = {
-    location: center.value,
-    radius: 1500,
-    type: [
-      'restaurant',
-      'cafe',
-      'park',
-      'gym',
-      'hospital',
-      'school',
-      'church',
-    ],
-  };
-
-  placesService.value.nearbySearch(request, (results, status) => {
-    if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-      emitAmenitiesData(results);
-    }
-  });
-};
-
-const emitAmenitiesData = (amenities: google.maps.places.PlaceResult[]) => {
-  const amenitiesArray = amenities.map((place) => {
-    const mainType = place.types?.find((type) => type in typeMapping);
-    if (mainType) {
-      const simplifiedType = typeMapping[mainType];
-
-      return {
-        name: place.name ?? '',
-        address: place.vicinity ?? '',
-        description: place.vicinity ?? '',
-        latitude: place.geometry?.location.lat() ?? 0,
-        longitude: place.geometry?.location.lng() ?? 0,
-        type: simplifiedType,
-      };
-    }
-    return null;
-  }).filter(Boolean);
-
-  markers.value = amenitiesArray.map((amenity) => ({
-    name: amenity.name,
-    location: {
-      lat: amenity.latitude,
-      lng: amenity.longitude,
-    },
-  }));
-
-  // Update payload with the list of amenities if needed
-};
-
-const typeMapping: Record<string, string> = {
-  school: 'Schools',
-  hospital: 'Hospitals',
-  restaurant: 'Restaurants',
-  cafe: 'Cafes',
-  park: 'Parks',
-  gym: 'Gyms',
-  church: 'Churches',
-  lodging: 'Hotels',
-};
-
-</script>
-
-<style scoped>
-/* Optional styling for search box or other components */
-#search-box {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-}
-</style> -->
-
 <template>
   <div>
    <div class="relative">
@@ -252,11 +40,18 @@ const typeMapping: Record<string, string> = {
           <p class="text-xs text-[#667185]">Please review the address and ensure that all fields marked with '*' are completed</p>
         </div> -->
        <section>
-        <label class="text-xs mb-2 text-[#1D2739]">Country *</label>
+        <!-- <label class="text-xs mb-2 text-[#1D2739]">Country *</label>
         <select class="w-full py-3 text-sm pl-3 border rounded-lg outline-none border-gray-100">
           <option value="NG">
             Nigeria
           </option>
+        </select> -->
+        <label class="text-xs mb-2 text-[#1D2739]">Country *</label>
+        <select v-model="selectedCountry" class="w-full py-3 text-sm pl-3 border rounded-lg outline-none border-gray-100">
+          <option value="NG">Nigeria</option>
+          <option value="US">United States</option>
+          <option value="CA">Canada</option>
+          <!-- Add more options or dynamically load them -->
         </select>
        </section>
 
@@ -341,6 +136,7 @@ export default {
       placesService: null,
       markers: [],
       locationSelected: false,
+      selectedCountry: '',
     };
   },
   mounted() {
@@ -399,19 +195,165 @@ export default {
       this.searchNearbyAmenities();
     },
     populateSelectedLocationData(place) {
-      this.$emit("update:payload", {
-        ...this.payload,
-        latitude: { value: place.geometry.location.lat() },
-        longitude: { value: place.geometry.location.lng() },
-        address: { value: place.formatted_address || place.name },
-        neighbouringLandmarks: { value: [] },
-      });
-      this.locationSelected = true;
-      this.isLocationModalOpen = true
-      this.payload.latitude.value = place.geometry.location.lat();
-      this.payload.longitude.value = place.geometry.location.lng();
-      this.payload.address.value = place.formatted_address || place.name;
-    },
+    const addressComponents = place.address_components;
+
+    // Extract state and country from the address components
+    const stateComponent = addressComponents.find((component) =>
+      component.types.includes('administrative_area_level_1')
+    );
+    const countryComponent = addressComponents.find((component) =>
+      component.types.includes('country')
+    );
+
+    // Update selectedCountry if a country is found
+    if (countryComponent) {
+      const countryCode = countryComponent.short_name; // Use the short_name for the country code (e.g., 'NG')
+      this.selectedCountry = countryCode; // Update selectedCountry field with the code
+
+      // Check if the country is not Nigeria
+      if (countryCode !== 'NG') {
+        showToast({
+          title: "Error",
+          message: "Only Nigeria is supported currently on Black Country.",
+          toastType: "error",
+          duration: 3000
+        });
+        return; // Stop further execution if the country is not Nigeria
+      }
+    }
+
+    // Update selectedState if a state is found
+    if (stateComponent) {
+      const stateName = stateComponent.long_name || stateComponent.short_name;
+      const matchedState = this.states.find(
+        (state) => state.name === stateName || state.stateCode === stateName
+      );
+
+      if (matchedState) {
+        this.selectedState = matchedState.stateCode;
+        this.handleStateChange(this.selectedState); // Fetch cities based on the selected state
+      }
+    }
+
+    // Update payload with the selected address data
+    this.$emit("update:payload", {
+      ...this.payload,
+      latitude: { value: place.geometry.location.lat() },
+      longitude: { value: place.geometry.location.lng() },
+      address: { value: place.formatted_address || place.name },
+      neighbouringLandmarks: { value: [] },
+    });
+
+    this.locationSelected = true;
+    this.isLocationModalOpen = true;
+    this.payload.latitude.value = place.geometry.location.lat();
+    this.payload.longitude.value = place.geometry.location.lng();
+    this.payload.address.value = place.formatted_address || place.name;
+  },
+  //   populateSelectedLocationData(place) {
+  //   const addressComponents = place.address_components;
+
+  //   // Extract state and country from the address components
+  //   const stateComponent = addressComponents.find((component) =>
+  //     component.types.includes('administrative_area_level_1')
+  //   );
+  //   const countryComponent = addressComponents.find((component) =>
+  //     component.types.includes('country')
+  //   );
+
+  //   // Update selectedCountry if a country is found
+  //   if (countryComponent) {
+  //     const countryCode = countryComponent.short_name; // Use the short_name for the country code (e.g., 'NG')
+  //     this.selectedCountry = countryCode; // Update selectedCountry field with the code
+  //   }
+
+  //   // Update selectedState if a state is found and country is Nigeria (NG)
+  //   if (stateComponent && countryComponent && countryComponent.short_name === 'NG') {
+  //     const stateName = stateComponent.long_name || stateComponent.short_name;
+  //     const matchedState = this.states.find(
+  //       (state) => state.name === stateName || state.stateCode === stateName
+  //     );
+
+  //     if (matchedState) {
+  //       this.selectedState = matchedState.stateCode;
+  //       this.handleStateChange(this.selectedState); // Fetch cities based on the selected state
+  //     }
+  //   }
+
+  //   // Update payload with the selected address data
+  //   this.$emit("update:payload", {
+  //     ...this.payload,
+  //     latitude: { value: place.geometry.location.lat() },
+  //     longitude: { value: place.geometry.location.lng() },
+  //     address: { value: place.formatted_address || place.name },
+  //     neighbouringLandmarks: { value: [] },
+  //   });
+
+  //   this.locationSelected = true;
+  //   this.isLocationModalOpen = true;
+  //   this.payload.latitude.value = place.geometry.location.lat();
+  //   this.payload.longitude.value = place.geometry.location.lng();
+  //   this.payload.address.value = place.formatted_address || place.name;
+  // },
+  //   populateSelectedLocationData(place) {
+  //   const addressComponents = place.address_components;
+
+  //   // Extract state from the address components
+  //   const stateComponent = addressComponents.find((component) =>
+  //     component.types.includes('administrative_area_level_1')
+  //   );
+  //   const countryComponent = addressComponents.find((component) =>
+  //     component.types.includes('country')
+  //   );
+
+  //   // Update selectedCountry if a country is found
+  //   if (countryComponent) {
+  //     const countryName = countryComponent.long_name || countryComponent.short_name;
+  //     this.selectedCountry = countryName; // Update selected country field
+  //   }
+
+  //   // Update selectedState if a state is found and country is Nigeria (NG)
+  //   if (stateComponent && countryComponent && countryComponent.short_name === 'NG') {
+  //     const stateName = stateComponent.long_name || stateComponent.short_name;
+  //     const matchedState = this.states.find(
+  //       (state) => state.name === stateName || state.stateCode === stateName
+  //     );
+
+  //     if (matchedState) {
+  //       this.selectedState = matchedState.stateCode;
+  //       this.handleStateChange(this.selectedState); // Fetch cities based on the selected state
+  //     }
+  //   }
+
+  //   // Update payload with the selected address data
+  //   this.$emit("update:payload", {
+  //     ...this.payload,
+  //     latitude: { value: place.geometry.location.lat() },
+  //     longitude: { value: place.geometry.location.lng() },
+  //     address: { value: place.formatted_address || place.name },
+  //     neighbouringLandmarks: { value: [] },
+  //   });
+
+  //   this.locationSelected = true;
+  //   this.isLocationModalOpen = true;
+  //   this.payload.latitude.value = place.geometry.location.lat();
+  //   this.payload.longitude.value = place.geometry.location.lng();
+  //   this.payload.address.value = place.formatted_address || place.name;
+  // },
+    // populateSelectedLocationData(place) {
+    //   this.$emit("update:payload", {
+    //     ...this.payload,
+    //     latitude: { value: place.geometry.location.lat() },
+    //     longitude: { value: place.geometry.location.lng() },
+    //     address: { value: place.formatted_address || place.name },
+    //     neighbouringLandmarks: { value: [] },
+    //   });
+    //   this.locationSelected = true;
+    //   this.isLocationModalOpen = true
+    //   this.payload.latitude.value = place.geometry.location.lat();
+    //   this.payload.longitude.value = place.geometry.location.lng();
+    //   this.payload.address.value = place.formatted_address || place.name;
+    // },
     searchNearbyAmenities() {
       if (!this.placesService) return;
       this.markers = [];
@@ -492,16 +434,6 @@ export default {
 
     // Other setup logic or data
     const isLocationModalOpen = ref(false);
-  
-    // watch(
-    //   () => selectedCity.value,
-    //   (newCityId) => {
-    //     console.log(newCityId, 'new city')
-    //     if (newCityId) {
-    //       payload.cityId.value = newCityId;
-    //     }
-    //   }
-    // );
 
     return {
       states,
