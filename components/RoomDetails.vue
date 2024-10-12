@@ -33,7 +33,7 @@
       </div>
       <div class="mb-4">
         <h3 class="mb-2">Interior area</h3>
-        <div class="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+        <!-- <div class="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
           <label
             v-for="item in roomFeaturesList"
             :key="item.name"
@@ -53,6 +53,29 @@
             />
             <div>
               <strong class="font-medium text-sm text-[#171717]">{{ item.name }}</strong>
+            </div>
+          </label>
+        </div> -->
+        <div class="space-y-2 grid grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+          <label
+            v-for="item in filteredRoomFeatures"
+            :key="item"
+            :for="item"
+            class="flex text-sm cursor-pointer pl-3 py-3 items-start gap-4 rounded-lg border transition"
+            :class="{
+              'bg-green-50 border-green-500': isSelected(item, 'interior'),
+              'border-gray-200': !isSelected(item, 'interior')
+            }"
+          >
+            <input
+              type="checkbox"
+              class="hidden rounded border-gray-300"
+              :id="item"
+              :checked="isSelected(item, 'interior')"
+              @change="toggleSelection(item, 'interior')"
+            />
+            <div>
+              <strong class="font-medium text-sm text-[#171717]">{{ item }}</strong>
             </div>
           </label>
         </div>
@@ -106,7 +129,7 @@
               placeholder="e.g 1000"
               class="bg-transparent text-sm outline-none flex-grow"
             /> -->
-            <input
+            <!-- <input
             id="rentAmount"
             type="text"
             v-model="formattedRentAmount"
@@ -117,7 +140,15 @@
             @focus="clearFormatting"
             @blur="applyFormatting"
       
-          />
+          /> -->
+          <input
+  id="rentAmount"
+  type="text"
+  v-model="formattedRentAmount"
+  placeholder="e.g. 1,000"
+  class="bg-transparent text-sm outline-none flex-grow"
+  @input="onInput"
+/>
           </div>
         </div>
         <div class="space-y-4 mt-3">
@@ -169,13 +200,21 @@
               placeholder="e.g 1000"
               class="bg-transparent text-sm outline-none flex-grow"
             /> -->
-            <input
+            <!-- <input
             type="text"
             v-model="formattedRentAmount"
             placeholder="e.g 1,000"
             class="bg-transparent text-sm outline-none flex-grow"
             @input="onInput"
-          />
+          /> -->
+          <input
+  id="rentAmount"
+  type="text"
+  v-model="formattedRentAmount"
+  placeholder="e.g. 1,000"
+  class="bg-transparent text-sm outline-none flex-grow"
+  @input="onInput"
+/>
           </div>
         </div>
 
@@ -235,30 +274,23 @@
               placeholder="e.g 1000"
               class="bg-transparent text-sm outline-none flex-grow"
             /> -->
-            <input
+            <!-- <input
             type="text"
             v-model="formattedRentAmount"
             placeholder="e.g 1,000"
             class="bg-transparent text-sm outline-none flex-grow"
             @input="onInput"
-          />
+          /> -->
+          <input
+  id="rentAmount"
+  type="text"
+  v-model="formattedRentAmount"
+  placeholder="e.g. 1,000"
+  class="bg-transparent text-sm outline-none flex-grow"
+  @input="onInput"
+/>
           </div>
         </div>
-
-        <!-- <div class="space-y-4 mt-4">
-          <CoreToggleSwitch
-            id="applyAll"
-            label="Apply these responses above to all remaining rooms"
-            @change="applyResponsesToAllRooms"
-            v-model="applyToAllRooms"
-          />
-          <CoreToggleSwitch
-          v-if="(!isAnyRoomMaster || setAsMasterBedroom)" 
-            id="masterBedroom"
-            label="Set as master's bedroom"
-            v-model="setAsMasterBedroom"
-          />
-        </div> -->
         <div class="space-y-4 mt-3">
           <CoreToggleSwitch
             id="applyAll"
@@ -266,12 +298,6 @@
             @change="applyResponsesToAllRooms"
             v-model="applyToAllRooms"
           />
-          <!-- <CoreToggleSwitch
-          v-if="(!isAnyRoomMaster || setAsMasterBedroom)" 
-            id="masterBedroom"
-            label="Set as master's bedroom"
-            v-model="setAsMasterBedroom"
-          /> -->
           <CoreToggleSwitch
             id="masterBedroom"
             label="Set as master's bedroom"
@@ -285,8 +311,7 @@
 </template>
 
 
-<script setup lang="ts">
-import { ref, onMounted, watch, defineProps, defineEmits, computed } from 'vue';
+<!-- <script setup lang="ts">
 // Props
 const props = defineProps({
   payload: {
@@ -342,57 +367,7 @@ const initializeRoomData = () => {
       }));
   rooms.value = roomData.value;
 };
-// const initializeRoomData = () => {
-//   roomData.value = Array.from({ length: props.payload.bedroomCount.value }, (_, i) => ({
-//     name: `Room ${i + 1}`,
-//     availability: 'available_now',
-//     availableFrom: null,
-//     occupantName: '',
-//     isMaster: false,
-//     rentAmount: '',
-//     rentFrequency: 'monthly',
-//     isFurnished: true,
-//     features: [],
-//     images: []
-//   }));
-//   rooms.value = roomData.value;
-// };
-// Save room data
-// const saveRoomData = (roomName: string) => {
-//   const roomIndex = roomData.value.findIndex((room) => room.name === roomName);
-//   if (roomIndex !== -1) {
-//     roomData.value[roomIndex] = {
-//       ...roomData.value[roomIndex],
-//       availability: availability.value,
-//       availableFrom: availabilityDate.value,
-//       occupantName: occupantsName.value,
-//       rentAmount: rentAmount.value,
-//       rentFrequency: rentFrequency.value,
-//       isFurnished: isRoomFurnished.value,
-//       isMaster: setAsMasterBedroom.value,
-//       features: roomFeatures.value
-//     };
-//   }
-//   emit('emitRoomData', roomData.value[roomIndex]);
-// };
-// const saveRoomData = (roomName) => {
-//   const roomIndex = roomData.value.findIndex((room) => room.name === roomName);
-//   if (roomIndex !== -1) {
-//     roomData.value[roomIndex] = {
-//       ...roomData.value[roomIndex],
-//       availability: availability.value,
-//       availableFrom: availabilityDate.value,
-//       occupantName: occupantsName.value,
-//       // rentAmount: rentAmount.value,
-//       rentAmount: parseInt(rentAmount.value, 10) || 0, // Convert to integer
-//       rentFrequency: rentFrequency.value,
-//       isFurnished: isRoomFurnished.value,
-//       isMaster: setAsMasterBedroom.value,
-//       features: roomFeatures.value
-//     };
-//   }
-//   emit('emitRoomData', roomData.value);
-// };
+
 const saveRoomData = (roomName) => {
   const roomIndex = roomData.value.findIndex((room) => room?.name === roomName);
   if (roomIndex !== -1) {
@@ -418,20 +393,7 @@ const saveRoomData = (roomName) => {
   }
   emit('emitRoomData', roomData.value);
 };
-// Load room data when switching tabs
-// const loadRoomData = (roomName: string) => {
-//   const room = roomData.value.find((r) => r.name === roomName);
-//   if (room) {
-//     availability.value = room.availability;
-//     availabilityDate.value = room.availableFrom;
-//     occupantsName.value = room.occupantName;
-//     rentAmount.value = room.rentAmount;
-//     rentFrequency.value = room.rentFrequency;
-//     isRoomFurnished.value = room.isFurnished;
-//     setAsMasterBedroom.value = room.isMaster;
-//     roomFeatures.value = room.features || [];
-//   }
-// };
+
 const loadRoomData = (roomName) => {
   const room = roomData.value.find((r) => r.name === roomName);
   if (room) {
@@ -512,52 +474,6 @@ onMounted(() => {
   initializeRoomData();
   loadRoomData(activeRoom.value);
 });
-
-// function formatCurrency(value) {
-//   // Ensure the value is a string, convert if it's not
-//   if (typeof value !== 'string') {
-//     value = String(value);
-//   }
-
-//   // Remove any non-numeric characters except for decimals
-//   const numericValue = value.replace(/[^\d.]/g, '');
-
-// //   // Handle cases where input is not a valid number
-// //   if (!numericValue || isNaN(parseFloat(numericValue))) {
-// //     return value; // Return unformatted if invalid input
-// //   }
-
-// //   // Split the value by the decimal point to handle whole numbers and decimals separately
-// //   const [integerPart, decimalPart] = numericValue.split('.');
-
-// //   // Format the integer part with commas
-// //   const formattedInteger = parseInt(integerPart, 10).toLocaleString('en-US');
-
-// //   // Reconstruct the final formatted value, including decimals if present
-// //   return decimalPart !== undefined
-// //     ? `${formattedInteger}.${decimalPart.slice(0, 2)}` // Limit decimals to 2 places
-// //     : formattedInteger;
-// // }
-
-
-// // // Computed property to format the value as currency
-// // const formattedRentAmount = computed({
-// //   get() {
-// //     // Format the rentAmount into currency while typing
-// //     return rentAmount.value ? formatCurrency(rentAmount.value) : '';
-// //   },
-// //   set(value) {
-// //     // Remove formatting to get the raw number while typing
-// //     rentAmount.value = unformatCurrency(value);
-// //   }
-// // });
-
-// // Helper function to remove formatting and get raw value
-// function unformatCurrency(value) {
-//   // Remove commas and any non-numeric characters
-//   return value.replace(/[^\d]/g, '');
-// }
-
 // Optional: Watch raw rentAmount for backend submission or other purposes
 watch(rentAmount, (newValue) => {
   console.log('Raw rent amount for backend:', newValue);
@@ -641,7 +557,667 @@ function clearFormatting() {
 function applyFormatting() {
   formattedRentAmount.value = formatCurrency(rentAmount.value);
 }
+</script> -->
+
+<!-- <script setup lang="ts">
+import { ref, onMounted, watch, defineProps, defineEmits, computed } from 'vue';
+import { useGetRoomFeatures } from '@/composables/modules/property/fetchRoomFeatures';
+
+// Get the room features list
+const { loading: loadingRoomFeatures, roomFeaturesList } = useGetRoomFeatures();
+
+const props = defineProps({
+  payload: {
+    type: Object,
+    required: true,
+    default: () => ({})
+  },
+  roomFeaturesList: {
+    type: Array,
+    default: () => []
+  }
+});
+const emit = defineEmits(['emitRoomData']);
+
+// Define required features based on room furnishing status
+const furnishedFeatures = [
+  'Bedframe',
+  'Mattress',
+  'Desk & Chair',
+  'Shelves/bookcases',
+  'Wardrobes/Closet',
+  'Bathroom/Restroom',
+  'Window coverings',
+  'Air conditioning',
+  'Ceiling/Standing fan',
+  'Water heating'
+];
+
+const unfurnishedFeatures = [
+  'Bathroom/Restroom',
+  'Wardrobes/Closet',
+  'Air conditioning space'
+];
+
+// Reactive state
+const activeRoom = ref('Room 1');
+const rooms = ref([]);
+const roomData = ref([]);
+const isRoomFurnished = ref(true);
+const availability = ref('available_now');
+const availabilityDate = ref('');
+const occupantsName = ref('');
+const rentAmount = ref<number | null>(null);
+const rentFrequency = ref<string>('monthly');
+const roomFeatures = ref([]);
+const setAsMasterBedroom = ref(false);
+const applyToAllRooms = ref(false);
+const manualInput = ref('');
+const showManualInput = ref(false);
+const availabilityOptions = [
+  { label: 'Available Now', value: 'available_now' },
+  { label: 'Not available', value: 'unavailable' },
+  { label: 'Available from (specify date)', value: 'available_from_date' }
+];
+
+// Computed property to check if any room is marked as the master bedroom
+const isAnyRoomMaster = computed(() => {
+  return roomData.value.some(room => room.isMaster);
+});
+
+// Initialize room data
+const initializeRoomData = () => {
+  roomData.value = props.payload.rooms.value.length
+    ? [...props.payload.rooms.value]
+    : Array.from({ length: props.payload.bedroomCount.value }, (_, i) => ({
+        name: `Room ${i + 1}`,
+        availability: 'available_now',
+        availableFrom: null,
+        occupantName: '',
+        isMaster: false,
+        rentAmount: '',
+        rentFrequency: 'monthly',
+        isFurnished: true,
+        features: [],
+        images: []
+      }));
+  rooms.value = roomData.value;
+};
+
+const saveRoomData = (roomName) => {
+  const roomIndex = roomData.value.findIndex((room) => room?.name === roomName);
+  if (roomIndex !== -1) {
+    // If the current room is set as the master bedroom, unset all other rooms as master
+    if (setAsMasterBedroom.value) {
+      roomData.value = roomData.value.map((room, index) => ({
+        ...room,
+        isMaster: index === roomIndex,
+      }));
+    }
+    // Update the room data for the current room
+    roomData.value[roomIndex] = {
+      ...roomData.value[roomIndex],
+      availability: availability.value,
+      availableFrom: availabilityDate.value,
+      occupantName: occupantsName.value,
+      rentAmount: parseInt(rentAmount.value, 10) || 0,
+      rentFrequency: rentFrequency.value,
+      isFurnished: isRoomFurnished.value,
+      isMaster: setAsMasterBedroom.value,
+      features: roomFeatures.value,
+    };
+  }
+  emit('emitRoomData', roomData.value);
+};
+
+const loadRoomData = (roomName) => {
+  const room = roomData.value.find((r) => r.name === roomName);
+  if (room) {
+    availability.value = room.availability;
+    availabilityDate.value = room.availableFrom;
+    occupantsName.value = room.occupantName;
+    rentAmount.value = room.rentAmount;
+    rentFrequency.value = room.rentFrequency;
+    isRoomFurnished.value = room.isFurnished;
+    setAsMasterBedroom.value = room.isMaster;
+    roomFeatures.value = filterFeatures(room.features || []);
+  }
+};
+
+// Filter features based on the furnished status
+const filterFeatures = (currentFeatures) => {
+  const requiredFeatures = isRoomFurnished.value ? furnishedFeatures : unfurnishedFeatures;
+  const filteredFeatures = currentFeatures.filter(feature => requiredFeatures.includes(feature.name));
+  // Ensure mandatory features are included
+  requiredFeatures.forEach((feature) => {
+    if (!filteredFeatures.some(f => f.name === feature)) {
+      filteredFeatures.push({ name: feature, images: [] });
+    }
+  });
+  return filteredFeatures;
+};
+
+// Set active room and save/load data
+const setActiveRoom = (roomName: string) => {
+  saveRoomData(activeRoom.value);
+  activeRoom.value = roomName;
+  loadRoomData(roomName);
+};
+
+// Manually add an item to the room features list
+const addManualItem = () => {
+  const trimmedInput = manualInput.value.trim();
+  if (trimmedInput) {
+    roomFeatures.value.push({ name: trimmedInput, images: [] });
+    manualInput.value = '';
+    showManualInput.value = false;
+    saveRoomData(activeRoom.value); // Save data to persist the manually added item
+  }
+};
+
+// Toggle selection of room features
+const toggleSelection = (item: string) => {
+  const index = roomFeatures.value.findIndex((feature) => feature.name === item);
+  index > -1 ? roomFeatures.value.splice(index, 1) : roomFeatures.value.push({ name: item, images: [] });
+  saveRoomData(activeRoom.value);
+};
+
+// Check if a feature is selected
+const isSelected = (item: string) => roomFeatures.value.some((feature) => feature.name === item);
+
+// Watch changes to roomData and update the payload
+watch(roomData, (newData) => {
+  props.payload.rooms.value = newData;
+}, { deep: true });
+
+// Set furnished status
+const setFurnishedStatus = (status: boolean) => {
+  isRoomFurnished.value = status;
+  roomFeatures.value = filterFeatures(roomFeatures.value); // Update features based on furnished status
+  saveRoomData(activeRoom.value);
+};
+
+// Set the availability status of the room
+const setAvailability = (value: string) => {
+  availability.value = value;
+  if (value === 'available_now') {
+    occupantsName.value = '';
+    availabilityDate.value = '';
+  } else if (value === 'unavailable') {
+    availabilityDate.value = '';
+  } else if (value === 'available_from_date') {
+    occupantsName.value = '';
+  }
+  saveRoomData(activeRoom.value);
+};
+
+// Apply responses to all remaining rooms
+const applyResponsesToAllRooms = () => {
+  roomData.value.forEach(room => {
+    if (room.name !== activeRoom.value) {
+      Object.assign(room, {
+        availability: availability.value,
+        availableFrom: availabilityDate.value,
+        occupantName: occupantsName.value,
+        rentAmount: Number(rentAmount.value),
+        rentFrequency: rentFrequency.value,
+        isFurnished: isRoomFurnished.value,
+        features: filterFeatures(roomFeatures.value),
+      });
+    }
+  });
+};
+
+const filteredRoomFeatures = computed(() => {
+  return isRoomFurnished.value ? furnishedFeatures : unfurnishedFeatures;
+});
+
+onMounted(() => {
+  initializeRoomData();
+  loadRoomData(activeRoom.value);
+});
+</script> -->
+
+<!-- <script setup lang="ts">
+import { ref, onMounted, watch, defineProps, defineEmits, computed } from 'vue';
+import { useGetRoomFeatures } from '@/composables/modules/property/fetchRoomFeatures';
+
+// Get the room features list
+const { loading: loadingRoomFeatures, roomFeaturesList } = useGetRoomFeatures();
+
+const props = defineProps({
+  payload: {
+    type: Object,
+    required: true,
+    default: () => ({})
+  },
+  roomFeaturesList: {
+    type: Array,
+    default: () => []
+  }
+});
+const emit = defineEmits(['emitRoomData']);
+
+// Define required features based on room furnishing status
+const furnishedFeatures = [
+  'Bedframe',
+  'Mattress',
+  'Desk & Chair',
+  'Shelves/bookcases',
+  'Wardrobes/Closet',
+  'Bathroom/Restroom',
+  'Window coverings',
+  'Air conditioning',
+  'Ceiling/Standing fan',
+  'Water heating'
+];
+
+const unfurnishedFeatures = [
+  'Bathroom/Restroom',
+  'Wardrobes/Closet',
+  'Air conditioning space'
+];
+
+// Reactive state
+const activeRoom = ref('Room 1');
+const rooms = ref([]);
+const roomData = ref([]);
+const isRoomFurnished = ref(true);
+const availability = ref('available_now');
+const availabilityDate = ref('');
+const occupantsName = ref('');
+const rentAmount = ref<number | null>(null);
+const rentFrequency = ref<string>('monthly');
+const roomFeatures = ref([]);
+const setAsMasterBedroom = ref(false);
+const applyToAllRooms = ref(false);
+const manualInput = ref('');
+const showManualInput = ref(false);
+const availabilityOptions = [
+  { label: 'Available Now', value: 'available_now' },
+  { label: 'Not available', value: 'unavailable' },
+  { label: 'Available from (specify date)', value: 'available_from_date' }
+];
+
+// Computed property to check if any room is marked as the master bedroom
+const isAnyRoomMaster = computed(() => {
+  return roomData.value.some(room => room.isMaster);
+});
+
+// Initialize room data
+const initializeRoomData = () => {
+  roomData.value = props.payload.rooms.value.length
+    ? [...props.payload.rooms.value]
+    : Array.from({ length: props.payload.bedroomCount.value }, (_, i) => ({
+        name: `Room ${i + 1}`,
+        availability: 'available_now',
+        availableFrom: null,
+        occupantName: '',
+        isMaster: false,
+        rentAmount: '',
+        rentFrequency: 'monthly',
+        isFurnished: true,
+        features: [],
+        images: []
+      }));
+  rooms.value = roomData.value;
+};
+
+const saveRoomData = (roomName) => {
+  const roomIndex = roomData.value.findIndex((room) => room?.name === roomName);
+  if (roomIndex !== -1) {
+    if (setAsMasterBedroom.value) {
+      roomData.value = roomData.value.map((room, index) => ({
+        ...room,
+        isMaster: index === roomIndex,
+      }));
+    }
+    roomData.value[roomIndex] = {
+      ...roomData.value[roomIndex],
+      availability: availability.value,
+      availableFrom: availabilityDate.value,
+      occupantName: occupantsName.value,
+      rentAmount: parseInt(rentAmount.value, 10) || 0,
+      rentFrequency: rentFrequency.value,
+      isFurnished: isRoomFurnished.value,
+      isMaster: setAsMasterBedroom.value,
+      features: roomFeatures.value,
+    };
+  }
+  emit('emitRoomData', roomData.value);
+};
+
+const loadRoomData = (roomName) => {
+  const room = roomData.value.find((r) => r.name === roomName);
+  if (room) {
+    availability.value = room.availability;
+    availabilityDate.value = room.availableFrom;
+    occupantsName.value = room.occupantName;
+    rentAmount.value = room.rentAmount;
+    rentFrequency.value = room.rentFrequency;
+    isRoomFurnished.value = room.isFurnished;
+    setAsMasterBedroom.value = room.isMaster;
+    roomFeatures.value = room.features || [];
+  }
+};
+
+const setActiveRoom = (roomName: string) => {
+  saveRoomData(activeRoom.value);
+  activeRoom.value = roomName;
+  loadRoomData(roomName);
+};
+
+const addManualItem = () => {
+  const trimmedInput = manualInput.value.trim();
+  if (trimmedInput) {
+    roomFeatures.value.push({ name: trimmedInput, images: [] });
+    manualInput.value = '';
+    showManualInput.value = false;
+    saveRoomData(activeRoom.value);
+  }
+};
+
+const toggleSelection = (item: string) => {
+  const index = roomFeatures.value.findIndex((feature) => feature.name === item);
+  index > -1 ? roomFeatures.value.splice(index, 1) : roomFeatures.value.push({ name: item, images: [] });
+  saveRoomData(activeRoom.value);
+};
+
+const isSelected = (item: string) => roomFeatures.value.some((feature) => feature.name === item);
+
+const setFurnishedStatus = (status: boolean) => {
+  isRoomFurnished.value = status;
+  saveRoomData(activeRoom.value);
+};
+
+const setAvailability = (value: string) => {
+  availability.value = value;
+  if (value === 'available_now') {
+    occupantsName.value = '';
+    availabilityDate.value = '';
+  } else if (value === 'unavailable') {
+    availabilityDate.value = '';
+  } else if (value === 'available_from_date') {
+    occupantsName.value = '';
+  }
+  saveRoomData(activeRoom.value);
+};
+
+const applyResponsesToAllRooms = () => {
+  roomData.value.forEach(room => {
+    if (room.name !== activeRoom.value) {
+      Object.assign(room, {
+        availability: availability.value,
+        availableFrom: availabilityDate.value,
+        occupantName: occupantsName.value,
+        rentAmount: Number(rentAmount.value),
+        rentFrequency: rentFrequency.value,
+        isFurnished: isRoomFurnished.value,
+        features: [...roomFeatures.value],
+      });
+    }
+  });
+};
+
+const filteredRoomFeatures = computed(() => {
+  return isRoomFurnished.value ? furnishedFeatures : unfurnishedFeatures;
+});
+
+onMounted(() => {
+  initializeRoomData();
+  loadRoomData(activeRoom.value);
+});
+</script> -->
+
+<script setup lang="ts">
+import { ref, onMounted, watch, defineProps, defineEmits, computed } from 'vue';
+import { useGetRoomFeatures } from '@/composables/modules/property/fetchRoomFeatures';
+
+// Get the room features list
+const { loading: loadingRoomFeatures, roomFeaturesList } = useGetRoomFeatures();
+
+const props = defineProps({
+  payload: {
+    type: Object,
+    required: true,
+    default: () => ({})
+  },
+  roomFeaturesList: {
+    type: Array,
+    default: () => []
+  }
+});
+const emit = defineEmits(['emitRoomData']);
+
+// Define required features based on room furnishing status
+const furnishedFeatures = [
+  'Bedframe',
+  'Mattress',
+  'Desk & Chair',
+  'Shelves/bookcases',
+  'Wardrobes/Closet',
+  'Bathroom/Restroom',
+  'Window coverings',
+  'Air conditioning',
+  'Ceiling/Standing fan',
+  'Water heating'
+];
+
+const unfurnishedFeatures = [
+  'Bathroom/Restroom',
+  'Wardrobes/Closet',
+  'Air conditioning space'
+];
+
+// Reactive state
+const activeRoom = ref('Room 1');
+const rooms = ref([]);
+const roomData = ref([]);
+const isRoomFurnished = ref(true);
+const availability = ref('available_now');
+const availabilityDate = ref('');
+const occupantsName = ref('');
+const rentAmount = ref<number | null>(null);
+const rentFrequency = ref<string>('monthly');
+const roomFeatures = ref([]);
+const setAsMasterBedroom = ref(false);
+const applyToAllRooms = ref(false);
+const manualInput = ref('');
+const showManualInput = ref(false);
+const availabilityOptions = [
+  { label: 'Available Now', value: 'available_now' },
+  { label: 'Not available', value: 'unavailable' },
+  { label: 'Available from (specify date)', value: 'available_from_date' }
+];
+
+// Computed property to check if any room is marked as the master bedroom
+const isAnyRoomMaster = computed(() => {
+  return roomData.value.some(room => room.isMaster);
+});
+
+// Initialize room data
+const initializeRoomData = () => {
+  roomData.value = props.payload.rooms.value.length
+    ? [...props.payload.rooms.value]
+    : Array.from({ length: props.payload.bedroomCount.value }, (_, i) => ({
+        name: `Room ${i + 1}`,
+        availability: 'available_now',
+        availableFrom: null,
+        occupantName: '',
+        isMaster: false,
+        rentAmount: '',
+        rentFrequency: 'monthly',
+        isFurnished: true,
+        features: [],
+        images: []
+      }));
+  rooms.value = roomData.value;
+};
+
+const saveRoomData = (roomName) => {
+  const roomIndex = roomData.value.findIndex((room) => room?.name === roomName);
+  if (roomIndex !== -1) {
+    if (setAsMasterBedroom.value) {
+      roomData.value = roomData.value.map((room, index) => ({
+        ...room,
+        isMaster: index === roomIndex,
+      }));
+    }
+    roomData.value[roomIndex] = {
+      ...roomData.value[roomIndex],
+      availability: availability.value,
+      availableFrom: availabilityDate.value,
+      occupantName: occupantsName.value,
+      rentAmount: parseInt(rentAmount.value, 10) || 0,
+      rentFrequency: rentFrequency.value,
+      isFurnished: isRoomFurnished.value,
+      isMaster: setAsMasterBedroom.value,
+      features: roomFeatures.value,
+    };
+  }
+  emit('emitRoomData', roomData.value);
+};
+
+const loadRoomData = (roomName) => {
+  const room = roomData.value.find((r) => r.name === roomName);
+  if (room) {
+    availability.value = room.availability;
+    availabilityDate.value = room.availableFrom;
+    occupantsName.value = room.occupantName;
+    rentAmount.value = room.rentAmount;
+    rentFrequency.value = room.rentFrequency;
+    isRoomFurnished.value = room.isFurnished;
+    setAsMasterBedroom.value = room.isMaster;
+    roomFeatures.value = room.features || [];
+  }
+};
+
+// Filter features based on the furnished status
+const filterFeatures = () => {
+  const requiredFeatures = isRoomFurnished.value ? furnishedFeatures : unfurnishedFeatures;
+  // Clear all features not relevant to the current furnishing status
+  roomFeatures.value = roomFeatures.value.filter(feature => requiredFeatures.includes(feature.name));
+};
+
+// Set active room and save/load data
+const setActiveRoom = (roomName: string) => {
+  saveRoomData(activeRoom.value);
+  activeRoom.value = roomName;
+  loadRoomData(roomName);
+};
+
+// Manually add an item to the room features list
+const addManualItem = () => {
+  const trimmedInput = manualInput.value.trim();
+  if (trimmedInput) {
+    roomFeatures.value.push({ name: trimmedInput, images: [] });
+    manualInput.value = '';
+    showManualInput.value = false;
+    saveRoomData(activeRoom.value);
+  }
+};
+
+// Toggle selection of room features
+const toggleSelection = (item: string) => {
+  const index = roomFeatures.value.findIndex((feature) => feature.name === item);
+  index > -1 ? roomFeatures.value.splice(index, 1) : roomFeatures.value.push({ name: item, images: [] });
+  saveRoomData(activeRoom.value);
+};
+
+// Check if a feature is selected
+const isSelected = (item: string) => roomFeatures.value.some((feature) => feature.name === item);
+
+// Watch changes to roomData and update the payload
+watch(roomData, (newData) => {
+  props.payload.rooms.value = newData;
+}, { deep: true });
+
+// Set furnished status
+const setFurnishedStatus = (status: boolean) => {
+  // isRoomFurnished.value = status;
+  // filterFeatures(); // Filter features based on the new status
+  // saveRoomData(activeRoom.value);
+  isRoomFurnished.value = status;
+  filterFeatures(); // Filter features based on the new status
+
+  // Clear features that are not relevant to the selected furnishing status
+  const requiredFeatures = isRoomFurnished.value ? furnishedFeatures : unfurnishedFeatures;
+  roomFeatures.value = roomFeatures.value.filter(feature => requiredFeatures.includes(feature.name));
+
+  saveRoomData(activeRoom.value);
+};
+
+// Set the availability status of the room
+const setAvailability = (value: string) => {
+  availability.value = value;
+  if (value === 'available_now') {
+    occupantsName.value = '';
+    availabilityDate.value = '';
+  } else if (value === 'unavailable') {
+    availabilityDate.value = '';
+  } else if (value === 'available_from_date') {
+    occupantsName.value = '';
+  }
+  saveRoomData(activeRoom.value);
+};
+
+// Apply responses to all remaining rooms
+const applyResponsesToAllRooms = () => {
+  roomData.value.forEach(room => {
+    if (room.name !== activeRoom.value) {
+      Object.assign(room, {
+        availability: availability.value,
+        availableFrom: availabilityDate.value,
+        occupantName: occupantsName.value,
+        rentAmount: Number(rentAmount.value),
+        rentFrequency: rentFrequency.value,
+        isFurnished: isRoomFurnished.value,
+        features: [...roomFeatures.value],
+      });
+    }
+  });
+};
+
+const filteredRoomFeatures = computed(() => {
+  return isRoomFurnished.value ? furnishedFeatures : unfurnishedFeatures;
+});
+
+const formattedRentAmount = computed({
+  get() {
+    return rentAmount.value ? formatCurrency(rentAmount.value) : '';
+  },
+  set(value) {
+    rentAmount.value = unformatCurrency(value);
+  }
+});
+
+// Helper function to format currency
+function formatCurrency(value: number | string): string {
+  const numericValue = typeof value === 'number' ? value.toString() : value.replace(/[^\d]/g, '');
+  const [integerPart, decimalPart] = numericValue.split('.');
+  const formattedInteger = parseInt(integerPart, 10).toLocaleString('en-US');
+  return decimalPart ? `${formattedInteger}.${decimalPart.slice(0, 2)}` : formattedInteger;
+}
+
+// Helper function to remove formatting and get raw value
+function unformatCurrency(value: string): number {
+  return parseInt(value.replace(/[^\d]/g, ''), 10) || 0;
+}
+
+// Method to format the input value in real-time
+function onInput(event) {
+  rentAmount.value = unformatCurrency(event.target.value);
+  event.target.value = formatCurrency(rentAmount.value);
+}
+
+onMounted(() => {
+  initializeRoomData();
+  loadRoomData(activeRoom.value);
+});
 </script>
+
+
+
 
 <style scoped>
 .scrollbar-hide {

@@ -105,12 +105,13 @@
                 v-for="(property, index) in propertiesList"
                 :key="property.id"
               >
-                <td
+                <!-- <td
                   @click.prevent="handleDropdownClick('view', property)"
                   v-for="column in visibleColumns"
                   :key="column.key"
                   class="py-5 px-5 whitespace-nowrap text-sm text-[#667185] font-semibold relative"
                 >
+                <p v-if="column.key === 'address'">{{property.address.slice(0, 10)}}</p>
                   <p v-if="column.key !== 'isPublished'">{{ getPropertyValue(property, column.key) }}</p>
                   <p class="absolute left-0 top-0" v-if="column.key === 'name'">
                     <span class="bg-[#F7D394] text-[#1D2739] text-sm px-2 py-1" v-if="!property.isPublished">
@@ -118,7 +119,26 @@
                     </span>
                   </p>
                   <p v-if="column.key === 'isPublished'">{{ property.isPublished ? 'Published' : 'Draft' }}</p>
-                </td>
+                </td> -->
+                <td
+  @click.prevent="handleDropdownClick('view', property)"
+  v-for="column in visibleColumns"
+  :key="column.key"
+  class="py-5 px-5 whitespace-nowrap text-sm text-[#667185] font-semibold relative"
+>
+  <p v-if="column.key === 'address'">{{ `${property.address.slice(0, 30)}...` }}</p>
+  <p v-else-if="column.key === 'name'">
+    {{ property.name }}
+    <span 
+      class="bg-[#F7D394] text-[#1D2739] text-sm px-2 py-1 absolute left-0 top-0"
+      v-if="!property.isPublished"
+    >
+      Draft
+    </span>
+  </p>
+  <p v-else-if="column.key === 'isPublished'">{{ property.isPublished ? 'Published' : 'Draft' }}</p>
+  <p v-else>{{ getPropertyValue(property, column.key) }}</p>
+</td>
                 <td class="py-5 px-5 whitespace-nowrap text-sm text-right">
                   <button
                     @click="toggleDropdown(index)"
