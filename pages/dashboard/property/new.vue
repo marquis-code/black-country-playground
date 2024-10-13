@@ -310,6 +310,8 @@ import LayoutWithoutSidebar from "@/layouts/dashboardWithoutSidebar.vue";
 import { useFetchAgents } from '@/composables/modules/agents/fetch'
 import { useIsEmptyObject } from '@/composables/core/useIsEmptyObject'
 import { useCustomToast } from '@/composables/core/useCustomToast'
+import { useClearLocalStorage } from '@/composables/core/useClearLocalStorage';
+const { clearLocalStorage } = useClearLocalStorage();
 const { showToast } = useCustomToast();
 const { payload, resetPayload, loading, saving, save_property } = use_create_property()
 const { agentsList, loading: loadingAgents } = useFetchAgents()
@@ -525,7 +527,7 @@ const handleConfirm = () => {
 
 const handleClose = () => {
   router.push('/dashboard/property')
-  resetPayload()
+  clearLocalStorage();
   openCancelModal.value = false
 }
 

@@ -73,7 +73,7 @@
       </div>
   
         <!-- New Property Button -->
-        <button @click="router.push('/dashboard/property/create-steps')" class="bg-[#292929] px-2 flex items-center text-sm text-white py-2 rounded hover:bg-gray-800 transition-all">
+        <button @click="handleNewProperty" class="bg-[#292929] px-2 flex items-center text-sm text-white py-2 rounded hover:bg-gray-800 transition-all">
           <img :src="dynamicIcons('white-add')" /> New Property
         </button>
       </div>
@@ -126,7 +126,9 @@
   :key="column.key"
   class="py-5 px-5 whitespace-nowrap text-sm text-[#667185] font-semibold relative"
 >
-  <p v-if="column.key === 'address'">{{ `${property.address.slice(0, 30)}...` }}</p>
+  <p v-if="column.key === 'address'">
+    <span v-if="property">{{ `${property?.address?.slice(0, 30)}...` }}</span>
+  </p>
   <p v-else-if="column.key === 'name'">
     {{ property.name }}
     <span 
@@ -342,7 +344,10 @@ import { exportData } from "@/composables/core/exportData";
 import {  downloadableColumns } from '@/composables/core/exportData'
 import { useRouter, useRoute } from "vue-router";
 const { exportPaginatedData, isDownloading }  = usePaginatedFetchAndDownload()
-
+import { use_create_property } from '@/composables/modules/property/create'
+const { resetPayload } = use_create_property()
+import { useClearLocalStorage } from '@/composables/core/useClearLocalStorage';
+const { clearLocalStorage } = useClearLocalStorage();
 // Define the method to handle the download
 const downloadData = (exportType: any) => {
   // Call the export function with the desired format (csv, pdf, or excel)
@@ -497,6 +502,12 @@ const resetColumns = () => {
 const saveColumns = () => {
   showModal.value = false;
 };
+
+const handleNewProperty = () => {
+  clearLocalStorage()
+  router.push('/dashboard/property/create-steps')
+  // 
+}
 </script>
 
 <style scoped>

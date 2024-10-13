@@ -25,7 +25,7 @@
       <div v-for="(feature, featureIndex) in currentRoom.features" :key="feature.name" class="mb-6 relative border border-gray-200 rounded-lg">
         <!-- Drag-and-Drop area for file uploads -->
         <div 
-          class="relative w-full h-72 rounded-t-lg overflow-hidden bg-gray-25 shadow-md border-[0.5px]  border-gray-25 flex items-center justify-center"
+          class="relative w-full h-72 rounded-t-lg overflow-hidden bg-gray-25 border-[0.5px]  border-gray-25 flex items-center justify-center"
           @dragenter.prevent @dragover.prevent @drop="handleDrop($event, featureIndex)"
         >
           <!-- Spinner and image carousel preview -->

@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="">
     <div class="mb-4 flex items-center justify-between">
       <label class="text-[#1D2739]">Is the common area furnished?</label>
@@ -48,17 +48,64 @@
         + Add manually
       </button>
     </div>
-<!-- 
-    <div class="mt-8">
-      <h2 class="text-lg font-bold">Selected Common Areas</h2>
-      <ul class="list-disc pl-4">
-        <li v-for="area in selectedCommonAreas" :key="area.id">
-          {{ area.name }} ({{ area.type }} - {{ area.canBeFurnished ? 'Furnished' : 'Not Furnished' }})
-        </li>
-      </ul>
-    </div> -->
+  </div>
+</template> -->
+
+<template>
+  <div>
+    <div class="mb-4 flex items-center justify-between">
+      <label class="text-[#1D2739]">Is the common area furnished?</label>
+      <div class="flex space-x-2 mt-2">
+        <button
+          @click="toggleFurnished(true)"
+          :class="{ 'bg-[#292929] text-white': isFurnished, 'bg-[#F0F2F5]': !isFurnished }"
+          class="px-6 py-2.5 rounded"
+        >
+          Yes
+        </button>
+        <button
+          @click="toggleFurnished(false)"
+          :class="{ 'bg-[#292929] text-white': !isFurnished, 'bg-[#F0F2F5]': isFurnished }"
+          class="px-6 py-2.5 rounded"
+        >
+          No
+        </button>
+      </div>
+    </div>
+
+    <!-- Displaying combined common areas with selected ones highlighted -->
+    <div v-for="(category, index) in visibleCategories" :key="index" class="mb-8">
+      <h2 class="text-base font-medium mb-2">{{ category.title }}</h2>
+      <div class="grid grid-cols-3 gap-4">
+        <div
+          v-for="area in category.areas"
+          :key="area.id"
+          @click="toggleAreaSelection(area)"
+          :class="{
+            'bg-white border-2 border-[#5B8469]': isSelected(area),
+            'bg-white border-[0.5px] border-gray-200': !isSelected(area)
+          }"
+          class="p-4 border rounded-xl cursor-pointer flex items-center space-x-2"
+        >
+          <img src="@/assets/img/roomBg.png" alt="Icon" class="w-6 h-6" />
+          <span class="text-sm">{{ area.name }}</span>
+        </div>
+      </div>
+      <input
+        v-model="newAreaNames[index]"
+        :placeholder="'e.g ' + category.example"
+        class="border px-2 text-sm border-gray-100 outline-none bg-[#F0F2F5] mt-4 w-full py-3.5 rounded-md"
+      />
+      <button
+        @click="addCommonArea(category.type, category.canBeFurnished, index)"
+        class="text-[#171717] mt-3 font-medium"
+      >
+        + Add manually
+      </button>
+    </div>
   </div>
 </template>
+
 
 
 <script setup lang="ts">
@@ -66,6 +113,8 @@ import { ref, computed, watch, onMounted } from 'vue';
 import { useStorage } from '@vueuse/core';
 import { useGetCommonAreas } from '@/composables/modules/property/fetchCommonAreas';
 import { use_create_property } from '@/composables/modules/property/create';
+import { useCustomToast } from '@/composables/core/useCustomToast'
+const { showToast } = useCustomToast();
 
 interface CommonArea {
   id: string;
@@ -110,20 +159,43 @@ const mandatoryExteriorAreas = [
 ];
 
 // Function to merge mandatory areas and avoid duplicates
+// function mergeWithMandatoryAreas(
+//   filteredAreas: CommonArea[],
+//   mandatoryAreas: string[],
+//   type: 'interior' | 'exterior'
+// ) {
+//   const mandatoryAreaObjects = commonAreasList.value.filter(
+//     (area) => area.type === type && mandatoryAreas.includes(area.name)
+//   );
+//   const combinedAreas = [...filteredAreas, ...mandatoryAreaObjects, ...selectedCommonAreas.value];
+
+//   // Remove duplicates by using a Map
+//   const uniqueAreas = new Map(combinedAreas.map((area) => [area.id, area]));
+//   return Array.from(uniqueAreas.values());
+// }
+
 function mergeWithMandatoryAreas(
   filteredAreas: CommonArea[],
   mandatoryAreas: string[],
   type: 'interior' | 'exterior'
 ) {
+  // Filter selected areas to only include those that match the type (interior or exterior)
+  const selectedAreasOfType = selectedCommonAreas.value.filter(
+    (area) => area.type === type
+  );
+
   const mandatoryAreaObjects = commonAreasList.value.filter(
     (area) => area.type === type && mandatoryAreas.includes(area.name)
   );
-  const combinedAreas = [...filteredAreas, ...mandatoryAreaObjects];
 
-  // Remove duplicates by using a Map
+  // Combine the filtered areas, mandatory areas, and selected areas of the same type
+  const combinedAreas = [...filteredAreas, ...mandatoryAreaObjects, ...selectedAreasOfType];
+
+  // Remove duplicates by using a Map with unique ids
   const uniqueAreas = new Map(combinedAreas.map((area) => [area.id, area]));
   return Array.from(uniqueAreas.values());
 }
+
 
 // Function to check if an area is selected
 function isSelected(area: CommonArea) {
@@ -251,7 +323,12 @@ function addCommonArea(type: 'interior' | 'exterior', canBeFurnished: boolean, i
     selectedCommonAreas.value.push(newArea); // Immediately add the new area to selected areas
     newAreaNames.value[index] = ''; // Clear the input field after adding
   } else {
-    alert('Please enter a valid name for the common area.');
+    showToast({
+          title: "Error",
+          message: "Please enter a valid name for the common area.",
+          toastType: "error",
+          duration: 3000
+        });
   }
 }
 

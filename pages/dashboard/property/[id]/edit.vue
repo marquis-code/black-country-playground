@@ -4,7 +4,7 @@
     <LayoutWithoutSidebar>
       <template #header-content>
         <header
-          class="bg-white px-4 flex items-center justify-between container mx-auto"
+          class="bg-white px-4  py-4 flex items-center justify-between container mx-auto"
         >
           <div
             @click="router.push('/dashboard')"
@@ -151,12 +151,6 @@
               >
                 {{ step.title }}
               </h3>
-              <!-- <div  v-if="step.completed">
-              <svg class="absolute right-0 top-5" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M14.166 2.7816C12.9403 2.07256 11.5172 1.66675 9.99935 1.66675C5.39697 1.66675 1.66602 5.39771 1.66602 10.0001C1.66602 14.6024 5.39697 18.3334 9.99935 18.3334C14.6017 18.3334 18.3327 14.6024 18.3327 10.0001C18.3327 9.42933 18.2753 8.87192 18.166 8.33342" stroke="#5B8469" stroke-width="2" stroke-linecap="round"/>
-                <path d="M6.66602 10.4167C6.66602 10.4167 7.91602 10.4167 9.58268 13.3334C9.58268 13.3334 14.215 5.69452 18.3327 4.16675" stroke="#5B8469" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div> -->
             </div>
           </aside>
           <div
@@ -537,7 +531,9 @@ import { use_create_property } from '@/composables/modules/property/create'
 import LayoutWithoutSidebar from "@/layouts/dashboardWithoutSidebar.vue";
 import { useFetchAgents } from '@/composables/modules/agents/fetch'
 import { useEditProperty } from '@/composables/modules/property/update'
-const { create_property } = use_create_property()
+import { useClearLocalStorage } from '@/composables/core/useClearLocalStorage';
+const { clearLocalStorage } = useClearLocalStorage();
+const { resetPayload } = use_create_property()
 const { agentsList, loading: loadingAgents } = useFetchAgents()
 const { loading: loadingCommonAreas, commonAreasList, interiorAreas, exteriorAreas, exteriorFurnishedAreasList, exteriorUnFurnishedAreasList, interiorFurnishedAreasList, interiorUnFurnishedAreasList } = useGetCommonAreas()
 const { loading: loadingRoomFeatures, roomFeaturesList } = useGetRoomFeatures()
@@ -560,12 +556,13 @@ const router = useRouter();
 const openCancelModal = ref(false)
 
 const handleConfirm = () => {
-  sessionStorage.clear()
+  clearLocalStorage();
   openCancelModal.value = false
 
 }
 
 const handleClose = () => {
+  clearLocalStorage();
   router.push('/dashboard/property')
   openCancelModal.value = false
 }
@@ -745,12 +742,17 @@ function handlePreviousParentStep() {
   }
 }
 
+// function handleStepClick(stepId: any) {
+//   // Only allow navigation to previous steps or the current step
+//   if (stepId <= activeParentStep.value) {
+//     activeParentStep.value = stepId;
+//     resetSubSteps();
+//   }
+// }
 function handleStepClick(stepId: any) {
-  // Only allow navigation to previous steps or the current step
-  if (stepId <= activeParentStep.value) {
-    activeParentStep.value = stepId;
-    resetSubSteps();
-  }
+  // Allow navigation to any step
+  activeParentStep.value = stepId;
+  resetSubSteps();
 }
 
 function resetSubSteps() {

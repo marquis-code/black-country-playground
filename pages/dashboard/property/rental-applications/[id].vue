@@ -1,7 +1,7 @@
 <template>
   <Layout>
     <template #header-content>
-      <div
+      <div v-if="!loading"
         class="flex justify-between items-center p-4 w-full"
       >
         <div class="flex items-center space-x-5">
@@ -17,7 +17,7 @@
           </button>
           <span class="text-xl font-medium text-[#1D2739]">{{rentalObj?.tenant?.firstName}} {{rentalObj?.tenant?.lastName}}</span>
         </div>
-        <div v-if="rentalObj.status !== 'CANCELLED'" class="flex space-x-4">
+        <div v-if="rentalObj.status !== 'PENDING'" class="flex space-x-4">
           <button v-if="rentalObj.status === 'APPROVED'" @click="declineModal = true" class="bg-[#EBE5E0] text-sm text-[#292929] px-6 py-2.5 rounded-md">
             Decline
           </button>
@@ -25,7 +25,18 @@
             Approve
           </button>
         </div>
+        <div v-if="rentalObj.status === 'PENDING'" class="flex space-x-4">
+          <button @click="declineModal = true" class="bg-[#EBE5E0] text-sm text-[#292929] px-6 py-2.5 rounded-md">
+            Decline
+          </button>
+          <button @click="approveModal = true" class="bg-[#292929] text-white px-6 py-2.5 text-sm rounded-md">
+            Approve
+          </button>
+        </div>
       </div>
+      <section v-else>
+          <div class="h-16 animate-pulse bg-slate-400 rounded w-full"></div>
+       </section>
     </template>
     <main v-if="!loading && Object.keys(rentalObj).length" class="min-h-screen">
       <div class="md:flex max-w-6xl mx-auto">

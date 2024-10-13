@@ -20,10 +20,10 @@
         >
           Cancel
         </button>
-        <button @click="handleSaveAndExit"
-          class="bg-gray-900 text-sm text-white px-4 py-3 rounded-md hover:bg-gray-800"
+        <button :disabled="saving" @click="handleSaveAndExit"
+          class="bg-gray-900 text-sm disabled:cursor-not-allowed disabled:opacity-25 text-white px-4 py-3 rounded-md hover:bg-gray-800"
         >
-          Save & exit
+        {{saving ? 'saving...' : 'Save & exit'}}
         </button>
       </div>
     </header>
@@ -57,7 +57,11 @@
   import { useRouter } from 'vue-router';
   const router = useRouter();
   import { useEditProperty } from '@/composables/modules/property/update'
+  import { use_create_property } from '@/composables/modules/property/create'
   const { editProperty, payload, loading, fetchingProperty, saving, savingProperty }  = useEditProperty()
+  const { resetPayload } = use_create_property()
+  import { useClearLocalStorage } from '@/composables/core/useClearLocalStorage';
+const { clearLocalStorage } = useClearLocalStorage();
 
   // editProperty();
   definePageMeta({
@@ -67,7 +71,7 @@
   const openCancelModal = ref(false)
   
   const handleConfirm = () => {
-    sessionStorage.clear()
+    clearLocalStorage();
     openCancelModal.value = false
   
   }
@@ -78,7 +82,7 @@
   }
   
   const handleSaveAndExit = () => {
-    editProperty();
+    savingProperty();
   };
   
   const handlePublish = () => {

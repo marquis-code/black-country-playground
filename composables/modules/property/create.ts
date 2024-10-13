@@ -9,6 +9,9 @@ import { useCustomToast } from '@/composables/core/useCustomToast'
 const { showToast } = useCustomToast();
 const { flooringsList, geFloorings  } = useGetFloorings()
 
+import { useClearLocalStorage } from '@/composables/core/useClearLocalStorage';
+const { clearLocalStorage } = useClearLocalStorage();
+
 // Initialize payload with useStorage to persist the data
 const persistedPayload = {
   name: useStorage('property_name', null),
@@ -134,7 +137,7 @@ export const use_create_property = () => {
           toastType: "success",
           duration: 3000
         });
-        resetPayload();
+        clearLocalStorage()
         Router.push("/dashboard/property/success");
       } else {
         showToast({
@@ -216,7 +219,7 @@ export const use_create_property = () => {
           toastType: "success",
           duration: 3000
         });
-        resetPayload();
+        clearLocalStorage();
         // Router.push("/dashboard/property/draft-success");
       } else {
         showToast({

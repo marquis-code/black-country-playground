@@ -46,11 +46,13 @@ export const useEditProperty = () => {
   const initForm = async () => {
     loading.value = true;
     await getProperty(queryId.value);
+    console.log(propertyObj.value, 'again')
     populateForm(propertyObj.value); // Populate form with fetched data
     loading.value = false;
   };
 
   const populateForm = (data: any) => {
+    console.log(data, 'fetched property')
     payload.name.value = data.name || "";
     payload.description.value = data.description || "";
     payload.houseTypeId.value = data.houseTypeId || "";
@@ -71,7 +73,8 @@ export const useEditProperty = () => {
     payload.rooms.value = data.rooms || [];
     payload.agentId.value = data.agent.id || "";
     payload.rules.value = data.rules || [];
-    payload.questions.value = data.questions || [];
+    payload.questions.value = data.preScreeningQuestions
+     || [];
   };
 
   // Function to clean and filter rooms and payload data
@@ -130,7 +133,7 @@ export const useEditProperty = () => {
     loading.value = true;
     const res = await $_update_property(queryId.value, finalPayload());
     if (res.type !== "ERROR") {
-      router.push("/dashboard/property/success");
+      router.push("/dashboard/property/edit-success");
     }
     loading.value = false;
   };
@@ -139,7 +142,7 @@ export const useEditProperty = () => {
     saving.value = true;
     const res = await $_update_property(queryId.value, finalPayload());
     if (res.type !== "ERROR") {
-      router.push("/dashboard/property/success");
+      router.push("/dashboard/property/edit-success");
     }
     saving.value = false;
   };

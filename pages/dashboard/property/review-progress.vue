@@ -1,17 +1,45 @@
 <template>
 <Layout>
   <template #header-content>
-   <div class="w-full max-w-5xl mx-auto">
+   <!-- <div class="w-full max-w-7xl mx-auto">
     <button @click="router.back()" class="bg-[#F9FAFB] text-[#1D2739] text-sm font-semibold rounded-md px-4 py-3 flex items-center gap-x-2">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M12.5 5C12.5 5 7.50001 8.68242 7.5 10C7.49999 11.3177 12.5 15 12.5 15" stroke="#1D2739" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         
       Go back</button>
+   </div> -->
+   <header
+   class="px-4 py-5 flex items-center bg-white justify-between max-w-7xl mx-auto fixed top-0 left-0 right-0 z-50"
+ >
+   <div
+     @click="router.push('/dashboard')"
+     class="flex items-center space-x-2 cursor-pointer"
+   >
+     <img src="@/assets/icons/logo.svg" alt="Logo" class="h-8 w-auto" />
+     <span class="text-lg font-semibold">BlackCountry</span>
    </div>
+   <div class="flex space-x-4 items-center">
+    <NuxtLink to="/dashboard/property/review-progress" class="text-[#326543] text-sm hover:text-[#326543]">
+      Preview
+    </NuxtLink>
+     <button
+     @click="openCancelModal = true"
+       class="bg-white border text-sm border-gray-300 text-gray-700 px-4 py-2.5 rounded-md hover:bg-gray-100"
+     >
+       Cancel
+     </button>
+     <button :disabled="saving" @click="save_property"
+       class="bg-gray-900 text-sm disabled:cursor-not-allowed disabled:opacity-25 text-white px-4 py-2.5 rounded-md hover:bg-gray-800"
+     >
+     {{saving ? 'saving...' : 'Save & exit'}}
+     </button>
+   </div>
+ </header>
   </template>
   <main>
-    <div class="p-6 max-w-7xl mx-auto bg-white">
+    <div class="p-6 max-w-7xl mx-auto bg-white pt-20 pb-32">
+      <!-- {{occupiedRoomsCount}} -->
       <!-- Breadcrumb & Share Icon -->
       <div class="flex justify-between items-center mb-6">
         <div class="text-sm text-gray-600">Listings | <span class="font-semibold">{{ payload.name.value ?? 'Nil' }}</span></div>
@@ -97,8 +125,6 @@
             </div>
 
             <div v-if="activeTab === 'property-overview'" class="">
-              
-              <!-- <p class="text-sm text-gray-600">{{ payload.description.value ?? 'No description available' }}</p> -->
               <h2  class="text-sm text-[#1D2739] font-medium bg-white border-[0.5px] py-3 px-3 rounded-sm border-gray-50">Property Description</h2>
               <div class="pt-4 bg-white rounded-lg border-gray-50 p-3 border-[0.5px] text-sm">
                 <p class="text-[#1D2739] mt-2  leading-snug text-sm">
@@ -113,7 +139,7 @@
                 <div class="gap-4 space-y-6 bg-white rounded-lg border-gray-50 p-3 border-[0.5px] text-sm">
               <div class="flex justify-between items-center">
                   <div class="text-[#667185]">Property size <span class="font-medium text-[#1D2739]">{{payload?.size.value ?? 'Nil'}} {{payload?.sizeUnit.value ?? 'Nil'}}</span></div>
-                  <div class="text-[#667185]">Flooring type <span class="font-medium text-[#1D2739]">{{property?.flooringType?.name.value ?? 'Nil'}}</span></div>
+                  <div class="text-[#667185]">Flooring type <span class="font-medium text-[#1D2739]">{{ floorObj?.name ?? 'Nil' }}</span></div>
               </div>
             <div class="flex justify-between items-center">
               <div class="text-[#667185]">Number of bedrooms <span class="font-medium text-[#1D2739]">{{payload?.bedroomCount.value ?? 'Nil'}}</span></div>
@@ -121,13 +147,13 @@
             </div>
                   <div class="text-[#667185]">Floor number <span class="font-medium text-[#1D2739]">{{payload?.floorNumber.value ?? 'Nil'}}</span></div>
             <div class="flex justify-between items-center">
-              <div class="text-[#667185]">Architecture <span class="font-medium text-[#1D2739]">Apartment</span></div>
+              <div class="text-[#667185]">Architecture <span class="font-medium text-[#1D2739]">{{ propertyObj?.name ?? 'Nil' }}</span></div>
               <div class="text-[#667185]">{{payload?.availableRoomsCount ?? 'Nil'}} rooms available <span class="text-[#326543]">Now</span></div>
             </div>
                 </div>
         
                 <!-- Co-living with -->
-                <h2 class="text-sm font-medium text-[#667185] mt-6 border-[0.5px] py-3 px-3 rounded-lg border-gray-50">Co-living with <span class="text-[#1D2739]">{{payload?.bedroomCount.value - 1}} Persons</span></h2>
+                <h2 class="text-sm font-medium text-[#667185] mt-6 border-[0.5px] py-3 px-3 rounded-lg border-gray-50">Co-living with <span class="text-[#1D2739]">{{occupiedRoomsCount ?? 'Nil'}} Person {{occupiedRoomsCount > 1 ? 's' : ''}}</span></h2>
                 <table class="w-full mt-2 table-fixed text-sm">
                   <thead>
                     <tr class="bg-[#F9FAFB] rounded-lg">
@@ -146,56 +172,31 @@
                 </table>
               </div>
         
-              <!-- Property Visitation -->
-              <!-- <h2 class="text-sm font-medium text-[#667185] mt-6 border-[0.5px] py-3 px-3 rounded-lg border-gray-50">Property visitation</h2>
-              <div class="rounded-md border-[0.5px] border-gray-50 bg-white">
-                <table class="w-full mt-2 table-fixed text-sm">
-                  <thead>
-                    <tr class="bg-[#F9FAFB] rounded-lg">
-                      <th class="text-left py-3 text-[#667185] pl-4">Day</th>
-                      <th class="text-left py-3 text-[#667185]">Time</th>
-                    </tr>
-                  </thead>
-                  <tbody class="space-y-6">
-                    <tr class="">
-                      <td class="text-[#1D2739] py-3  pl-4">Monday</td>
-                      <td class="text-[#1D2739] py-3 ">10:00 AM</td>
-                    </tr>
-                    <tr class="">
-                      <td class="text-[#1D2739] py-3  pl-4">Tuesday</td>
-                      <td class="text-[#1D2739] py-3 ">10:00 AM</td>
-                    </tr>
-                    <tr class="">
-                      <td class="text-[#1D2739] py-3  pl-4">Wednesday</td>
-                      <td class="text-[#1D2739] py-3 ">10:00 AM</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div> -->
-        
               <!-- House Rules -->
               <h2 class="text-sm font-medium text-[#1D2739] mt-6 border-[0.5px] py-3 px-3 rounded-lg border-gray-50">House Rules</h2>
-              <div class="">
-                <ul v-if="payload?.rules?.length" class="space-y-1">
-                  <p class="border-[0.5px] rounded-lg border-gray-50 py-3 text-sm pl-4">{{payload?.rules[0]?.rule }}</p>
-                  <p class="border-[0.5px] rounded-lg border-gray-50 py-3 text-sm pl-4">{{payload?.rules[1]?.rule }}</p>
-                  <div class="border-[0.5px] rounded-lg border-gray-50 py-3">
-                      <p class="py-3 text-sm pl-4">Other rules</p>
-                    <div class="pl-5">
-                      <ul class="list-disc ml-5 space-y-4 text-sm">
-                      <li v-for="(item, idx) in otherRules" :key="idx" class="text-[#1D2739] leading-snug">{{item.rule}}</li>
-                       </ul>
+              <div>
+                <ul class='pl-2 pt-3 space-y-3 font-light text-sm'>
+                  <!-- Map through the rules array -->
+                  <li v-for="(rule, index) in payload.rules.value" :key="index" class="rule-item">
+                    <div v-if="rule.answer" class="flex justify-between items-center">
+                      <p><strong>{{ rule.rule }}:</strong></p>
+                      <p>{{ rule.answer }}</p>
                     </div>
-                  </div>
+                    <!-- If no answer, just show the rule -->
+                    <div v-else>
+                      <span><strong>{{ rule.rule }}</strong></span>
+                    </div>
+                  </li>
                 </ul>
               </div>
             </div>
+
+            <!-- <PreviewRoomDetails :rooms="payload.rooms.value" /> -->
       
-            <div v-if="activeTab === 'common-areas'" class="mb-6 mt-4">
+         <div v-if="activeTab === 'common-areas'" class="mb-6 mt-4">
               <h3 class="font-semibold text-lg">Common Areas</h3>
               <p class="text-sm text-gray-600">This section provides details about the shared common areas of the property.</p>
               <div class="space-y-6">
-                <!-- Gallery Section -->
                 <div class="flex cursor-pointer items-center border-[0.5px] border-gray-50 space-x-4 bg-white p-4 rounded-lg">
                   <img :src="dynamicImage('placeholder.png')" alt="Gallery" class="w-12 h-12 rounded-full">
                   <div class="flex-1">
@@ -208,19 +209,16 @@
                     </svg>
                   </button>
                 </div>
-            
-                <!-- Interior Features Section -->
+
                 <h2 class="text- pl-4 font-medium bg-white border-[0.5px] py-4 border-gray-50">Interior Features</h2>
                 <div class="bg-white p-6 rounded-lg border-[0.5px] space-y-4 border-gray-50">  
                   <div class="space-y-2">
                     <p class="font-medium text-sm text-[#667185]">
-                      Furnished: <span class="font-medium text-gray-900">{{payload?.isFurnishedCommonArea ? 'Yes' : 'No'}}</span>
+                      Furnished: <span class="font-medium text-gray-900">{{payload?.isFurnishedCommonArea.value ? 'Yes' : 'No'}}</span>
                     </p>
             
                     <div class="space-y-2">
                       <p class="text-sm font- text-[#667185]">Amenities</p>
-            
-                      <!-- Amenities -->
                       <div class="grid grid-cols-3 gap-3">
                         <div v-for="item in interiorCommonAreas" :key="item.id" class="flex items-center space-x-2 p-2 bg-white border-[0.5px] border-gray-100 rounded-md">
                           <img :src="dynamicImage('roomBg.png')" alt="Living room" class="w-7 h-7">
@@ -231,14 +229,10 @@
                     </div>
                   </div>
                 </div>
-            
-                <!-- Exterior Features Section -->
                 <h2 class="text- pl-4 font-medium bg-white border-[0.5px] py-4 border-gray-50">Exterior Feature</h2>
                 <div class="bg-white p-6 rounded-lg space-y-4">
                   <div class="space-y-2">
                     <p class="text-sm font- text-[#667185]">Amenities</p>
-            
-                    <!-- Exterior Amenities -->
                     <div class="grid grid-cols-3 gap-3">
                       <div  v-for="item in exteriorCommonAreas" :key="item.id" class="flex items-center space-x-2 p-2 bg-white border-[0.5px] border-gray-100 rounded-md">
                         <img :src="dynamicImage('roomBg.png')" alt="Parking space" class="w-7 h-7">
@@ -249,8 +243,59 @@
                 </div>
               </div>
             </div>
+
+            <div v-if="activeTab !== 'property-overview' && activeTab !== 'common-areas'" class=" max-w-3xl mx-auto">
+              <button :disabled="!selectedRoomObj?.images?.length"  class="flex justify-between disabled:cursor-not-allowed disabled:opacity-25 w-full cursor-pointer mb-3 items-center border-[0.5px] border-gray-50 space-x-4 bg-white p-4 rounded-lg">
+                <div class="flex">
+                  <img :src="dynamicImage('placeholder.png')" alt="Gallery" class="w-12 h-12 rounded-full">
+                  <div class="pl-2">
+                    <h3 class="text-lg font-medium text-start">Gallery</h3>
+                    <p class="text-gray-500 text-sm text-start">Click to view photos of {{selectedRoomObj.name}}</p>
+                  </div>
+                </div>
+              <div>
+                <button class="text-gray-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+              </button>
+              <!-- Availability and Rent Details -->
+              <div class="flex flex-col space-y-1 mb-6 bg-white rounded-lg border-gray-50 p-3 border-[0.5px] text-sm">
+                <p class="text-[#1D2739] text-sm font-medium">Available <span class="text-[#326543]">{{selectedRoomObj?.availability === 'available_now' ? 'Now' : selectedRoomObj?.availability === 'unavailable' ? 'Unavailable' : selectedRoomObj?.availability === 'available_from_date' ? 'Not Available For Now' : ''}}</span></p>
+                <p class="text-gray-900 font-medium text-lg">{{ formatCurrency(selectedRoomObj?.rentAmount)}} <span class="text-[#667185] text-sm font-normal">{{selectedRoomObj?.rentFrequency}}</span></p>
+              </div>
+          
+              <!-- Interior Features Section -->
+              <div class="mb-6 space-y-3">
+                <h3 class="text- pl-4 font-medium text-[#1D2739] bg-white border-[0.5px] py-4 rounded-md border-gray-50">Interior Features</h3>
+                
+         <section class="font-medium bg-white border-[0.5px] py-4 border-gray-50 rounded-md">
+                 <!-- Furnished Status -->
+                 <p class="text-gray-700 mb-2 pl-4"><span class="font-medium">Furnished:</span> {{selectedRoomObj?.isFurnished ? 'Yes' : 'No'}}</p>
+          
+                 <!-- Amenities -->
+                 <h4 class="text-gray-500 mb-3 text- pl-4">Amenities</h4>
+                 <div class="grid grid-cols-3 gap-3 text- p-3">
+                   <div v-for="(amenity, index) in selectedRoomObj?.features" :key="index" class="flex items-center p-2 border-[0.5px] rounded-lg space-x-2 bg-white hover:shadow transition-shadow duration-150">
+                     <div class="w-8 h-8 flex items-center justify-center rounded-md">
+                       <!-- Replace this with actual icon/image if available -->
+                       <img src="@/assets/img/roomBg.png" alt="icon" class="w-6 h-6 object-cover" />
+                     </div>
+                     <p class="text-[#1D2739] text-sm font-medium">{{ amenity.name }}</p>
+                   </div>
+                 </div>
+         </section>
+                
+                <!-- View More Link -->
+                <div v-if="selectedRoomObj?.features?.length > 10" class="mt-4">
+                  <button @click="viewMore" class="text-blue-500 text-sm font-medium hover:underline">View more</button>
+                </div>
+              </div>
+            </div>
       
-            <div v-if="activeTab !== 'property-overview' && activeTab !== 'common-areas'" class="mt-4">
+            <!-- <div v-if="activeTab !== 'property-overview' && activeTab !== 'common-areas'" class="mt-4">
               <div class="flex cursor-pointer items-center border-[0.5px] border-gray-50 space-x-4 bg-white p-4 rounded-lg">
                 <img :src="dynamicImage('placeholder.png')" alt="Gallery" class="w-12 h-12 rounded-full">
                 <div class="flex-1">
@@ -270,14 +315,9 @@
                   class="flex justify-between border-[0.5px] p-3 rounded-md items-center gap-x-2 bg-white"
                 >
                   <p>{{ key }}</p>
-            
-                  <!-- Check if the key is 'features' -->
                   <div v-if="key === 'features'" class="features-container space-y-4">
                     <div v-for="feature in value" :key="feature.name" class="feature-item">
-                      <!-- Only display features that have a name -->
                       <h3 v-if="feature.name" class="feature-name text-sm">{{ feature.name }}</h3>
-            
-                      <!-- Display images only if they exist and the feature has a name -->
                       <div v-if="feature.images.length > 0 && feature.name" class="images-container space-y-4">
                         <div
                           v-for="(image, index) in feature.images"
@@ -293,11 +333,16 @@
                   <p v-else>{{ value ?? 'Nil' }}</p>
                 </div>
               </div>
-            </div>
+            </div> -->
             
           </div>
         </section>
         <section class="lg:w-5/12 space-y-6">
+
+          <!-- <InteriorExteriorFeatures
+          :property="payload.commonAreas.value"
+          v-if="activeTab === 'common-areas'"
+        /> -->
   
      <!-- Property Manager -->
      <div class="bg-[#F0F2F5] p-6 rounded-md">
@@ -310,9 +355,9 @@
           />
           <div>
             <h3 class="font-bold text-[#1D2739]">
-              <span v-if="payload.agent">
-                {{ payload.agent.firstName }}
-                {{ payload.agent.lastName }}
+              <span v-if="agentObj">
+                {{ agentObj.firstName }}
+                {{ agentObj.lastName }}
               </span>
               <span v-else>Nil</span>
             </h3>
@@ -480,163 +525,47 @@
   
     </div>
   </main>
+  <section class="fixed bottom-0 left-0 right-0 bg-white py-3 mt-32 border-t shadow-md z-50 px-6">
+    <div class="flex justify-between items-center container mx-auto">
+      <button @click="router.back()" class="text-[#292929] bg-[#EBE5E0] px-6 py-3 rounded-md">Previous</button>
+      <button :disabled="loading" @click="handlePublish" class="bg-[#292929] disabled:opacity-25 disabled:cursor-not-allowed text-white text-sm px-6 py-3 rounded-md">{{loading ? 'Processing...' : 'Publish'}}</button>
+    </div>
+  </section>
+
+  <CoreReusableModal
+  :isOpen="openCancelModal"
+  message="By cancelling, you will loose progress of your property upload"
+  confirmButtonText="No, Continue uploading"
+  cancelButtonText="Yes, Cancel"
+  @close="handleClose"
+  @confirm="handleConfirm"
+/>
 </Layout>
   </template>
-  
-  <!-- <script setup lang="ts">
-  import Layout from '@/layouts/dashboardWithoutSidebar'
-  const propertyManagerImage = ref("shape.png");
-  import { dynamicImage, dynamicIcons } from '@/utils/assets/dynamicIcons'
-  import { ref, computed } from 'vue';
-  import { use_create_property } from '@/composables/modules/property/create';
-  const { payload } = use_create_property();
-  const router = useRouter()
-
-  const visibleType = ref(null) as any;
-  definePageMeta({
-     middleware: 'auth'
-  })
-  
-  // Dummy data
-  const manager = {
-    name: "Joy Adetunji",
-    photo: "https://via.placeholder.com/150"
-  };
-  
-  // Generate tabs based on bedroom count
-  const bedroomCount = payload?.bedroomCount?.value ?? 1; // Assuming bedroomCount is fetched from payload
-  // Computed property to group amenities by type
-const groupedAmenities = computed(() => {
-  if (payload) {
-    return payload?.neighbouringLandmarks.value?.reduce((acc, amenity) => {
-      const { type } = amenity;
-      if (!acc[type]) {
-        acc[type] = [];
-      }
-      acc[type].push(amenity);
-      return acc;
-    }, {});
-  }
-});
-  
-  // const activeTab = ref(tabs[0]);
-  const activeTab = ref("property-overview");
-  const selectedRoomObj = ref({});
-  
-  // Generate tabs based on bedroom count
-  const tabs = payload?.rooms?.value?.map((room: any, index: number) => ({
-    id: index + 1,
-    name: `Room ${index + 1}`,
-    details: room,
-  }));
-  
-  // Handling tab switch
-  const handleSelectedTab = (item: any, itemType: string | null = null) => {
-    if (itemType === 'dynamic') {
-      console.log(selectedRoomObj.value, 'room obk jee', item)
-      activeTab.value = item.name;
-      selectedRoomObj.value = item.details;
-    } else {
-      activeTab.value = item;
-    }
-  };
-  
-  // This is just for demo purposes; replace it with your actual image function
-  const dynamicImage = (img: string) => `https://via.placeholder.com/150?text=${img}`;
-
-  const exteriorCommonAreas = computed(() => {
-     return payload.commonAreas.value.filter((item: any) => item.type === 'exterior')
-  })
-
-  const interiorCommonAreas = computed(() => {
-    return payload?.commonAreas?.value.filter((item: any) => item.type === 'interior')
-  })
-
-
-  // Method to handle 'View more' click
-const viewMore = () => {
-  alert('Displaying more amenities...');
-};
-
-const phoneNumber = "+1234567890"; // Replace with a dynamic number if needed
-
-const makeCall = () => {
-  window.location.href = `tel:${phoneNumber}`;
-};
-
-const sendSms = () => {
-  window.location.href = `sms:${phoneNumber}`;
-};
-
-// Get all unique amenity types
-const amenityTypes = computed(() => {
-  if (groupedAmenities.value) {
-    return Object.keys(groupedAmenities?.value);
-  }
-});
-
-onMounted(() => {
-  if (amenityTypes?.value?.length > 0) {
-    visibleType.value = amenityTypes.value[0];
-  }
-});
-
-// Method to toggle visibility of amenity lists
-const toggleVisibility = (type: any) => {
-  visibleType.value = visibleType.value === type ? null : type;
-};
-
-const formattedRoomData = computed(() => {
-if(payload?.rooms?.value){
-  return payload?.rooms?.value.map(room => {
-    return {
-      occupant: room?.occupantName || "No occupant",
-      roomOccupied: room?.name,
-      availableFrom: room?.availability === "available_now"
-        ? "Available now"
-        : room?.availableFrom
-          ? new Date(room?.availableFrom).toLocaleDateString()
-          : "Not available"
-    };
-  });
-}
-});
-
-  </script>
-  
-
-  <style scoped>
-/* Custom scrollbar hide */
-.scrollbar-hide {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, and Opera */
-}
-
-.scrollbar-hidden::-webkit-scrollbar {
-  display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
-}
-
-.scrollbar-hidden {
-  -ms-overflow-style: none; /* Hide scrollbar for Internet Explorer and Edge */
-  scrollbar-width: none; /* Hide scrollbar for Firefox */
-}
-</style> -->
 
 <script setup lang="ts">
 import Layout from '@/layouts/dashboardWithoutSidebar';
 import { use_create_property } from '@/composables/modules/property/create';
-
-const { payload } = use_create_property();
+import { useRoomOccupantCount } from '@/composables/core/useRoomOccupantCount';
+import { useGetFloorings } from '@/composables/modules/property/fetchFloorings'
+import { useGetPropertyTypes } from '@/composables/modules/property/fetchPropertyTypes'
+import { useFetchAgents } from '@/composables/modules/agents/fetch'
+const { payload, create_property, resetPayload, loading, save_property, saving } = use_create_property();
+const propertyManagerImage = ref("shape.png");
+const { flooringsList, geFloorings  } = useGetFloorings()
+const { propertyTypesList, getPropertyTypes } = useGetPropertyTypes()
+const { agentsList } = useFetchAgents()
 const router = useRouter();
+import { useClearLocalStorage } from '@/composables/core/useClearLocalStorage';
+const { clearLocalStorage } = useClearLocalStorage();
 
 const visibleType = ref(null); // Changed type to `any` removed
 definePageMeta({
   middleware: 'auth'
 });
+
+import { useCurrencyFormatter } from '@/composables/core/useCurrencyFormatter';
+const { formatCurrency } = useCurrencyFormatter('en-NG', 'NGN');
 
 // Generate tabs based on bedroom count
 const bedroomCount = payload?.bedroomCount?.value ?? 1;
@@ -661,6 +590,20 @@ const tabs = payload?.rooms?.value?.map((room: any, index: number) => ({
   name: `Room ${index + 1}`,
   details: room,
 }));
+
+const openCancelModal = ref(false)
+
+const handleConfirm = () => {
+  clearLocalStorage();
+  openCancelModal.value = false
+
+}
+
+const handleClose = () => {
+  clearLocalStorage();
+  router.push('/dashboard/property')
+  openCancelModal.value = false
+}
 
 const activeTab = ref("property-overview");
 const selectedRoomObj = ref({});
@@ -726,6 +669,32 @@ const formattedRoomData = computed(() => {
   }
 });
 
+
+const floorObj = computed(() => {
+    return flooringsList.value.find((item) => item.id === payload.flooringTypeId.value)
+  })
+
+  const propertyObj = computed(() => {
+    return propertyTypesList.value.find((item) => item.id ===  payload?.houseTypeId?.value)
+  })
+
+  const agentObj = computed(() => {
+  // Check if agentsList is an array, if not, default to an empty array
+  const list = Array.isArray(agentsList?.value) ? agentsList.value : [];
+
+  // Find the agent with the matching id
+  return list.find((item) => item.id === payload?.agentId?.value) || null;
+});
+
+  const { occupiedRoomsCount } = useRoomOccupantCount(payload?.rooms?.value);
+
+  const exteriorCommonAreas = computed(() => {
+     return payload.commonAreas.value.filter((item: any) => item.type === 'exterior')
+  })
+
+  const interiorCommonAreas = computed(() => {
+    return payload.commonAreas.value.filter((item: any) => item.type === 'interior')
+  })
 </script>
 
 <style scoped>
@@ -751,4 +720,5 @@ button {
   -ms-overflow-style: none; /* Hide scrollbar for Internet Explorer and Edge */
   scrollbar-width: none; /* Hide scrollbar for Firefox */
 }
+
 </style>

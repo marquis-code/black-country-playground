@@ -11,19 +11,19 @@
       <span class="text-lg font-semibold">BlackCountry</span>
     </div>
     <div class="flex space-x-4 items-center">
-      <button class="text-[#326543] text-sm hover:text-[#326543]">
+      <NuxtLink to="/dashboard/property/review-progress" class="text-[#326543] text-sm hover:text-[#326543]">
         Preview
-      </button>
+      </NuxtLink>
       <button
       @click="openCancelModal = true"
         class="bg-white border text-sm border-gray-300 text-gray-700 px-4 py-3 rounded-md hover:bg-gray-100"
       >
         Cancel
       </button>
-      <button @click="handleSaveAndExit"
-        class="bg-gray-900 text-sm text-white px-4 py-3 rounded-md hover:bg-gray-800"
+      <button :disabled="saving" @click="save_property"
+        class="bg-gray-900 text-sm disabled:cursor-not-allowed disabled:opacity-25 text-white px-4 py-3 rounded-md hover:bg-gray-800"
       >
-        Save & exit
+         {{ saving ? 'saving..' : 'Save & exit'}}
       </button>
     </div>
   </header>
@@ -56,7 +56,9 @@
 import { useRouter } from 'vue-router';
 const router = useRouter();
 import { use_create_property } from '@/composables/modules/property/create';
-const { payload, create_property, loading } = use_create_property();
+const { payload, create_property, resetPayload, loading, save_property, saving } = use_create_property();
+import { useClearLocalStorage } from '@/composables/core/useClearLocalStorage';
+const { clearLocalStorage } = useClearLocalStorage();
 // editProperty();
 definePageMeta({
      middleware: 'auth'
@@ -65,19 +67,20 @@ definePageMeta({
 const openCancelModal = ref(false)
 
 const handleConfirm = () => {
-  sessionStorage.clear()
+  clearLocalStorage();
   openCancelModal.value = false
 
 }
 
 const handleClose = () => {
+  clearLocalStorage();
   router.push('/dashboard/property')
   openCancelModal.value = false
 }
 
-const handleSaveAndExit = () => {
-  create_property();
-};
+// const handleSaveAndExit = () => {
+//   create_property();
+// };
 
 const handlePublish = () => {
   console.log('I am called')
