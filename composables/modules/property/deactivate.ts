@@ -15,7 +15,7 @@ export const usePropertyDeactivate = () => {
   const deactivateProperty = async (id: any, actionType: string, property: any) => {
     selectedProperty.value = property
     const updatedData = {
-      isPublished: actionType !== 'deactivate'
+      status: actionType === 'deactivate' ? 'hidden' : 'published'
     };
     // const updatedData = {
     //   status: actionType === 'deactivate' ? 'hidden' : 'published'
@@ -26,7 +26,7 @@ export const usePropertyDeactivate = () => {
   };
 
   const updateProperty = async (id: any, updatedData: any) => {
-    const successRoute = selectedProperty.value.isPublished
+    const successRoute = selectedProperty.value.status === 'hidden'
     ? `/dashboard/property/${selectedProperty.value.id}/deactivate-success`
     : `/dashboard/property/${selectedProperty.value.id}/activate-success`;
     loading.value = true;

@@ -1,3 +1,37 @@
+// import { property_api } from '@/api_factory/modules/property'
+
+
+// export const useGetPropertiesWithRentals = () => {
+//     const loadingProperties = ref(false);
+//     const propertiesList = ref([] as any);
+//     const { $_fetch_properties_with_rentals } = property_api;
+//     const getProperties = async () => {
+//         loadingProperties.value = true;
+//         try {
+//             const res = await $_fetch_properties_with_rentals() as any;
+    
+//             if (res.type !== 'ERROR') {
+//                 // Sort properties by 'createdAt' in descending order
+//                 propertiesList.value = res?.data?.result ?? []
+//             }
+//         } catch (error) {
+//             console.error('Error fetching properties:', error);
+//         } finally {
+//             loadingProperties.value = false;
+//         }
+//     };
+
+//     onMounted(() => {
+//         getProperties()
+//     });
+
+//     return {
+//         getProperties,
+//         loadingProperties,
+//         propertiesList
+//     };
+// };
+
 import { property_api } from '@/api_factory/modules/property'
 
 // Debounce function to limit the rate at which a function can be called
@@ -21,7 +55,7 @@ function debounce(fn: Function, delay: number) {
     return debounced;
 }
 
-export const useGetProperties = () => {
+export const useGetPropertiesWithRentals = () => {
     const loadingProperties = ref(false);
     const propertiesList = ref([] as any);
     const searchQuery = ref<string>("");
@@ -35,17 +69,13 @@ export const useGetProperties = () => {
     // Filters including dates and agentId
     const filters = ref({
         searchQuery: null,
-        status: null,
-        fromDate: null,
-        toDate: null,
-        agentId: null,
     });
 
-    const { $_fetch_properties } = property_api;
+    const { $_fetch_properties_with_rentals } = property_api;
     const getProperties = async () => {
         loadingProperties.value = true;
         try {
-            const res = await $_fetch_properties(metadata.value, filters.value) as any;
+            const res = await $_fetch_properties_with_rentals(metadata.value, filters.value) as any;
     
             if (res.type !== 'ERROR') {
                 // Sort properties by 'createdAt' in descending order

@@ -68,63 +68,6 @@ definePageMeta({
      middleware: 'auth'
 })
 
-// Sample data for the table from the backend
-const properties = ref([
-  {
-    id: "5f66fb8c-09a3-4e37-be27-2d7fbf961bf1",
-    name: "Acme props block 1",
-    description: "Acme Real Estate",
-    houseTypeId: "cb7d7653-0b84-4a90-a918-8e69f17ff899",
-    flooringTypeId: "43bbe094-cce0-4706-b430-6c7d1ed4c54f",
-    size: "300",
-    sizeUnit: "sq ft",
-    bedroomCount: 5,
-    bathroomCount: 7,
-    images: [
-      "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-    ],
-    floorNumber: 2,
-    countryId: null,
-    stateId: null,
-    cityId: null,
-    coordinates: {
-      type: "Point",
-      coordinates: [
-        3.406448,
-        6.465422
-      ]
-    },
-    address: "Broad street lagos island",
-    isFurnishedCommonArea: true,
-    isPublished: true,
-    deletedAt: null,
-    createdAt: "2024-09-09T12:30:19.392Z",
-    updatedAt: "2024-09-09T12:30:19.392Z",
-    agent: {
-      id: "a14b6ad1-a663-45e3-aa06-4f8dc19907a1",
-      firstName: "Prince",
-      lastName: "Ita",
-      email: "prince1659@mailinator.com",
-      isEmailVerified: true,
-      isActive: true,
-      createdAt: "2024-09-06T03:13:32.717Z",
-      updatedAt: "2024-09-06T03:13:32.717Z",
-      deletedAt: null,
-      authProvider: "bc"
-    },
-    houseType: {
-      id: "cb7d7653-0b84-4a90-a918-8e69f17ff899",
-      name: "Pent House",
-      createdAt: "2024-09-09T12:10:16.140Z",
-      updatedAt: "2024-09-09T12:10:16.140Z"
-    },
-    availableRoomsCount: 1,
-    unavailableRoomsCount: 0,
-    futureAvailableRoomsCount: 0,
-    leastAvailableDate: null
-  }
-])
-
 // Computed property to get only visible columns
 const visibleColumns = computed(() => {
   return columns.value.filter(column => column.visible)

@@ -130,6 +130,10 @@ const propertyStatusList = ref([
   {
     label: 'Draft',
     code: 'draft'
+  },
+  {
+    label: 'Deactivated',
+    code: 'hidden'
   }
 ])
 
@@ -140,7 +144,8 @@ const applyFilters = () => {
     toDate: toDate.value,
     searchQuery: propertyName.value,
     agentId: agentId.value,
-    isPublished: selectedStatusText.value === 'Published' ? true : selectedStatusText.value === 'Draft' ? false : null
+    status: selectedStatusText.value || null
+    // status: selectedStatusText.value === 'Published' ? true : selectedStatusText.value === 'Draft' ? false : null
   });
   closeModal();
 }

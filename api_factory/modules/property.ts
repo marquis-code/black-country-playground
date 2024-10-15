@@ -14,8 +14,8 @@ export const property_api = {
     }
   
     // Add other filters to the URL
-    if (filters.isPublished !== null) { // Check if isPublished is not null
-      url += `&isPublished=${filters.isPublished}`;
+    if (filters.status !== null) { // Check if status is not null
+      url += `&status=${filters.status}`;
     }
     if (filters.fromDate) {
       url += `&fromDate=${encodeURIComponent(filters.fromDate)}`;
@@ -29,8 +29,6 @@ export const property_api = {
   
     return GATEWAY_ENDPOINT.get(url);
   },
-  
-
   $_fetch_single_property: (id: string | number) => {
     const url = `/houses/${id}`;
     return GATEWAY_ENDPOINT.get(url);
@@ -66,5 +64,15 @@ export const property_api = {
   $_add_interior_common_area: (id: string | number) => {
     const url = `/houses/${id}/duplicates`;
     return GATEWAY_ENDPOINT.post(url);
+  },
+  $_fetch_properties_with_rentals: (filters: any) => { 
+    let url = `/houses?page=1&perPage=100000&withRentalApplication=true`;
+
+        // Check if search query exists and add it to the URL
+        if (filters.searchQuery && filters.searchQuery.trim() !== "") {
+          url += `&search=${encodeURIComponent(filters.searchQuery.trim())}`;
+        }
+
+    return GATEWAY_ENDPOINT.get(url);
   },
 };

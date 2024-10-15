@@ -21,7 +21,7 @@ export default {
     },
   },
   modules: ["@nuxtjs/tailwindcss"],
-  css: ["/assets/css/main.css"],
+  css: ["/assets/css/main.css", "vue-multiselect/dist/vue-multiselect.css"],
   tailwindcss: {
     cssPath: "@/assets/css/main.css",
   },

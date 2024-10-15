@@ -231,6 +231,8 @@
 </template>
 
 <script setup lang="ts">
+import { useCustomToast } from '@/composables/core/useCustomToast'
+const { showToast } = useCustomToast();
 const showBLogoutModal = ref(false);
 import { dynamicIcons } from "@/utils/assets";
 const router = useRouter();
@@ -298,11 +300,12 @@ const checkOnlineStatus = () => {
   if (navigator.onLine) {
     router.push(router?.options?.history?.state?.current);
   } else {
-    // router.push("/login");
-    useNuxtApp().$toast.error("You are currently offline.", {
-      autoClose: 5000,
-      dangerouslyHTMLString: true,
-    });
+    showToast({
+              title: "Error",
+              message: 'You are currently offline.',
+              toastType: "error",
+              duration: 3000
+            });
   }
 };
 

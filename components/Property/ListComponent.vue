@@ -133,12 +133,12 @@
     {{ property.name }}
     <span 
       class="bg-[#F7D394] text-[#1D2739] text-sm px-2 py-1 absolute left-0 top-0"
-      v-if="!property.isPublished"
+      v-if="property.status === 'draft'"
     >
       Draft
     </span>
   </p>
-  <p v-else-if="column.key === 'isPublished'">{{ property.isPublished ? 'Published' : 'Draft' }}</p>
+  <p v-else-if="column.key === 'status'">{{ property.status === 'hidden' ? 'Deactivated' : property.status }}</p>
   <p v-else>{{ getPropertyValue(property, column.key) }}</p>
 </td>
                 <td class="py-5 px-5 relative whitespace-nowrap text-sm text-right">
@@ -218,7 +218,7 @@
                           class="block flex items-center gap-x-2 px-4 py-3 text-sm hover:bg-gray-100 text-start"
                         >
                           <img :src="dynamicIcons('deactivate-property')" />
-                          {{property.isPublished ? 'Deactivate property' : 'Activate property'}}
+                          {{property.status === 'published' ? 'Deactivate property' : 'Activate property'}}
                         </a>
                       </li>
                       <li>
@@ -470,7 +470,7 @@ const showModal = ref(false);
 const columns = ref([
   { label: "Property Name", key: "name", visible: true },
   { label: "Property Type", key: "houseType.name", visible: true },
-  { label: "Status", key: "isPublished", visible: true },
+  { label: "Status", key: "status", visible: true },
   { label: "Location", key: "address", visible: true },
   { label: "Rooms Occupied", key: "availableRoomsCount", visible: false },
   { label: "Rooms Count", key: "bedroomCount", visible: true },

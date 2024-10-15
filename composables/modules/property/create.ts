@@ -120,10 +120,10 @@ export const use_create_property = () => {
         ? Number(runtimePayload[key].value)
         : runtimePayload[key].value;
       return acc;
-    }, { isPublished: true });
+    }, { status: 'published' });
 
 
-    finalPayload.isPublished = true
+    finalPayload.status = 'published'
     // Set the cleaned and filtered rooms into the final payload
     finalPayload.rooms = filteredRooms;
 
@@ -203,7 +203,7 @@ export const use_create_property = () => {
     }, {});
   
     // Set isPublished to true explicitly
-    finalPayload.isPublished = false;
+    finalPayload.status = 'draft';
   
     // Set the cleaned and filtered rooms into the final payload
     finalPayload.rooms = filteredRooms;

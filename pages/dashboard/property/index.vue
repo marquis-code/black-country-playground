@@ -104,8 +104,8 @@
 
  <!-- Reusable Modal for Deactivate Property -->
  <CoreReusableModal :loading="deactivating" :isOpen="deactivateModal" @close="deactivateModal = false" @confirm="handleDeactivateConfirm"
-   :title="`${selectedObj.isPublished ? 'Deactivate' : 'Activate'} Property`" message="Deactivating this property will make it unavailable for new inquiries and listings. You can reactivate it at any time."
-   :confirmButtonText="`Yes, ${selectedObj.isPublished ? 'Deactivate' : 'Activate'}`" cancelButtonText="Cancel" />
+   :title="`${selectedObj.status === 'published' ? 'Deactivate' : 'Activate'} Property`" message="Deactivating this property will make it unavailable for new inquiries and listings. You can reactivate it at any time."
+   :confirmButtonText="`Yes, ${selectedObj.status === 'published' ? 'Deactivate' : 'Activate'}`" cancelButtonText="Cancel" />
 
  <!-- Reusable Modal for Duplicate Property -->
  <CoreReusableModal :loading="duplicating" :isOpen="duplicateModal" @close="duplicateModal = false" @confirm="handleDuplicateConfirm"
@@ -186,7 +186,7 @@ const handleDeleteConfirm = async () => {
 
 const handleDeactivateConfirm = async () => {
   try {
-    const actionType = selectedObj.value.isPublished ? 'deactivate' : 'activate';
+    const actionType = selectedObj.value.status === 'published' ? 'deactivate' : 'activate';
       await deactivateProperty(selectedObj.value.id, actionType, selectedObj.value)
       deactivateModal.value = false;
   } catch (error) {

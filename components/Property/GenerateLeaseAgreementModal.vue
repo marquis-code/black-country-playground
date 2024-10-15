@@ -1,45 +1,45 @@
 <template>
-    <div 
+    <!-- <div 
       class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" 
       @click.self="closeModal"
-    >
+    > -->
+    <div 
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full">
         <h2 class="text-lg font-medium mb-4">Generate lease agreement</h2>
+        <!-- {{payload}} -->
         <div class="space-y-4">
-          <div class="space-y-2">
-            <label class="text-sm pb-1 font-medium text-gray-700">Lease template</label>
-            <div class="flex items-center justify-between border border-gray-100 rounded-md px-4 py-3 text-sm bg-[#F0F2F5]">
-              <span class="text-sm text-gray-800">{{`${templateObj?.name} Template` ?? 'Nil'}}</span>
-              <button @click="closeModal" class="text-sm font-medium text-gray-800 hover:underline focus:outline-none">
-                Change template
-              </button>
-            </div>
+          <div>
+            <PropertySelector @property-selected="handleSelectedProperty" v-model="selectedProperty" label="Choose a Property" />
           </div>
   
           <div class="space-y-1">
-            <label class="block text-sm pb-1 font-medium text-[#1D2739]">Property name</label>
-            <select v-model="payload.propertyId"  v-if="!loadingProperties && propertiesList.length" class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none">
-              <option v-for="item in  propertiesList" :key="item.id" :value="item.id">{{item.name}}</option>
-            </select>
-            <div v-else class="h-10 animate-pulse w-full bg-slate-200 rounded col-span-2"></div>
-          </div>
-  
-          <div class="space-y-1">
-            <label class="block text-sm pb-1 font-medium text-[#1D2739]">Tenant</label>
+            <label class="block text-sm pb-1 font-medium text-[#6E717C]">Tenant name</label>
             <select v-model="payload.tenantId" v-if="!loadingTenants && tenantsList.length" class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none">
               <option v-for="item in  tenantsList" :key="item.id" :value="item.id">{{item.firstName}} {{item.lastName}}</option>
             </select>
             <div v-else class="h-10 animate-pulse w-full bg-slate-200 rounded col-span-2"></div>
           </div>
+          
+          <section class="flex justify-between items-center gap-x-6 w-full mt-6">
+            <div class="w-full">
+              <label class="block text-sm pb-1 font-medium text-[#6E717C]">Start Date</label>
+              <input v-model="payload.startDate" type="date" placeholder="select start date" class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none" />
+            </div>
+            <div class="w-full">
+              <label class="block text-sm pb-1 font-medium text-[#6E717C]">End date</label>
+              <input v-model="payload.endDate" type="date" placeholder="select end date" class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none" />
+            </div>
+        </section>
   
           <div>
-            <label class="block text-sm pb-1 font-medium text-[#1D2739]">Lease document title</label>
+            <label class="block text-sm pb-1 font-medium text-[#6E717C]">Lease document title</label>
             <input v-model="payload.documentName" type="text" placeholder="Enter title" class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none" />
           </div>
         </div>
         
         <div class="mt-10 flex justify-between gap-x-6">
-          <button class="bg-[#EBE5E0] font-semibold text-[#292929] w-full px-4 py-3.5 text-sm rounded-md" @click="resetFilters">Reset</button>
+          <button class="bg-[#EBE5E0] font-semibold text-[#292929] w-full px-4 py-3.5 text-sm rounded-md" @click="emit('close')">Cancel</button>
           <button class="bg-[#292929] font-semibold w-full text-white px-4 py-3.5 text-sm rounded-md"  @click="applyFilters">Continue</button>
         </div>
       </div>
@@ -51,18 +51,29 @@
   import { useCreateLeaseTemplate } from '@/composables/modules/lease/create'
 const { payload } = useCreateLeaseTemplate()
 const { tenantsList, loading: loadingTenants } = useGetTenants()
-  import { useGetProperties } from "@/composables/modules/property/fetchProperties";
+  import {useGetPropertiesWithRentals } from "@/composables/modules/property/fetchPropertiesWithRentals";
   const router = useRouter()
   const {
   loadingProperties,
   propertiesList
-} = useGetProperties();
+} = useGetPropertiesWithRentals();
+
+const selectedProperty = ref(null)
 
 const templateObj = ref({}) as any;
 onMounted(() => {
   const parsedData = JSON.parse(localStorage.getItem("templateObj"));
   templateObj.value = parsedData;
 });
+
+const handleSelectedProperty = (data: any) => {
+  console.log(data, 'selected property')
+  payload.value.propertyId = data.id
+}
+
+
+
+// Filter properties where leaseAgreement is not null
   
   const emit = defineEmits(['close']);
   
@@ -83,7 +94,7 @@ onMounted(() => {
   };
   
   const applyFilters = () => {
-    router.push('/dashboard/property/lease-documents/create')
+    router.push('/dashboard/property/lease-documents/create-methods')
     // router.push(`/dashboard/property/lease-documents/${item.id}/edit`)
     closeModal();
   };
@@ -91,4 +102,3 @@ onMounted(() => {
   const fromDate = ref<string>('');
   const toDate = ref<string>('');
   </script>
-  

@@ -1,32 +1,32 @@
 <template>
-  <main class="min-h-screen">
-    <div v-if="!loadingRentals && rentalsList.length" class="">
+  <main class="min-h-screen ">
+    <div v-if="!loadingRentals && rentalsList.length" class="border-[0.5px] border-gray-100 rounded-lg">
       <nav class="mb-4">
-        <ul class="flex space-x-4">
+        <ul class="flex space-x-4 border-b border-gray-100 py-4 px-6">
           <li>
-            <a href="#" @click="setActiveTab('ALL')" :class="activeTab === 'ALL' ? 'text-green-700 font-medium border-b-4 border-[#326543] pb-1' : 'text-[#475367] font-medium'">
+            <a class="pb-3" href="#" @click="setActiveTab('ALL')" :class="activeTab === 'ALL' ? 'text-green-700 font-medium border-b-4 border-[#326543] pb-1' : 'text-[#475367] font-medium'">
               All Applications
             </a>
           </li>
           <li>
-            <a href="#" @click="setActiveTab('PENDING')" :class="activeTab === 'PENDING' ? 'text-green-700 font-medium border-b-4 border-[#326543] pb-1' : 'text-[#475367] font-medium'">
+            <a class="pb-3" href="#" @click="setActiveTab('PENDING')" :class="activeTab === 'PENDING' ? 'text-green-700 font-medium border-b-4 border-[#326543] pb-1' : 'text-[#475367] font-medium'">
               Pending
             </a>
           </li>
           <li>
-            <a href="#" @click="setActiveTab('APPROVED')" :class="activeTab === 'APPROVED' ? 'text-green-700 font-medium border-b-4 border-[#326543] pb-1' : 'text-[#475367] font-medium'">
+            <a class="pb-3" href="#" @click="setActiveTab('APPROVED')" :class="activeTab === 'APPROVED' ? 'text-green-700 font-medium border-b-4 border-[#326543] pb-1' : 'text-[#475367] font-medium'">
               Approved
             </a>
           </li>
           <li>
-            <a href="#" @click="setActiveTab('CANCELLED')" :class="activeTab === 'CANCELLED' ? 'text-green-700 font-medium border-b-4 border-[#326543] pb-1' : 'text-[#475367] font-medium'">
+            <a class="pb-3" href="#" @click="setActiveTab('CANCELLED')" :class="activeTab === 'CANCELLED' ? 'text-green-700 font-medium border-b-4 border-[#326543] pb-1' : 'text-[#475367] font-medium'">
               Declined
             </a>
           </li>
         </ul>
       </nav>
 
-      <div v-if="filteredApplications.length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div v-if="filteredApplications.length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-5">
         <div v-for="(application, index) in filteredApplications" :key="index"
           class="bg-white p-4 rounded-lg cursor-pointer border-[0.5px] border-gray-100"
           @click="router.push(`/dashboard/property/rental-applications/${application?.id}`)">
@@ -93,6 +93,15 @@
           
         <p class="text-gray-500">No applications found for {{ activeTab }} status.</p>
       </div>
+      <CorePagination
+      class="mt-10"
+     v-if="!loadingRentals && rentalsList.length > 0"
+     :total="metadata.total"
+     :page="metadata.page"
+     :perPage="metadata.perPage"
+     :pages="metadata.pages"
+     @page-changed="handlePageChange"
+   />
     </div>
     <section v-else>
       <div class="rounded-md p-4 w-full mx-auto ">
@@ -114,9 +123,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
 import { useGetRentals } from '@/composables/modules/rentals/fetchAllRentals';
-const { loadingRentals, rentalsList } = useGetRentals();
+const { loadingRentals, rentalsList, metadata, getRentals } = useGetRentals();
 const router = useRouter();
 
 const activeTab = ref('ALL');
@@ -125,6 +133,12 @@ const activeTab = ref('ALL');
 const setActiveTab = (tab: string) => {
   activeTab.value = tab;
 };
+
+const handlePageChange = (val: any) => {
+  metadata.value.page = val || 1;
+  getRentals(); // Explicitly call the method to fetch new data
+};
+
 
 // Computed property to filter rental applications based on the active tab
 const filteredApplications = computed(() => {
