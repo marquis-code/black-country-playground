@@ -16,7 +16,7 @@
         <CoreImageZoom
           :class="'cursor-pointer border-4 w-full object-cover'"
           :src="allImages[0]"
-          :style="{ borderColor: 'red', height: '700px' }"
+          :style="{ height: '700px' }"
         />
       </div>
 
@@ -27,7 +27,7 @@
           :key="index"
           :src="image"
           :alt="'Image ' + (index + 2)"
-          :style="{ borderColor: 'red', height: '340px' }"
+          :style="{ height: '340px' }"
           class="rounded-lg w-full h-[200px] object-cover"
         />
 
@@ -40,7 +40,7 @@
           <CoreImageZoom
             :src="allImages[4]"
             alt="Image 5"
-            :style="{ borderColor: 'red', height: '340px' }"
+            :style="{ height: '340px' }"
             class="rounded-lg w-full h-[200px] object-cover"
           />
           <div
