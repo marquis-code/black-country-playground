@@ -1,52 +1,54 @@
 <template>
+<main>
   <div>
-    <!-- Thumbnail Image -->
     <img
       :src="src"
-      @click="toggleImage"
-      class="cursor-pointer rounded-lg"
-      alt="Thumbnail"
+      :class="computedClasses"
+      :style="style"
+      alt="Zoomed Image"
     />
-
-    <!-- Fullscreen Image Preview with Transition -->
-    <transition
-      name="fade-zoom"
-      appear
-    >
-      <div
-        v-if="isFullScreen"
-        class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4"
-        @click.self="toggleImage"
-      >
-        <img
-          alt="Full-screen image"
-          :src="src"
-          class="max-w-screen-lg max-h-screen-lg object-contain transition-transform duration-500 ease-in-out"
-        />
-      </div>
-    </transition>
   </div>
+  <transition
+  name="fade-zoom"
+  appear
+>
+  <div
+    v-if="isFullScreen"
+    class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4"
+    @click.self="toggleImage"
+  >
+    <img
+      alt="Full-screen image"
+      :src="src"
+      class="max-w-screen-lg max-h-screen-lg object-contain transition-transform duration-500 ease-in-out"
+    />
+  </div>
+</transition>
+</main>
 </template>
 
-<script>
-export default {
-  props: {
-    src: {
-      type: String,
-      required: true,
-    },
+<script lang="ts" setup>
+// Define props for `src`, `class`, and `style`
+const props = defineProps({
+  src: {
+    type: String,
+    required: true
   },
-  data() {
-    return {
-      isFullScreen: false,
-    };
+  class: {
+    type: String,
+    default: ''
   },
-  methods: {
-    toggleImage() {
-      this.isFullScreen = !this.isFullScreen;
-    },
-  },
-};
+  style: {
+    type: Object,
+    default: () => ({})
+  }
+});
+
+// If you need to combine default and passed classes
+const computedClasses = computed(() => {
+  const defaultClasses = 'transition-transform duration-200 ease-in-out'; // You can add any default classes here
+  return `${defaultClasses} ${props.class}`;
+});
 </script>
 
 <style scoped>
@@ -62,4 +64,4 @@ export default {
   opacity: 1;
   transform: scale(1);
 }
-</style>
+</style> 

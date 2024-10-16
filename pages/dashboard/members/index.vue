@@ -9,13 +9,13 @@
           <!-- Desktop View Buttons -->
           <div class="hidden lg:flex gap-x-4">
             <button @click="activeTab = 'members'" :class="[activeTab === 'members' ? 'bg-[#5B8469] text-white' : '']"
-              class="bg-[#5B8469] font-medium px-4 py-2 text-xs rounded-md text-white">Members</button>
-            <button @click="activeTab = 'roles-permissions'"
+              class="bg-[#5B8469] font-medium px-4 py-2 text-sm rounded-md text-white">Members</button>
+            <button @click="router.push('/dashboard/members/roles')"
               :class="[activeTab === 'roles-permissions' ? 'bg-[#5B8469] text-white' : ' ']"
-              class="text-[#292929] font-medium text-xs bg-[#F0F2F5] px-4 py-2 rounded-md">Roles & permissions</button>
+              class="text-[#292929] font-medium text-sm bg-[#F0F2F5] px-4 py-2 rounded-md">Roles & permissions</button>
             <button @click="activeTab = 'audit-trail'"
               :class="[activeTab === 'audit-trail' ? 'bg-[#5B8469] text-white' : 'bg-[#F0F2F5] text-[#292929]']"
-              class="text-[#292929] font-medium text-xs bg-[#F0F2F5] px-4 py-2 rounded-md">Audit trail</button>
+              class="text-[#292929] font-medium text-sm bg-[#F0F2F5] px-4 py-2 rounded-md">Audit trail</button>
           </div>
 
           <!-- Mobile View Hamburger Menu -->
@@ -52,9 +52,9 @@
               <p class="bg-gray-900 text-white px-2 py-2 font- rounded-md">{{ initials }}</p>
               <span class="hidden lg:flex lg:items-center">
                 <div>
-                  <span v-if="user" class="ml-4 text-xs py-0 my-0 font-semibold block leading-6 text-gray-900"
+                  <span v-if="user" class="ml-4 text-sm py-0 my-0 font-semibold block leading-6 text-gray-900"
                     aria-hidden="true">{{ user?.firstName }} {{ user?.lastName }}</span>
-                  <span class=" py-0 my-0 font-light text-xs text-[#667185] block">Super admin</span>
+                  <span class=" py-0 my-0 font-light text-sm text-[#667185] block">Super admin</span>
                 </div>
                 <svg @click="router.push('/dashboard/profile')" class="cursor-pointer" width="24" height="24"
                   viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -71,7 +71,7 @@
       <div v-if="isMobileMenuOpen" class="relative z-50 lg:hidden" role="dialog" aria-modal="true">
         <div class="fixed inset-0 bg-gray-900/80" aria-hidden="true"></div>
         <div class="fixed inset-0 flex">
-          <div class="relative mr-16 flex w-full max-w-xs flex-1">
+          <div class="relative mr-16 flex w-full max-w-sm flex-1">
             <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
               <button @click="isMobileMenuOpen = false" type="button" class="-m-2.5 p-2.5">
                 <span class="sr-only">Close sidebar</span>
@@ -105,134 +105,6 @@
       </div>
     </template>
     <MembersTableList />
-    <!-- <main class="min-h-screen">
-      <div class="">
-        <div class="flex justify-between items-center mb-6">
-          <div class="flex space-x-4">
-            <button
-              class="flex items-center gap-x-2 px-4 py-2 text-sm space-x-3 bg-white border-[0.5px] border-gray-300 rounded-md text-[#1D2739">
-              Filter
-              <img :src="dynamicIcons('gray-filter')" />
-            </button>
-            <div class="relative">
-              <input type="text" placeholder="Search"
-                class="px-4 text-sm py-3 outline-none pl-10 border-[0.5px] border-gray-300 text-[#667185] rounded-md w-64">
-              <img class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500"
-                :src="dynamicIcons('gray-search')" />
-            </div>
-          </div>
-          <div class="flex space-x-4">
-            <button
-              class="px-4 py-2.5 bg-white flex items-center gap-x-3 text-[#292929] border-[0.5px] text-sm border-gray-300 rounded-md">
-              <img :src="dynamicIcons('gray-settings')" />
-              Configure table</button>
-            <button
-              class="px-4 py-2.5 bg-white border-[0.5px] text-sm flex items-center gap-x-3 border-gray-300 rounded-md text-gray-70">
-              <img :src="dynamicIcons('gray-download')" />
-              Export</button>
-              <div>
-                <button @click="openModal"
-                  class="px-4 py-2.5 flex text-sm items-center gap-x-3 bg-[#292929] text-white rounded-md hover:bg-gray-800">
-                  <img :src="dynamicIcons('white-add')" /> New member
-                </button>
-              </div>
-          </div>
-        </div>
-        <div v-if="!!!transactions" class="flex flex-col items-center justify-center h-96 bg-white rounded-lg ">
-          <div class="flex items-center justify-center p-6 mb-4">
-            <img :src="dynamicIcons('users-illustration')" alt="Icon" />
-          </div>
-          <p class="text-[#1D2739] font-medium text-sm">You’re yet to invite members</p>
-        </div>
-        <MembersInviteMemberModal class="" :isOpen="isModalOpen" @close="closeModal" />
-      </div>
-      <div class="">
-        <div v-if="transactions" class="bg-white rounded-lg">
-          <table class="min-w-full bg-white">
-            <thead class="border-b-[0.5px] border-gray-50">
-              <tr>
-                <th class="py-5 px-5 text-left text-sm font-medium text-gray-500 tracking-wider">Full name</th>
-                <th class="py-5 px-5 text-left text-sm font-medium text-gray-500 tracking-wider">Email</th>
-                <th class="py-5 px-5 text-left text-sm font-medium text-gray-500 tracking-wider">Role</th>
-                <th class="py-5 px-5 text-left text-sm font-medium text-gray-500 tracking-wider">Status</th>
-                <th class="py-5 px-5 text-left text-sm font-medium text-gray-500 tracking-wider">Last active</th>
-                <th class="py-5 px-5 text-right text-sm font-medium text-gray-500 tracking-wider">Action</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-50">
-              <tr class="cursor-pointer" @click="router.push(`/dashboard/members/${index}`)"
-                v-for="(item, index) in transactions" :key="index">
-                <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185] font-semibold">{{ item.tenantName }}</td>
-                <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185]">{{ item.email }}</td>
-                <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185]">{{ item.role }}</td>
-                <td class="py-5 px-5 whitespace-nowrap text-sm">
-                  <span :class="{
-              'bg-green-100 text-green-800': item.status === 'Active',
-              'bg-yellow-100 text-yellow-800': item.status === 'Invite Pending',
-            }" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
-                    {{ item.status }}
-                  </span>
-                </td>
-                <td class="py-5 px-5 whitespace-nowrap text-sm text-[#667185]">{{ item.lastActive }}</td>
-                <td class="py-5 px-5 whitespace-nowrap text-sm text-right">
-                  <button @click="toggleDropdown(index)"
-                    class="inline-flex items-center text-sm font-medium text-[#667185] hover:text-black">
-                    <img :src="dynamicIcons('more-icon')" />
-                  </button>
-                  <div v-if="activeDropdown === index"
-                    class="absolute right-16 z-50 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
-                    <ul class="py-1 text-sm text-gray-700">
-                      <li>
-                        <a @click.prevent="handleDropdownClick" href="#"
-                          class="block px-4 py-2 hover:bg-gray-100 text-start">View user</a>
-                      </li>
-                      <li>
-                        <a @click.prevent="handleDropdownClick" href="#"
-                          class="block px-4 py-2 hover:bg-gray-100 text-start">Deactivate user</a>
-                      </li>
-                      <li>
-                        <a @click.prevent="handleDropdownClick" href="#"
-                          class="block px-4 py-2 hover:bg-gray-100 text-start">Remove user</a>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-
-          <div v-if="activeDropdown !== null" @click="closeDropdown" class="fixed inset-0 z-40 bg-black opacity-25">
-          </div>
-
-          <nav class="flex justify-between items-center mt-4 px-4 py-6">
-            <div class="-mt-px flex w-0 flex-1">
-              <button class="px-6 text-sm py-2 bg-[#F9FAFB] text-[#545454] border-[0.5px] rounded-md"
-                disabled>Previous</button>
-            </div>
-            <div class="hidden md:-mt-px md:flex">
-              <a href="#"
-                class="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">1</a>
-              <a href="#" class="inline-flex items-center px-4 pt-4 text-sm font-medium text-[#1D2739]"
-                aria-current="page">2</a>
-              <a href="#"
-                class="inline-flex items-center border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">3</a>
-              <span
-                class="inline-flex items-center border-transparent px-4 pt-4 text-sm font-medium text-gray-500">...</span>
-              <a href="#"
-                class="inline-flex items-center border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">8</a>
-              <a href="#"
-                class="inline-flex items-center border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">9</a>
-              <a href="#"
-                class="inline-flex items-center border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">10</a>
-            </div>
-            <div class="-mt-px flex w-0 flex-1 justify-end">
-              <button class="px-6 text-sm py-2 bg-[#292929] text-white rounded-md">Next</button>
-            </div>
-          </nav>
-        </div>
-      </div>
-    </main> -->
   </Layout>
 </template>
 

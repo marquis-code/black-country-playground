@@ -40,7 +40,7 @@
               <img v-if="feature.images.length > 1" :src="feature.images[activeImageIndex[featureIndex]]" class="w-full h-full object-cover">
               <img v-else-if="feature.images.length === 1" :src="feature.images[0]" alt="" class="w-full h-full object-cover">
               <div class="flex justify-center items-center h-full" v-else>
-                <img  src="@/assets/img/image-02.png" alt="" class="w-32 h-32 object-cover">
+                <img  src="@/assets/img/image-02.png" alt="" class="w-44 h-44 object-cover">
               </div>
             </template>
           </div>

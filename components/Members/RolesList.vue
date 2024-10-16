@@ -1,5 +1,4 @@
-<!-- components/RolesList.vue -->
-<template>
+<!-- <template>
     <div class="bg-white rounded-lg shadow p-4">
       <h2 class="text-xl font-semibold mb-4">Existing Roles</h2>
       <table class="w-full text-left">
@@ -47,4 +46,4 @@
     // Add more roles as needed
   ];
   </script>
-  
+   -->

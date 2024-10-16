@@ -20,7 +20,9 @@ export const useDeleteProperty = () => {
 				toastType: "success",
 				duration: 3000
 			  });
-			  router.push(`/dashboard/property/${selectedProperty.value.id}/delete-success`);
+			  useRouter().push('/dashboard/property/delete-success')
+			//   console.log(res, 'dsfdsffffd')
+			//   router.push('/dashboard/property/delete-success');
 			  return res
         } else {
 			showToast({

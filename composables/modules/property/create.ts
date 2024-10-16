@@ -236,16 +236,24 @@ export const use_create_property = () => {
         const errorDetails = error.response.data?.errors || [];
   
         // Display error message to the user
-        useNuxtApp().$toast.error(errorMessage, {
-          autoClose: 5000,
-          dangerouslyHTMLString: true,
+        // useNuxtApp().$toast.error(errorMessage, {
+        //   autoClose: 5000,
+        //   dangerouslyHTMLString: true,
+        // });
+
+        showToast({
+          title: "Error",
+          message: errorMessage || "An error occured",
+          toastType: "error",
+          duration: 3000
         });
         
       } else if (error.request) {
-        // Request made but no response received
-        useNuxtApp().$toast.error('No response from the server. Please check your network connection.', {
-          autoClose: 5000,
-          dangerouslyHTMLString: true,
+        showToast({
+          title: "Error",
+          message:  "No response from the server. Please check your network connection.",
+          toastType: "error",
+          duration: 3000
         });
       } else {
         // Other errors (e.g., unexpected exceptions)

@@ -19,7 +19,7 @@
      <img src="@/assets/icons/logo.svg" alt="Logo" class="h-8 w-auto" />
      <span class="text-lg font-semibold">BlackCountry</span>
    </div>
-   <div class="flex space-x-4 items-center">
+   <div class="flex space-x-4 items-center z-50">
     <NuxtLink to="/dashboard/property/review-progress" class="text-[#326543] text-sm hover:text-[#326543]">
       Preview
     </NuxtLink>
@@ -65,8 +65,8 @@
   
       <!-- Main Image and Gallery -->
       <div v-if="payload.images.value" class="grid grid-cols-4 gap-2 mb-6">
-        <img :src="payload.images.value[0]" alt="Main Image" class="col-span-2 row-span-2 w-full h-full object-cover rounded-lg">
-        <img v-for="(image, index) in payload.images.value" :key="index" :src="image" class="w-full object-cover rounded-lg" />
+        <img :src="payload.images.value[0]" alt="Main Image" class="col-span-2 h-[700px] row-span-2 w-full h-full object-cover rounded-lg">
+        <img v-for="(image, index) in payload.images.value" :key="index" :src="image" class="w-full h-[340px] object-cover rounded-lg" />
       </div>
       <div v-else class="grid grid-cols-4 gap-2 mb-6">
         <img src="https://via.placeholder.com/500x300" alt="Main Image" class="col-span-2 row-span-2 w-full h-full object-cover rounded-lg">
@@ -528,7 +528,7 @@
   <section class="fixed bottom-0 left-0 right-0 bg-white py-3 mt-32 border-t shadow-md z-50 px-6">
     <div class="flex justify-between items-center container mx-auto">
       <button @click="router.back()" class="text-[#292929] bg-[#EBE5E0] px-6 py-3 rounded-md">Previous</button>
-      <button :disabled="loading" @click="handlePublish" class="bg-[#292929] disabled:opacity-25 disabled:cursor-not-allowed text-white text-sm px-6 py-3 rounded-md">{{loading ? 'Processing...' : 'Publish'}}</button>
+      <button :disabled="loading" @click="create_property" class="bg-[#292929] disabled:opacity-25 disabled:cursor-not-allowed text-white text-sm px-6 py-3 rounded-md">{{loading ? 'Processing...' : 'Publish'}}</button>
     </div>
   </section>
 

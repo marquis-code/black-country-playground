@@ -1,12 +1,12 @@
 <template>
     <main>
-      <div class="flex justify-between items-center mb-4">
+      <div class="flex flex-wrap gap-5 justify-between items-center mb-4">
         <div class="flex space-x-2">
           <button @click="propertyFilterModal = true" class="flex items-center text-sm space-x-1 bg-[#F0F2F5] border-[#F0F2F5] border text-gray-700 px-2 py-2 rounded transition-all">
             <img :src="dynamicIcons('gray-filter')" />
             <span>Filter</span>
           </button>
-          <div class="relative">
+          <div class="relative w-full">
             <input  v-model="filters.searchQuery" type="text" placeholder="Search members by name..." class="bg-[#F0F2F5] pl-10 border-[#F0F2F5] border text-sm text-gray-700 px-4 py-3 rounded w-full sm:w-64 focus:outline-none focus:bg-white transition-all"/>
             <span class="absolute inset-y-0 left-3 flex items-center pr-2">
               <img

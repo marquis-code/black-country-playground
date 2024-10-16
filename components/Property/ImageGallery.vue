@@ -11,22 +11,24 @@
       v-else-if="allImages && !loading"
       class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6 p-6 lg:p-0"
     >
-      <!-- Main Image -->
+      <!-- Main Image (Large image on the left side) -->
       <div>
-        <!-- <CoreImageWithZoom :src="allImages[0]" class="rounded-lg w-full" /> -->
-        <CoreImageZoom class="cursor-pointer" :src="allImages[0]" />
-        <!-- <img :src="allImages[0]" alt="Main Image" class="rounded-lg w-full" /> -->
+        <CoreImageZoom
+          :class="'cursor-pointer border-4 w-full object-cover'"
+          :src="allImages[0]"
+          :style="{ borderColor: 'red', height: '700px' }"
+        />
       </div>
 
-      <!-- Smaller Images on the right -->
       <div class="grid grid-cols-2 gap-4">
-        <!-- Display the first 4 images from the array -->
+        <!-- Display the first 4 images from the array with fixed sizes -->
         <CoreImageZoom
           v-for="(image, index) in rightImages"
           :key="index"
           :src="image"
           :alt="'Image ' + (index + 2)"
-          class="rounded-lg w-full"
+          :style="{ borderColor: 'red', height: '340px' }"
+          class="rounded-lg w-full h-[200px] object-cover"
         />
 
         <!-- 'View all' overlay for the last image if there are more than 5 images -->
@@ -35,15 +37,11 @@
           class="relative cursor-pointer"
           @click="navigateToAllImages"
         >
-          <!-- <img
-          :src="allImages[4]"
-          alt="Image 5"
-          class="rounded-lg w-full"
-        /> -->
           <CoreImageZoom
             :src="allImages[4]"
             alt="Image 5"
-            class="rounded-lg w-full"
+            :style="{ borderColor: 'red', height: '340px' }"
+            class="rounded-lg w-full h-[200px] object-cover"
           />
           <div
             class="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center text-white text-lg font-bold rounded-lg"
@@ -53,7 +51,6 @@
         </div>
       </div>
     </div>
-    <!-- <img v-else src="@/assets/img/image-placeholder.jpg" alt="placeholder" class="rounded-lg w-full" /> -->
   </main>
 </template>
 
