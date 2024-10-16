@@ -24,7 +24,7 @@
       <template v-if="selectedProperty?.id && !is_droped_down" #selection="">
         <div class="flex gap-2 w-full overflow-hidden max-w-[300px]">
           <img v-if="selectedProperty.images?.length" :src="selectedProperty.images[0]" class="w-10 h-10 rounded-full object-cover border" alt="property image">
-          <img v-else src="@/assets/images/no-image.png" class="w-10 h-10 rounded-full object-cover border" alt="default image">
+          <img v-else src="@/assets/img/gallery2.png" class="w-10 h-10 rounded-full object-cover border" alt="default image">
           <div class="flex flex-col gap-1">
             <p class="text-sm">{{ selectedProperty.name }}</p>
             <p class="text-xs">{{ `${selectedProperty.description.slice(0, 20)}...` || 'No description' }}</p>
@@ -36,7 +36,7 @@
       <template #option="{ option }">
         <div class="flex gap-2 w-full overflow-hidden max-w-[300px]">
           <img v-if="option.images?.length" :src="option.images[0]" class="w-10 h-10 rounded-full object-cover border" alt="property image">
-          <img v-else src="@/assets/images/no-image.png" class="w-10 h-10 rounded-full object-cover border" alt="default image">
+          <img v-else src="@/assets/img/gallery2.png" class="w-10 h-10 rounded-full object-cover border" alt="default image">
           <div class="flex flex-col gap-1">
             <p class="text-sm">{{ option.name }}</p>
             <p class="text-xs">{{ `${option.description.slice(0, 20)}...` || 'No description' }}</p>
