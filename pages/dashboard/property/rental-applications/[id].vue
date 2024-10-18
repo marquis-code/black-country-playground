@@ -17,14 +17,14 @@
           </button>
           <span class="text-xl font-medium text-[#1D2739]">{{rentalObj?.tenant?.firstName}} {{rentalObj?.tenant?.lastName}}</span>
         </div>
-        <div v-if="rentalObj.status !== 'PENDING'" class="flex space-x-4">
+        <!-- <div v-if="rentalObj.status !== 'PENDING'" class="flex space-x-4">
           <button v-if="rentalObj.status === 'APPROVED'" @click="declineModal = true" class="bg-[#EBE5E0] text-sm text-[#292929] px-6 py-2.5 rounded-md">
             Decline
           </button>
           <button v-if="rentalObj.status !== 'APPROVED'" @click="approveModal = true" class="bg-[#292929] text-white px-6 py-2.5 text-sm rounded-md">
             Approve
           </button>
-        </div>
+        </div> -->
         <div v-if="rentalObj.status === 'PENDING'" class="flex space-x-4">
           <button @click="declineModal = true" class="bg-[#EBE5E0] text-sm text-[#292929] px-6 py-2.5 rounded-md">
             Decline

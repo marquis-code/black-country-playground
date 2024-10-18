@@ -225,7 +225,7 @@
                           <p class="text-[#1D2739] text-sm">{{item.name}}</p>
                         </div>
                       </div>
-                      <button class="mt-2 font-medium text-[#1D2739]">View less</button>
+                      <!-- <button class="mt-2 font-medium text-[#1D2739]">View less</button> -->
                     </div>
                   </div>
                 </div>
@@ -551,6 +551,9 @@ import { useGetFloorings } from '@/composables/modules/property/fetchFloorings'
 import { useGetPropertyTypes } from '@/composables/modules/property/fetchPropertyTypes'
 import { useFetchAgents } from '@/composables/modules/agents/fetch'
 const { payload, create_property, resetPayload, loading, save_property, saving } = use_create_property();
+import { useUnsavedChangesWarning } from '@/composables/core/useUnsavedChangesWarning'
+const { enableUnsavedChangesWarning, disableUnsavedChangesWarning } = useUnsavedChangesWarning()
+enableUnsavedChangesWarning()
 const propertyManagerImage = ref("shape.png");
 const { flooringsList, geFloorings  } = useGetFloorings()
 const { propertyTypesList, getPropertyTypes } = useGetPropertyTypes()

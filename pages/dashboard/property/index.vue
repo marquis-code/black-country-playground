@@ -104,7 +104,7 @@
 
  <!-- Reusable Modal for Deactivate Property -->
  <CoreReusableModal :loading="deactivating" :isOpen="deactivateModal" @close="deactivateModal = false" @confirm="handleDeactivateConfirm"
-   :title="`${selectedObj.status === 'published' ? 'Deactivate' : 'Activate'} Property`" message="Deactivating this property will make it unavailable for new inquiries and listings. You can reactivate it at any time."
+   :title="`${selectedObj.status === 'published' ? 'Deactivate' : 'Activate'} Property`"  :message="`${selectedObj.status === 'published' ? 'Deactivating' : 'Activating'} this property will make it ${selectedObj.status === 'published' ? 'Unavailable' : 'Available'} for new inquiries and listings. You can ${selectedObj.status === 'published' ? 'reactivate' : 'deactivate'} it at any time`"
    :confirmButtonText="`Yes, ${selectedObj.status === 'published' ? 'Deactivate' : 'Activate'}`" cancelButtonText="Cancel" />
 
  <!-- Reusable Modal for Duplicate Property -->

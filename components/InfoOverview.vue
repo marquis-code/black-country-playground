@@ -11,7 +11,7 @@
               <div class="pt-4 bg-white rounded-lg border-gray-50 p-3 border-[0.5px] text-sm">
                 <p class="text-[#1D2739] mt-2 leading-snug text-sm">
                   {{ isExpanded ? property.description : truncatedText }}
-                  <a v-if="property?.description?.length > 200" href="#" @click.prevent="toggleView" class="text-blue-500">
+                  <a v-if="property?.description?.length > 800" href="#" @click.prevent="toggleView" class="text-blue-500">
                     {{ isExpanded ? 'View less' : 'View more' }}
                   </a>
                 </p>
@@ -164,8 +164,8 @@ const isExpanded = ref(false);
 
 // Computed property to get the truncated text
 const truncatedText = computed(() => {
-  return props?.property?.description?.length > 50 
-    ? props?.property?.description.substring(0, 50) + '...' 
+  return props?.property?.description?.length > 800 
+    ? props?.property?.description.substring(0, 800) + '...' 
     : props?.property?.description;
 });
 

@@ -59,6 +59,9 @@ import { use_create_property } from '@/composables/modules/property/create';
 const { payload, create_property, resetPayload, loading, save_property, saving } = use_create_property();
 import { useClearLocalStorage } from '@/composables/core/useClearLocalStorage';
 const { clearLocalStorage } = useClearLocalStorage();
+import { useUnsavedChangesWarning } from '@/composables/core/useUnsavedChangesWarning'
+const { enableUnsavedChangesWarning, disableUnsavedChangesWarning } = useUnsavedChangesWarning()
+enableUnsavedChangesWarning()
 // editProperty();
 definePageMeta({
      middleware: 'auth'

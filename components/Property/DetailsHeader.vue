@@ -25,7 +25,8 @@
                 href="#"
                 class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
               >
-                Deactivate property</a
+              {{propertyObj.status === 'published' ? 'Deactivate property' : 'Activate property'}}
+                </a
               >
             </li>
             <li>
@@ -57,14 +58,14 @@
     ></div>
 
         <!-- Reusable Modal for Delete Property -->
-        <CoreReusableModal :isOpen="deleteModal" @close="deleteModal = false" @confirm="handleDeleteConfirm"
+        <CoreReusableModal :loading="deleting" :isOpen="deleteModal" @close="deleteModal = false" @confirm="handleDeleteConfirm"
         title="Delete Property" :message="`By deleting ${propertyObj.name} Co-Living Space, you will permanently remove the listing from the platform. Are you sure you want to proceed?`" confirmButtonText="Yes, delete"
         cancelButtonText="Cancel" />
   
       <!-- Reusable Modal for Deactivate Property -->
-      <CoreReusableModal :isOpen="deactivateModal" @close="deactivateModal = false" @confirm="handleDeactivateConfirm"
-      title="Deactivate Property" message="Deactivating this property will make it unavailable for new inquiries and listings. You can reactivate it at any time."
-      confirmButtonText="Yes, deactivate" cancelButtonText="Cancel" />
+      <CoreReusableModal :loading="deactivating" :isOpen="deactivateModal" @close="deactivateModal = false" @confirm="handleDeactivateConfirm"
+      :title="`${propertyObj.status === 'published' ? 'Deactivate' : 'Activate'} Property`" :message="`${propertyObj.status === 'published' ? 'Deactivating' : 'Activating'} this property will make it ${propertyObj.status === 'published' ? 'Unavailable' : 'Available'} for new inquiries and listings. You can ${propertyObj.status === 'published' ? 'reactivate' : 'deactivate'} it at any time`"
+      :confirmButtonText="`Yes, ${propertyObj.status === 'published' ? 'Deactivate' : 'Activate'}`" cancelButtonText="Cancel" />
   
 </main>
 </template>
@@ -74,7 +75,7 @@ import { useDeleteProperty } from '@/composables/modules/property/delete'
 import { usePropertyDeactivate } from '@/composables/modules/property/deactivate'
 
 const { deleteProperty, loading: deleting } = useDeleteProperty()
-const {  deactivateProperty, loading,  } = usePropertyDeactivate()
+const {  deactivateProperty, loading: deactivating  } = usePropertyDeactivate()
 const router = useRouter()
 const props = defineProps({
     propertyObj: {
@@ -92,14 +93,30 @@ const handleDeleteConfirm = async () => {
   // Handle delete logic
   if (props.propertyObj.id) {                                
     console.log('Property deleted');
-    await deleteProperty(props.propertyObj.id)
+    await deleteProperty(props.propertyObj.id, props.propertyObj)
     deleteModal.value = false;
   }
 };
 
 const handleDeactivateConfirm = async () => {
-  await deactivateProperty(props.propertyObj.id)
-  deactivateModal.value = false;
+  try {
+    const actionType = props.propertyObj.status === 'published' ? 'deactivate' : 'activate';
+    await deactivateProperty(props.propertyObj.id, actionType, props.propertyObj)
+      deactivateModal.value = false;
+  } catch (error) {
+    useNuxtApp().$toast.error('Error processing property action.', {
+      autoClose: 5000,
+      dangerouslyHTMLString: true,
+    });
+  }
+  // await deactivateProperty(props.propertyObj.id)
+  // deactivateModal.value = false;
 };
+
+
+// const handleActivateConfirm = async () => {
+//   await deactivateProperty(props.propertyObj.id)
+//   deactivateModal.value = false;
+// };
 
 </script>

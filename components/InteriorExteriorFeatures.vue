@@ -32,7 +32,7 @@
                 <p class="text-[#1D2739] text-sm">{{item.name}}</p>
               </div>
             </div>
-            <button class="mt-2 font-medium text-[#1D2739]">View less</button>
+            <!-- <button class="mt-2 font-medium text-[#1D2739]">View less</button>  -->
           </div>
         </div>
       </div>

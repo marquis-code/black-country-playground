@@ -1,6 +1,7 @@
 <template>
     <main>
         <div class="relative w-full h-44">
+      {{selected}}
             <label class="block text-sm font-medium text-gray-700">Assign property</label>
             <div class="mt-1 relative">
                 <input type="text" readonly placeholder="Single agent/property manager" v-model="selectedUser"
@@ -70,14 +71,35 @@ function handleClickOutside(event: MouseEvent) {
   }
 }
 
+const existingAgent = ref({}) as any
+
+const selected = computed(() => {
+  if (!props.agents || !props.payload) {
+    console.log('Missing agents or payload:', { agents: props.agents, payload: props.payload })
+    return 'No'
+  }
+
+  const filteredAgents = props.agents.filter((agent: any) => agent?.id === props.payload?.agentId)
+
+  if (filteredAgents.length === 0) {
+    console.log('No agent found with agentId:', props.payload?.agentId)
+    return 'No'
+  }
+
+  // Return the first matched agent
+  return filteredAgents[0]
+})
+
+
 // Prefill the agent data on component mount
 onMounted(() => {
   console.log(props.agents, 'agents list');
-  console.log(props.payload.agentId, 'already selected agent');
+  console.log(props.payload.agentId.value, 'already selected agent');
 
   // Prefill agent details if `props.payload.agentId` is available
   if (props.payload.agentId) {
-    const agent = agentList.value.find((user: any) => user.id === props.payload.agentId);
+    const agent = props.agents.find((user: any) => user.id === props.payload.agentId);
+    existingAgent.value = agent
     if (agent) {
       selectedUser.value = `${agent.firstName} ${agent.lastName}`;
     }

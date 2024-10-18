@@ -29,6 +29,10 @@
 <script setup lang="ts">
 import { provide } from 'vue';
 import { useInactivity } from '@/composables/core/useInactivity';
+import { useInternetConnection } from '@/composables/core/useInternetConnection'
+
+// Call the composable to activate global internet connection detection
+useInternetConnection()
 
 // Initialize the inactivity composable with a 10-minute timeout and a 1-minute warning time
 const { isWarningVisible, countdown } = useInactivity(600000, 60000);
