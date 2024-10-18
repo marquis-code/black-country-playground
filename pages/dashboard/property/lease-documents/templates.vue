@@ -169,6 +169,9 @@ import { useUser } from "@/composables/auth/user";
 const { user } = useUser();
 import { useFetchLeaseTemplate } from '@/composables/modules/lease/fetch';
 const { loading, leaseTemplateList } = useFetchLeaseTemplate();
+import { useCreateLeaseTemplate } from '@/composables/modules/lease/create'
+
+const { payload } = useCreateLeaseTemplate();
 const generateLeaseDocument = ref(false);
 const dropdownVisible = ref<null | number>(null); // To track the visible dropdown
 
@@ -220,10 +223,11 @@ const deleteTemplate = (itm: any) => {
 
 const handleTemplate = (action: string, item: any) => {
   localStorage.setItem('templateObj', JSON.stringify(item))
+  payload.value.body = `<html>${item.body}</html>`;
   selectedTemplate.value = item
   if(action === 'edit'){
-    generateLeaseDocument.value = true
-    // router.push(`/dashboard/property/lease-documents/${item.id}/edit`)
+    // generateLeaseDocument.value = true
+    router.push(`/dashboard/property/lease-documents/preview-upload`)
   }
 
   if(action === 'preview'){

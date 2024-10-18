@@ -137,8 +137,8 @@ export const use_create_property = () => {
           toastType: "success",
           duration: 3000
         });
-        clearLocalStorage()
         Router.push("/dashboard/property/success");
+        clearLocalStorage()
       } else {
         showToast({
           title: "Error",
@@ -150,6 +150,7 @@ export const use_create_property = () => {
     } catch (error) {
       if (error.response) {
         // Error response from the server
+        console.log(error, 'error 1')
         const errorMessage = error.response.data?.message || 'An error occurred while creating the property.';
         useNuxtApp().$toast.error(errorMessage, {
           autoClose: 5000,
@@ -157,11 +158,13 @@ export const use_create_property = () => {
         });
         
       } else if (error.request) {
+        console.log(error, 'error 2')
         useNuxtApp().$toast.error('No response from the server. Please check your network connection.', {
           autoClose: 5000,
           dangerouslyHTMLString: true,
         });
       } else {
+        console.log(error, 'error 3')
         useNuxtApp().$toast.error(`Unexpected error: ${error.message}`, {
           autoClose: 5000,
           dangerouslyHTMLString: true,

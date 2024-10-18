@@ -82,6 +82,9 @@
   </template>
 
   <script setup lang="ts">
+  import { useUser } from "@/composables/auth/user";
+  import { useUserInitials } from "@/composables/core/useUserInitials";
+  const { user } = useUser();
   import DashboardWithHeaderOnly from '@/layouts/DashboardWithHeaderOnly.vue'
 const props = defineProps({
   image: String,
@@ -91,12 +94,21 @@ const props = defineProps({
   selectedValue: String
 });
 
+const initials = ref("") as any;
+
 const emit = defineEmits(['select']);
 const isSelected = computed(() => props.value === props.selectedValue);
 
 const selectOption = () => {
   emit('select', props.value);
 };
+
+onMounted(() => {
+  // Get initials from the composable
+  const { getInitials } = useUserInitials(user.value);
+  initials.value = getInitials.value;
+});
+
 </script>
 
 <style scoped>

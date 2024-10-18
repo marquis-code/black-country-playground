@@ -1,104 +1,104 @@
 <template>
-    <!-- <div 
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" 
-      @click.self="closeModal"
-    > -->
-    <div 
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full">
-        <h2 class="text-lg font-medium mb-4">Generate lease agreement</h2>
-        <!-- {{payload}} -->
-        <div class="space-y-4">
-          <div>
-            <PropertySelector @property-selected="handleSelectedProperty" v-model="selectedProperty" label="Choose a Property" />
-          </div>
-  
-          <div class="space-y-1">
-            <label class="block text-sm pb-1 font-medium text-[#6E717C]">Tenant name</label>
-            <select v-model="payload.tenantId" v-if="!loadingTenants && tenantsList.length" class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none">
-              <option v-for="item in  tenantsList" :key="item.id" :value="item.id">{{item.firstName}} {{item.lastName}}</option>
-            </select>
-            <div v-else class="h-10 animate-pulse w-full bg-slate-200 rounded col-span-2"></div>
-          </div>
-          
-          <section class="flex justify-between items-center gap-x-6 w-full mt-6">
-            <div class="w-full">
-              <label class="block text-sm pb-1 font-medium text-[#6E717C]">Start Date</label>
-              <input v-model="payload.startDate" type="date" placeholder="select start date" class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none" />
-            </div>
-            <div class="w-full">
-              <label class="block text-sm pb-1 font-medium text-[#6E717C]">End date</label>
-              <input v-model="payload.endDate" type="date" placeholder="select end date" class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none" />
-            </div>
-        </section>
-  
-          <div>
-            <label class="block text-sm pb-1 font-medium text-[#6E717C]">Lease document title</label>
-            <input v-model="payload.documentName" type="text" placeholder="Enter title" class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none" />
-          </div>
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full">
+      <h2 class="text-lg font-medium mb-4">Generate lease agreement</h2>
+      <div class="space-y-6">
+        <div>
+          <PropertySelector @property-selected="handleSelectedProperty" v-model="selectedProperty" label="Choose a Property" />
         </div>
-        
-        <div class="mt-10 flex justify-between gap-x-6">
-          <button class="bg-[#EBE5E0] font-semibold text-[#292929] w-full px-4 py-3.5 text-sm rounded-md" @click="emit('close')">Cancel</button>
-          <button class="bg-[#292929] font-semibold w-full text-white px-4 py-3.5 text-sm rounded-md"  @click="applyFilters">Continue</button>
+
+       <section>
+        <div v-if="!loadingTenants" class="space-y-1">
+          <CoreGeneralSelector
+            v-model="selectedItem"
+            :options="tenantsList"
+            :loading="loadingTenants"
+            label="Select Tenant"
+            track-by="id"
+            label-key="firstName"
+            @search-change="getTenantsWithActiveRentals"
+            @option-selected="handleSelection"
+          />
+        </div>
+        <div v-if="loadingTenants" class="h-10 animate-pulse w-full bg-slate-200 rounded col-span-2"></div>
+       </section>
+
+        <section class="flex justify-between items-center gap-x-6 w-full mt-6">
+          <div class="w-full">
+            <label class="block text-sm pb-1 font-medium text-[#6E717C]">Start Date</label>
+            <input v-model="payload.startDate" type="date" placeholder="select start date" class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none" />
+          </div>
+          <div class="w-full">
+            <label class="block text-sm pb-1 font-medium text-[#6E717C]">End date</label>
+            <input v-model="payload.endDate" type="date" placeholder="select end date" class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none" />
+          </div>
+        </section>
+
+        <div>
+          <label class="block text-sm pb-1 font-medium text-[#6E717C]">Lease document title</label>
+          <input v-model="payload.documentName" type="text" placeholder="Enter title" class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none" />
         </div>
       </div>
+
+      <div class="mt-10 flex justify-between gap-x-6">
+        <button class="bg-[#EBE5E0] font-semibold text-[#292929] w-full px-4 py-3.5 text-sm rounded-md" @click="closeModal">Cancel</button>
+        <button  :disabled="isFormEmpty" class="bg-[#292929] disabled:cursor-not-allowed disabled:opacity-25 font-semibold w-full text-white px-4 py-3.5 text-sm rounded-md" @click="applyFilters">Continue</button>
+      </div>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { useGetTenants } from '@/composables/modules/tenants/fetch'
-  import { useCreateLeaseTemplate } from '@/composables/modules/lease/create'
+  </div>
+</template>
+
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+import { useCreateLeaseTemplate } from '@/composables/modules/lease/create'
+import { useGetTenantsWithActiveRentals } from '@/composables/modules/property/fetchTenantWithActiveRentalApplication'
+
+const { getTenantsWithActiveRentals, tenantsList, houseId, loadingTenants } = useGetTenantsWithActiveRentals()
 const { payload } = useCreateLeaseTemplate()
-const { tenantsList, loading: loadingTenants } = useGetTenants()
-  import {useGetPropertiesWithRentals } from "@/composables/modules/property/fetchPropertiesWithRentals";
-  const router = useRouter()
-  const {
-  loadingProperties,
-  propertiesList
-} = useGetPropertiesWithRentals();
+const router = useRouter()
 
+// Check if the form is empty
+const isFormEmpty = computed(() => {
+  return !payload.value.endDate || !payload.value.startDate || !payload.value.documentName || !selectedItem.value.id || !selectedProperty.value
+})
 const selectedProperty = ref(null)
+const selectedItem = ref({})
 
-const templateObj = ref({}) as any;
+const templateObj = ref({})
 onMounted(() => {
-  const parsedData = JSON.parse(localStorage.getItem("templateObj"));
-  templateObj.value = parsedData;
-});
+  const parsedData = JSON.parse(localStorage.getItem('templateObj'))
+  templateObj.value = parsedData
+})
 
 const handleSelectedProperty = (data: any) => {
-  console.log(data, 'selected property')
   payload.value.propertyId = data.id
 }
 
+// Watch for changes in the selected property and fetch tenants with active rentals
+watch(selectedProperty, (newProperty) => {
+  if (newProperty && newProperty.id) {
+    console.log('Fetching tenants for property:', newProperty.id)
+    houseId.value = newProperty.id
+    getTenantsWithActiveRentals()
+  }
+})
 
+const handleSelection = (item: any) => {
+  payload.value.tenantId = item.id
+  console.log('Selected item:', item)
+}
 
-// Filter properties where leaseAgreement is not null
-  
-  const emit = defineEmits(['close']);
-  
-  const closeModal = () => {
-    // Emit an event to close the modal
-    emit('close');
-  };
+const emit = defineEmits(['close'])
 
-  const props = defineProps({
-    template: {
-      type: Object
-    }
-  })
-  
-  const resetFilters = () => {
-    // Logic to reset filters
-    console.log('Filters reset');
-  };
-  
-  const applyFilters = () => {
-    router.push('/dashboard/property/lease-documents/create-methods')
-    // router.push(`/dashboard/property/lease-documents/${item.id}/edit`)
-    closeModal();
-  };
-  
-  const fromDate = ref<string>('');
-  const toDate = ref<string>('');
-  </script>
+const closeModal = () => {
+  emit('close')
+}
+
+const applyFilters = () => {
+  router.push('/dashboard/property/lease-documents/create-methods')
+  payload.value.documentName = ""
+  payload.value.startDate = ""
+  payload.value.endDate = ""
+  closeModal()
+}
+</script>

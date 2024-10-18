@@ -15,7 +15,7 @@
         <!-- Image Preview Grid -->
         <div v-if="images.length > 0" class="grid grid-cols-2 gap-4 mb-6">
           <div v-for="(image, index) in images" :key="index" class="relative group border rounded-lg overflow-hidden">
-            <img :src="image" alt="Uploaded Image" class="w-full h-44 p-2 object-cover object-cover transition-transform duration-200 ease-in-out" />
+            <img :src="image" alt="Uploaded Image" class="w-full h-44 object-cover object-cover transition-transform duration-200 ease-in-out" />
   
             <!-- Remove Button -->
             <button @click="removeImage(index)" class="absolute top-2 right-2 p-1 bg-black bg-opacity-50 rounded-full focus:outline-none transition-opacity duration-200 ease-in-out opacity-0 group-hover:opacity-100">

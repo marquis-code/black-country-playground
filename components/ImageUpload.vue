@@ -1,12 +1,66 @@
 <template>
-  <div class="w-full h-full bg-[#EBE5E0] border rounded-lg p-4 flex flex-col items-center justify-center">
+  <div class="w-full h-full bg-[#EBE5E0] border rounded-lg flex flex-col items-center justify-center relative overflow-hidden">
+    <!-- Progress bar for image upload -->
     <div v-if="loading" class="w-full h-4 rounded-lg bg-gray-200 mb-6">
       <div :class="{'bg-red-500': uploadFailed, 'bg-green-500': uploadSuccess, 'bg-[#292929]': !uploadFailed && !uploadSuccess}"
         :style="{ width: `${progress}%` }"
         class="h-full transition-all duration-300 ease-in-out rounded-lg">
       </div>
     </div>
-    <div v-if="images.length === 0" class="flex flex-col h-64 bg-[#EBE5E0] rounded-lg p-4 w-full relative">
+
+    <!-- Image Upload Placeholder or Image Display -->
+    <div v-if="images.length === 0" class="relative flex flex-col h-64 bg-[#EBE5E0] rounded-lg p-3 w-full">
+      <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 rounded-lg">
+        <div class="loader"></div>
+      </div>
+      <div v-if="!loading" class="flex justify-center items-center flex-grow">
+        <img src="@/assets/img/image-02.png" alt="Placeholder" class="w-full h-full object-cover" />
+      </div>
+    </div>
+
+    <!-- Uploaded Image Display -->
+    <div v-else class="relative w-full h-64">
+      <!-- Image navigation -->
+      <div v-if="images.length > 1" class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10">
+        <button @click="prevImage" class="bg-gray-300 p-1 rounded-full">&larr;</button>
+      </div>
+      <img :src="images[currentImageIndex]" alt="Uploaded Image" class="w-full h-full object-cover" />
+      <div v-if="images.length > 1" class="absolute right-0 top-1/2 transform -translate-y-1/2 z-10">
+        <button @click="nextImage" class="bg-gray-300 p-1 rounded-full">&rarr;</button>
+      </div>
+
+      <!-- Remove image button -->
+      <div class="absolute top-2 right-2">
+        <button @click="removeImage" class="p-1 rounded-full">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="28" height="28" rx="14" fill="black" fill-opacity="0.5"/>
+            <path d="M17.5 10.5L10.5 17.5M10.5 10.5L17.5 17.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Text Overlay and "Add Photo" Button -->
+    <div class="absolute inset-0 flex flex-col justify-between p-4 bg-gradient-to-t from-black/50 to-transparent">
+      <div class="text-white text-sm">{{ label }} | {{ images.length }} {{ images.length === 1 ? 'image' : 'images' }}</div>
+      <div class="flex justify-end">
+        <button @click="triggerFileUpload" :disabled="loading" class="bg-gray-700 text-white py-1 px-3 rounded-md text-sm">
+          + Add photo
+        </button>
+      </div>
+    </div>
+
+    <!-- Hidden File Input -->
+    <input type="file" accept="image/png, image/jpeg" multiple ref="fileInput" @change="handleFileUpload" class="hidden" />
+  </div>
+  <!-- <div class="w-full h-full bg-[#EBE5E0] border rounded-lg flex flex-col items-center justify-center">
+    <div v-if="loading" class="w-full h-4 rounded-lg bg-gray-200 mb-6">
+      <div :class="{'bg-red-500': uploadFailed, 'bg-green-500': uploadSuccess, 'bg-[#292929]': !uploadFailed && !uploadSuccess}"
+        :style="{ width: `${progress}%` }"
+        class="h-full transition-all duration-300 ease-in-out rounded-lg">
+      </div>
+    </div>
+    <div v-if="images.length === 0" class="flex flex-col h-64 bg-[#EBE5E0] rounded-lg p-3 w-full relative">
       <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 rounded-lg">
         <div class="loader"></div>
       </div>
@@ -25,7 +79,7 @@
       <div v-if="images.length > 1" class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10">
         <button @click="prevImage" class="bg-gray-300 p-1 rounded-full">&larr;</button>
       </div>
-      <img :src="images[currentImageIndex]" alt="Uploaded Image" class="w-full h-44 object-cover rounded-md" />
+      <img :src="images[currentImageIndex]" alt="Uploaded Image" class="w-full h-44 object-cover rounded-t-md" />
       <div v-if="images.length > 1" class="absolute right-0 top-1/2 transform -translate-y-1/2 z-10">
         <button @click="nextImage" class="bg-gray-300 p-1 rounded-full">&rarr;</button>
       </div>
@@ -39,13 +93,13 @@
       </div>
     </div>
 
-    <div v-if="images.length > 0" class="flex items-center justify-between w-full mt-2">
+    <div v-if="images.length > 0" class="flex items-center justify-between w-full mt-2 px-3 pb-3">
       <div class="text-sm text-gray-600">{{ label }} | {{ images.length }} {{ images.length === 1 ? 'image' : 'images' }}</div>
       <button @click="triggerFileUpload" :disabled="loading" class="bg-gray-200 text-gray-800 py-1 px-3 rounded-md">+ Add photo</button>
     </div>
 
     <input type="file" accept="image/png, image/jpeg" multiple ref="fileInput" @change="handleFileUpload" class="hidden" />
-  </div>
+  </div> -->
 </template>
 
 <script setup lang="ts">

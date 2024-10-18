@@ -31,6 +31,9 @@
   <script setup lang="ts">  
   const selectedOption = ref(''); // This will hold the currently selected option
   const router = useRouter()
+  import { useCreateLeaseTemplate } from '@/composables/modules/lease/create'
+
+const { payload } = useCreateLeaseTemplate();
 
   const showUploadModal = ref(false)
   
@@ -42,6 +45,7 @@
     }
 
     if(option === 'create'){
+      payload.value.body = `<html></html>`;
        router.push('/dashboard/property/lease-documents/create')
     }
 

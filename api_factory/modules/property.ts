@@ -66,13 +66,22 @@ export const property_api = {
     return GATEWAY_ENDPOINT.post(url);
   },
   $_fetch_properties_with_rentals: (filters: any) => { 
-    let url = `/houses?page=1&perPage=100000`;
+    let url = `/houses?page=1&perPage=100000&withRentalApplocation=true`;
 
         // Check if search query exists and add it to the URL
         if (filters.searchQuery && filters.searchQuery.trim() !== "") {
           url += `&search=${encodeURIComponent(filters.searchQuery.trim())}`;
         }
 
+    return GATEWAY_ENDPOINT.get(url);
+  },
+  $_fetch_tenant_with_active_rental_application: (id: string, metadata: { page: number; perPage: number }, filters: any) => {
+    let url = `/houses/${id}/tenants-applied?page=${metadata.page}&perPage=${metadata.perPage}`
+  
+    // Check if search query exists and add it to the URL
+    if (filters.searchQuery && filters.searchQuery.trim() !== "") {
+      url += `&search=${encodeURIComponent(filters.searchQuery.trim())}`;
+    }      
     return GATEWAY_ENDPOINT.get(url);
   },
 };

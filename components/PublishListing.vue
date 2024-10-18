@@ -1,9 +1,9 @@
 <template>
   <main>
     <div class="container mx-auto space-y-2">
-      <p class="text-[#1D2739] font-medium text-sm">
+      <!-- <p class="text-[#1D2739] font-medium text-sm">
         Can you provide references from previous landlords or property managers?
-      </p>
+      </p> -->
       <div
         v-for="(question, index) in questions"
         :key="index"

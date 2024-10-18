@@ -33,7 +33,7 @@
       </div>
       <div class="mb-4">
         <h3 class="mb-2">Interior area</h3>
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
           <label
             v-for="item in filteredRoomFeatures"
             :key="item"

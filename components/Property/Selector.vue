@@ -67,7 +67,10 @@
   const fetchRentalProperties = async () => {
 	loading.value = true
 	try {
-	  const res = await property_api.$_fetch_properties_with_rentals(search.value) as any
+    const payload = {
+      searchQuery: search.value
+    }
+	  const res = await property_api.$_fetch_properties_with_rentals(payload) as any
 	  if (res.type !== 'ERROR') {
 		properties.value = res.data.result?.length ? res.data.result : []
 	  }

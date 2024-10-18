@@ -1,37 +1,3 @@
-// import { property_api } from '@/api_factory/modules/property'
-
-
-// export const useGetPropertiesWithRentals = () => {
-//     const loadingProperties = ref(false);
-//     const propertiesList = ref([] as any);
-//     const { $_fetch_properties_with_rentals } = property_api;
-//     const getProperties = async () => {
-//         loadingProperties.value = true;
-//         try {
-//             const res = await $_fetch_properties_with_rentals() as any;
-    
-//             if (res.type !== 'ERROR') {
-//                 // Sort properties by 'createdAt' in descending order
-//                 propertiesList.value = res?.data?.result ?? []
-//             }
-//         } catch (error) {
-//             console.error('Error fetching properties:', error);
-//         } finally {
-//             loadingProperties.value = false;
-//         }
-//     };
-
-//     onMounted(() => {
-//         getProperties()
-//     });
-
-//     return {
-//         getProperties,
-//         loadingProperties,
-//         propertiesList
-//     };
-// };
-
 import { property_api } from '@/api_factory/modules/property'
 
 // Debounce function to limit the rate at which a function can be called

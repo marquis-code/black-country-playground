@@ -83,16 +83,9 @@ const handleClose = () => {
 // };
 
 const handlePublish = () => {
-  console.log('I am called')
   create_property();
 };
 
-const property = {
-  title: 'Luxury Apartment',
-  description: 'Spacious apartment in downtown.',
-  price: 500000,
-  location: 'New York, NY',
-};
 
 const showPreview = (propertyDetails: any) => {
   openModal(propertyDetails);

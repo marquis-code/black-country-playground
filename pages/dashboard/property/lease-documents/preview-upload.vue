@@ -643,22 +643,26 @@
         dropdownVisible.value = !dropdownVisible.value;
       };
       
-      const sendNow = () => {
+      const sendNow = async () => {
         const payload = {
           body: previewContent.value || leaseAgreementContent,
           documentName: 'TEST'
         }
         setPayloadObj(payload)
-        createLeaseTemplate()
+        await createLeaseTemplate()
+        localStorage.removeItem('lease-template-payload')
+        router.push('dashboard/property?activeTab=lease-documents')
       };
       
-      const saveAndExit = () => {
+      const saveAndExit = async () => {
         const payload = {
           body: previewContent.value || leaseAgreementContent,
           documentName: 'TEST'
         }
         setPayloadObj(payload)
-        createLeaseTemplate()
+        await createLeaseTemplate()
+        localStorage.removeItem('lease-template-payload')
+        router.push('dashboard/property?activeTab=lease-documents')
       };
       
       const duplicateTemplate = () => {

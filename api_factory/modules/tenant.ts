@@ -8,6 +8,5 @@ export const tenant_api = {
           url += `&search=${encodeURIComponent(filters.searchQuery.trim())}`;
         }      
         return GATEWAY_ENDPOINT.get(url);
-      },
-      
+      }
 }

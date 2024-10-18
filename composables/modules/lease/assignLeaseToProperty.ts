@@ -4,6 +4,7 @@ const { showToast } = useCustomToast();
 const loading = ref(false)
 const assignPayload = ref({
     leaseAgreement: "<html></html>",
+    isPublished: false
 })
 const router = useRouter()
 
@@ -35,7 +36,9 @@ export const useAssignLeaseToProperty = () => {
 	}
 
     const setAssignPayloadObj = (data: any) => {
+        console.log(data, 'caught from composable')
         assignPayload.value.leaseAgreement = data.leaseAgreement
+        assignPayload.value.isPublished = data.isPublished
 	}
 
 	return { assignLeaseToProperty, loading, assignPayload, setAssignPayloadObj }
