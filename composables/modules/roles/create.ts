@@ -2,6 +2,7 @@ import { roles_api } from '@/api_factory/modules/roles-mgt'
 import { useCustomToast } from '@/composables/core/useCustomToast';
 const { showToast } = useCustomToast();
 const loading = ref(false);
+const router = useRouter()
 
 const payload = ref({})
 
@@ -16,6 +17,7 @@ export const useCreateRole = () => {
                 toastType: "success",
                 duration: 3000
             });
+            router.push('/dashboard/members/role-success')
             return res;
         } catch (error) {
             showToast({

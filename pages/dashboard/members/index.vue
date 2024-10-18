@@ -10,7 +10,7 @@
           <div class="hidden lg:flex gap-x-4">
             <button @click="activeTab = 'members'" :class="[activeTab === 'members' ? 'bg-[#5B8469] text-white' : '']"
               class="bg-[#5B8469] font-medium px-4 py-2 text-sm rounded-md text-white">Members</button>
-            <button @click="router.push('/dashboard/members/roles')"
+            <button @click="router.push('/dashboard/members/permissions')"
               :class="[activeTab === 'roles-permissions' ? 'bg-[#5B8469] text-white' : ' ']"
               class="text-[#292929] font-medium text-sm bg-[#F0F2F5] px-4 py-2 rounded-md">Roles & permissions</button>
             <button @click="activeTab = 'audit-trail'"

@@ -7,7 +7,7 @@
             <input type="text" placeholder="Search" class="px-4 text-sm py-3 outline-none pl-10 border-[0.5px] border-gray-300 text-[#667185] rounded-md w-64">
             <img class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" :src="dynamicIcons('gray-search')" />
           </div>
-          <button class="px-4 py-2.5 flex text-sm items-center gap-x-3 bg-[#292929] text-white rounded-md hover:bg-gray-800">
+          <button @click="router.push('/dashboard/members/roles')" class="px-4 py-2.5 flex text-sm items-center gap-x-3 bg-[#292929] text-white rounded-md hover:bg-gray-800">
             <img :src="dynamicIcons('white-add')" /> New role
           </button>
         </div>
