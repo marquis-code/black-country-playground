@@ -20,7 +20,7 @@
             @option-selected="handleSelection"
           />
         </div>
-        <div v-if="loadingTenants" class="h-10 animate-pulse w-full bg-slate-200 rounded col-span-2"></div>
+        <div v-if="loadingTenants" class="h-14 animate-pulse w-full bg-slate-200 rounded col-span-2"></div>
        </section>
 
         <section class="flex justify-between items-center gap-x-6 w-full mt-6">
@@ -33,6 +33,9 @@
             <input v-model="payload.endDate" type="date" placeholder="select end date" class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none" />
           </div>
         </section>
+        <div v-if="startDate && endDate && diffInDays < 365" class="text-red-500 text-sm">
+          The lease duration must be at least one year.
+        </div>
 
         <div>
           <label class="block text-sm pb-1 font-medium text-[#6E717C]">Lease document title</label>
@@ -52,6 +55,8 @@
 import { useRouter } from 'vue-router'
 import { useCreateLeaseTemplate } from '@/composables/modules/lease/create'
 import { useGetTenantsWithActiveRentals } from '@/composables/modules/property/fetchTenantWithActiveRentalApplication'
+import { useCustomToast } from '@/composables/core/useCustomToast'
+const { showToast } = useCustomToast();
 
 const { getTenantsWithActiveRentals, tenantsList, houseId, loadingTenants } = useGetTenantsWithActiveRentals()
 const { payload } = useCreateLeaseTemplate()
@@ -59,8 +64,37 @@ const router = useRouter()
 
 // Check if the form is empty
 const isFormEmpty = computed(() => {
-  return !payload.value.endDate || !payload.value.startDate || !payload.value.documentName || !selectedItem.value.id || !selectedProperty.value
+  const startDate = new Date(payload.value.startDate)
+  const endDate = new Date(payload.value.endDate)
+  const diffInDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24))
+
+  return (
+    !payload.value.endDate || 
+    !payload.value.startDate || 
+    !payload.value.documentName || 
+    !selectedItem.value.id || 
+    !selectedProperty.value || 
+    diffInDays < 365
+  )
 })
+
+watch([() => payload.value.startDate, () => payload.value.endDate], ([newStartDate, newEndDate]) => {
+  if (newStartDate && newEndDate) {
+    const startDate = new Date(newStartDate)
+    const endDate = new Date(newEndDate)
+    const diffInDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24))
+
+    if (diffInDays < 365) {
+      showToast({
+          title: "Error",
+          message: "The lease duration must be at least one year.",
+          toastType: "error",
+          duration: 3000
+        });
+    }
+  }
+})
+
 const selectedProperty = ref(null)
 const selectedItem = ref({})
 
@@ -95,10 +129,33 @@ const closeModal = () => {
 }
 
 const applyFilters = () => {
+  const startDate = new Date(payload.value.startDate)
+  const endDate = new Date(payload.value.endDate)
+  const diffInDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24))
+
+  if (diffInDays < 365) {
+    // Show an error message or handle it
+    showToast({
+          title: "Error",
+          message: "The lease duration must be at least one year.",
+          toastType: "error",
+          duration: 3000
+        });
+    return
+  }
+
   router.push('/dashboard/property/lease-documents/create-methods')
   payload.value.documentName = ""
   payload.value.startDate = ""
   payload.value.endDate = ""
   closeModal()
 }
+
+// const applyFilters = () => {
+//   router.push('/dashboard/property/lease-documents/create-methods')
+//   payload.value.documentName = ""
+//   payload.value.startDate = ""
+//   payload.value.endDate = ""
+//   closeModal()
+// }
 </script>

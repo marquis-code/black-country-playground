@@ -1,25 +1,25 @@
 import { roles_api } from '@/api_factory/modules/roles-mgt'
+import { ref } from 'vue';
 import { useCustomToast } from '@/composables/core/useCustomToast';
 const { showToast } = useCustomToast();
-const loading = ref(false);
-const route = useRoute() as any
 
-export const useUpdateRole = () => {
-    const updateRole = async (payload: any) => {
+const loading = ref(false);
+const role = ref({}) as any;
+const route = useRoute()
+
+export const useFetchRole = () => {
+
+    const fetchRole = async () => {
         loading.value = true;
         try {
-            const res = await roles_api.$_update_role(route.params.id, payload);
-            showToast({
-                title: "Success",
-                message: 'Role updated successfully',
-                toastType: "success",
-                duration: 3000
-            });
+            const res = await roles_api.$_fetch_role_by_id(route.params.id);
+            console.log(res.data, 'here')
+            role.value = res.data;
             return res;
         } catch (error) {
             showToast({
                 title: "Error",
-                message: 'Failed to update role',
+                message: 'Failed to fetch roles',
                 toastType: "error",
                 duration: 3000
             });
@@ -29,5 +29,10 @@ export const useUpdateRole = () => {
         }
     };
 
-    return { updateRole, loading };
+    onMounted(() => {
+        fetchRole()
+    });
+
+
+    return { fetchRole, loading, role };
 };

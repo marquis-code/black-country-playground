@@ -8,14 +8,22 @@
 
           <!-- Desktop View Buttons -->
           <div class="hidden lg:flex gap-x-4">
-            <button @click="activeTab = 'members'" :class="[activeTab === 'members' ? 'bg-[#5B8469] text-white' : '']"
+            <button @click="setActiveTab('members')" :class="[activeTab === 'members' ? 'bg-[#5B8469] text-white' : 'text-[#292929] text-sm bg-[#F0F2F5]']"
+            class="font-medium text-sm px-4 py-2 rounded-md ">Members</button>
+          <button @click="setActiveTab('roles-permissions')"
+            :class="[activeTab === 'roles-permissions' ? 'bg-[#5B8469] text-white' : 'text-[#292929] text-sm bg-[#F0F2F5]']"
+            class=" px-4 py-2 text-sm rounded-md">Roles & permissions</button>
+          <button @click="setActiveTab('audit-trail')"
+            :class="[activeTab === 'audit-trail' ? 'bg-[#5B8469] text-white' : 'bg-[#F0F2F5] text-[#292929]']"
+            class="font-medium text-sm  px-4 py-2 rounded-md">Audit trail</button>
+            <!-- <button @click="activeTab = 'members'" :class="[activeTab === 'members' ? 'bg-[#5B8469] text-white' : '']"
               class="bg-[#5B8469] font-medium px-4 py-2 text-sm rounded-md text-white">Members</button>
-            <button @click="router.push('/dashboard/members/permissions')"
+            <button @click="router.push('/dashboard/members/roles')"
               :class="[activeTab === 'roles-permissions' ? 'bg-[#5B8469] text-white' : ' ']"
               class="text-[#292929] font-medium text-sm bg-[#F0F2F5] px-4 py-2 rounded-md">Roles & permissions</button>
             <button @click="activeTab = 'audit-trail'"
               :class="[activeTab === 'audit-trail' ? 'bg-[#5B8469] text-white' : 'bg-[#F0F2F5] text-[#292929]']"
-              class="text-[#292929] font-medium text-sm bg-[#F0F2F5] px-4 py-2 rounded-md">Audit trail</button>
+              class="text-[#292929] font-medium text-sm bg-[#F0F2F5] px-4 py-2 rounded-md">Audit trail</button> -->
           </div>
 
           <!-- Mobile View Hamburger Menu -->
@@ -104,7 +112,9 @@
         </div>
       </div>
     </template>
-    <MembersTableList />
+    <MembersTableList v-if="activeTab === 'members'" />
+    <MembersRolesList v-if="activeTab === 'roles-permissions'" />
+    <MembersAuditList v-if="activeTab === 'audit-trail'"  />
   </Layout>
 </template>
 
@@ -119,8 +129,16 @@ import { ref } from "vue";
 // definePageMeta({
 //      layout: 'dashboard'
 // })
+const route = useRoute();
 
 const initials = ref("") as any;
+
+// Initialize the active tab based on query params
+onMounted(() => {
+  if (route.query.activeTab) {
+    activeTab.value = route.query.activeTab as string;
+  }
+});
 
 onMounted(() => {
   // Get initials from the composable
@@ -129,9 +147,16 @@ onMounted(() => {
 });
 
 const isMobileMenuOpen = ref(false);
-const activeTab = ref("listings"); // Initialize with the default active tab value
+const activeTab = ref("members"); // Initialize with the default active tab value
 
 const isModalOpen = ref(false);
+
+// Function to change the active tab and update the query parameter
+const setActiveTab = (tab: string) => {
+  activeTab.value = tab;
+  // Update the URL query parameter to reflect the active tab
+  router.push({ query: { ...route.query, activeTab: tab } });
+};
 
 const openModal = () => {
   isModalOpen.value = true;

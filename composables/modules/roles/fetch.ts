@@ -36,7 +36,8 @@ export const useFetchRoles = () => {
         loading.value = true;
         try {
             const res = await roles_api.$_fetch_roles(filters.value);
-            roles.value = res.data;
+            console.log(res.data, 'here')
+            roles.value = res.data.result;
             return res;
         } catch (error) {
             showToast({

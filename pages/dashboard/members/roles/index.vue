@@ -14,7 +14,9 @@
     
         <!-- Grid Layout for Roles -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <MembersRoleCard class="cursor-pointer" @click="router.push(`/dashboard/members/permissions/${index}`)" v-for="(role, index) in roles" :key="index" :role="role" />
+          <NuxtLink :to="`/dashboard/members/permissions/${role.id}`" v-for="(role, index) in roles" :key="index">
+            <MembersRoleCard class="cursor-pointer" :role="role"  />
+          </NuxtLink>
         </div>
       </div>
 </main>

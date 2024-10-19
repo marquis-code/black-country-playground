@@ -22,7 +22,7 @@
             </defs>
             </svg>
             
-          <h3 class="text- font-semibold text-gray-800">{{ role.title }}</h3>
+          <h3 class="text- font-semibold text-gray-800">{{ role.name }}</h3>
         </div>
         <button class="focus:outline-none">
             <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -34,7 +34,11 @@
         </button>
       </div>
       <p class="text-sm text-[#667185] mb-2">{{ role.description }}</p>
-      <p class="text-sm text-[#667185] line-clamp-2">{{ role.permissions }}</p>
+     <div class="flex flex-wrap gap-2">
+      <p class="text-sm text-[#667185] line-clamp-2 bg-gray-25 p-2 rounded-lg text-xs" v-for="(item, idx) in role.permissions" :key="idx">
+        {{ item.modulePermission.name }}
+      </p>
+     </div>
       <div class="mt-4 flex items-center">
         <span class="text-sm font-medium text-[#1D2739]">{{ role.accounts }} accounts</span>
         <div class="flex -space-x-2 ml-2">              
@@ -52,15 +56,7 @@
     import { dynamicImage } from '@/utils/assets'; 
   import { defineProps } from 'vue';
   
-  interface Role {
-    title: string;
-    description: string;
-    permissions: string;
-    accounts: number;
-    avatars: string[];
-  }
-  
-  const props = defineProps<{ role: Role }>();
+  const props = defineProps<{ role: Object }>();
   </script>
   
   <style scoped>

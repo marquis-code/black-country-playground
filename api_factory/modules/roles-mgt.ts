@@ -6,14 +6,18 @@ export const roles_api = {
     return GATEWAY_ENDPOINT.post(url, payload);
   },
   $_update_role: (id: string, payload: any) => {
-    const url = `/module-permissions/${id}`;
+    const url = `/admins/role-permissions/${id}`;
     return GATEWAY_ENDPOINT.patch(url, payload);
   },
   $_fetch_roles: (filters: any) => {
-    let url = `/admins/roles`;
+    let url = `/admins/roles?relations=permissions.modulePermission`;
     if (filters.searchQuery && filters.searchQuery.trim() !== "") {
       url += `&search=${encodeURIComponent(filters.searchQuery.trim())}`;
     }
+    return GATEWAY_ENDPOINT.get(url);
+  },
+  $_fetch_role_by_id: (id: any) => {
+    let url = `/admins/roles/${id}`;
     return GATEWAY_ENDPOINT.get(url);
   },
   $_delete_role: (id: string) => {

@@ -17,7 +17,7 @@
         </div>
         <div class="space-y-4">
           <button @click="close" class="w-full py-3.5 text-sm font-semibold bg-[#292929] text-white rounded-md">No, Cancel</button>
-          <button class="w-full py-3.5 bg-[#EBE5E0] font-semibold text-sm text-[#292929] rounded-md">Yes, Continue</button>
+          <button :disabled="loading" @click="proceedToDelete" class="w-full disabled:cursor-not-allowed disabled:opacity-25 py-3.5 bg-[#EBE5E0] font-semibold text-sm text-[#292929] rounded-md">{{loading ? 'processing..' : 'Yes, Continue'}}</button>
         </div>
       </div>
     </div>
@@ -26,7 +26,16 @@
   <script lang="ts" setup>
   import { defineEmits } from 'vue';
   
-  const emit = defineEmits(['close']);
+  const emit = defineEmits(['close', 'delete']);
+  const props = defineProps({
+    loading: {
+      type: Boolean
+    }
+  })
+
+  const proceedToDelete = () => {
+    emit('delete')
+  }
   
   const close = () => {
     emit('close');
