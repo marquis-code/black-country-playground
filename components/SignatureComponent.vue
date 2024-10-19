@@ -43,8 +43,8 @@ const signatureObj = ref({}) as any
   try {
     // Create the payload object with optional signee name and signature URL
     const payloadObj = {
-      landlordSigneeName: `${user?.value?.firstName} ${user?.value?.lastName}` || '',
-      landlordSignatureUrl: signatureObj?.value?.secure_url || ''
+      houseOwnerSigneeName: `${user?.value?.firstName} ${user?.value?.lastName}` || '',
+      houseOwnerSignatureUrl: signatureObj?.value?.secure_url || ''
     };
 
     // Check if the signature URL is valid before proceeding
