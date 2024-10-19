@@ -24,5 +24,9 @@ export const lease_api = {
         const url = `/tenants/${tenantId}/houses/${houseId}/lease-agreements`;
         return GATEWAY_ENDPOINT.post(url, payload);
       },
+      $_sign_lease_agreement: (agreementId: string | number, payload: any) => {
+        let url = `/lease-agreements/${agreementId}/signed`;
+        return GATEWAY_ENDPOINT.patch(url, payload);
+      },
 }
  

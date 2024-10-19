@@ -81,7 +81,7 @@
               <div class="mb-4">
                 <h3 class="text-sm font-medium mb-2">Landlord/Property Manager:</h3>
                 <label class="block text-sm text-gray-500 mb-1">Signature</label>
-                <img :src="emittedAgreementData.signature" alt="Signature" class="w-full border-b-2 border-dotted py-2 mb-4 bg-transparent outline-none placeholder-gray-400" />
+                <img :src="emittedAgreementData?.signatureObj?.secure_url" alt="Signature" class="w-full border-b-2 border-dotted py-2 mb-4 bg-transparent outline-none placeholder-gray-400" />
                 <label class="block text-sm text-gray-500 mb-1">Full Name</label>
                 <div class="border-b-2 border-dotted text-gray-800 py-2 mb-4">
                   {{user.firstName}}  {{user.lastName}}
@@ -356,7 +356,7 @@
       </LayoutWithoutSidebar>
     
       <CoreModal :isOpen="isModalOpen" @close="isModalOpen = false">
-        <SignatureComponent @agreementData="handleAgreement" @close="closeModal" class="w-full" />
+        <SignatureComponent  @agreementData="handleAgreement" @close="closeModal" class="w-full" />
       </CoreModal>
     </main>
     </template>
@@ -576,20 +576,6 @@
       }
     };
     
-    // const useTemplate = (item: any) => {
-    
-    
-    //   if(item === 'save&exit'){
-    
-    //   }
-    
-    //   // if (editor.value) {
-    //   //   const htmlContent = editor.value.innerHTML;
-    //   //   // Send the htmlContent to the backend here...
-    //   //   alert('Template content saved and sent to backend!');
-    //   // }
-    // };
-    
     const proceedSaveAndExit = () => {
       const reqPayload = {
           leaseAgreement: Object.keys(localData?.value).length ? localData?.value?.body : leaseAgreementContent,
@@ -616,9 +602,6 @@
         handleSaveAndSend(payload.value.tenantId, payload.value.propertyId)
       }
     }
-    
-    
-    
     
     // Watch font style and size changes
     watch(selectedFont, (newFont) => {
