@@ -21,13 +21,6 @@
             <button type="button" :disabled="processingSaveAndSend" @click="proceedSaveAndSend" class="bg-black disabled:cursor-not-allowed disabled:opacity-25 text-sm text-white px-4 py-3 rounded-md">
                {{ processingSaveAndSend ? 'processing...' : 'Save & Send'}}
             </button>
-            <!-- More options button -->
-            <!-- <button
-              class="text-gray-600 hover:bg-gray-100 p-2 rounded-full"
-              @click="toggleDropdown"
-            >
-              &#8942;
-            </button> -->
           </div>
   
           <!-- Dropdown modal -->
@@ -81,7 +74,7 @@
             <div class="mb-4">
               <h3 class="text-sm font-medium mb-2">Landlord/Property Manager:</h3>
               <label class="block text-sm text-gray-500 mb-1">Signature</label>
-              <img :src="emittedAgreementData.signature" alt="Signature" class="w-full border-b-2 border-dotted py-2 mb-4 bg-transparent outline-none placeholder-gray-400" />
+              <img :src="emittedAgreementData?.signatureObj?.secure_url || leaseSignatureUrl" alt="Signature" class="w-full border-b-2 border-dotted py-2 mb-4 bg-transparent outline-none placeholder-gray-400" />
               <label class="block text-sm text-gray-500 mb-1">Full Name</label>
               <div class="border-b-2 border-dotted text-gray-800 py-2 mb-4">
                 {{user.firstName}}  {{user.lastName}}
@@ -373,6 +366,8 @@
   import { useUser } from "@/composables/auth/user";
   const { user } = useUser();
   const router = useRouter()
+
+  const leaseSignatureUrl = ref(localStorage.getItem('lease-signature-url'));
   
   const { setSaveAndSendPayloadObj, handleSaveAndSend, processingSaveAndSend  } = useSaveAndSend()
   const { handleSaveAndExit, setSaveAndExitPayloadObj, processingSaveAndExit } = useSaveAndExit()
@@ -535,6 +530,11 @@
       document.execCommand('insertHorizontalRule', false, '');
     }
   };
+
+  definePageMeta({
+     middleware: 'auth'
+});
+
   
   const insertTable = () => {
     const rows = prompt('Enter number of rows');
@@ -607,104 +607,171 @@
 
 
     // Function to save the editor content to local storage in real-time
-const saveContentToLocalStorage = () => {
-    const currentHTMLContent = editor.value?.innerHTML || '';
+// const saveContentToLocalStorage = () => {
+//     const currentHTMLContent = editor.value?.innerHTML || '';
 
-    const signatureHTML = `
-        <div class="signature-section">
-            <h2>Signature</h2>
-            <p>The parties hereto have executed this Lease Agreement as of the date first above written.</p>
-            <div class="signature">
-                <h3>Landlord/Property Manager:</h3>
-                <img src="${emittedAgreementData.value.signature}" alt="Signature" style="width: 100px; border-bottom: 2px dotted;" />
-                <p>${user.firstName} ${user.lastName}</p>
-                <p>${new Date().toLocaleDateString()}</p>
-            </div>
-            <div class="signature">
-                <h3>Tenant:</h3>
-                <p>Full Name: ${emittedAgreementData.value.fullName || 'N/A'}</p>
-                <p>Date: ${new Date().toLocaleDateString()}</p>
-            </div>
-        </div>
-    `;
+//     const signatureHTML = `
+//         <div class="signature-section">
+//             <h2>Signature</h2>
+//             <p>The parties hereto have executed this Lease Agreement as of the date first above written.</p>
+//             <div class="signature">
+//                 <h3>Landlord/Property Manager:</h3>
+//                 <img src="${emittedAgreementData.value.signature}" alt="Signature" style="width: 100px; border-bottom: 2px dotted;" />
+//                 <p>${user.firstName} ${user.lastName}</p>
+//                 <p>${new Date().toLocaleDateString()}</p>
+//             </div>
+//             <div class="signature">
+//                 <h3>Tenant:</h3>
+//                 <p>Full Name: ${emittedAgreementData.value.fullName || 'N/A'}</p>
+//                 <p>Date: ${new Date().toLocaleDateString()}</p>
+//             </div>
+//         </div>
+//     `;
 
-    const fullHTMLContent = `
-            ${currentHTMLContent}
-            ${signatureHTML}
-    `;
+//     const fullHTMLContent = `
+//             ${currentHTMLContent}
+//             ${signatureHTML}
+//     `;
 
-    const newPayload = {
-        body: fullHTMLContent,
-        documentName: payload.value.documentName,
-        propertyId: payload.value.propertyId,
-        startDate: payload.value.startDate,
-        endDate: payload.value.endDate,
-        tenantId: payload.value.tenantId
-    };
+//     const newPayload = {
+//         body: fullHTMLContent,
+//         documentName: payload.value.documentName,
+//         propertyId: payload.value.propertyId,
+//         startDate: payload.value.startDate,
+//         endDate: payload.value.endDate,
+//         tenantId: payload.value.tenantId
+//     };
 
-    // Save to local storage
-    localStorage.setItem('lease-template-payload', JSON.stringify(newPayload));
-};
+//     // Save to local storage
+//     localStorage.setItem('lease-template-payload', JSON.stringify(newPayload));
+// };
 
 // Listen for input events to save data to local storage in real-time
-const handleEditorInput = () => {
-    editor.value?.addEventListener('input', saveContentToLocalStorage);
-};
+// const handleEditorInput = () => {
+//     editor.value?.addEventListener('input', saveContentToLocalStorage);
+// };
 
-// Retrieve content from local storage on mount
+// // Retrieve content from local storage on mount
+// onMounted(() => {
+//     const localStorageObj = JSON.parse(localStorage.getItem('lease-template-payload') || '{}');
+//     localData.value = localStorageObj;
+
+//     if (localStorageObj.body) {
+//         editor.value.innerHTML = localStorageObj.body;
+//     } else {
+//         editor.value.innerHTML = leaseAgreementContent;
+//     }
+
+//     // Attach input listener to save content in real-time
+//     handleEditorInput();
+// });
+
 onMounted(() => {
-    const localStorageObj = JSON.parse(localStorage.getItem('lease-template-payload') || '{}');
-    localData.value = localStorageObj;
+  const localStorageObj = JSON.parse(localStorage.getItem('lease-template-payload') || '{}');
+  localData.value = localStorageObj;
 
-    if (localStorageObj.body) {
-        editor.value.innerHTML = localStorageObj.body;
-    } else {
-        editor.value.innerHTML = leaseAgreementContent;
-    }
+  if (Object.keys(localStorageObj).length) {
+    // editor.value.innerHTML = localStorageObj.body; 
+    editor.value.innerHTML = payload.value.body
+  } else {
+    editor.value.innerHTML = leaseAgreementContent;
+  }
 
-    // Attach input listener to save content in real-time
-    handleEditorInput();
+  editor.value.addEventListener('input', () => {
+    updateLeaseInLocalStorage();
+  });
 });
 
-// Example function to handle submission by retrieving data from local storage
-const proceedSaveAndSend = () => {
-    const localStorageObj = JSON.parse(localStorage.getItem('lease-template-payload'));
-    if (localStorageObj) {
-      console.log(localStorageObj, 'caught it')
-      const payloadObj = {
-        leaseAgreement: localStorageObj.body
-      }
-        setSaveAndSendPayloadObj(payloadObj);
-        handleSaveAndSend(payload.value.tenantId, payload.value.propertyId);
-    } else {
-        showToast({
-            title: "Error",
-            message: 'No content found to submit.',
-            toastType: "error",
-            duration: 3000
-        });
-    }
+// Function to update the lease content in localStorage
+const updateLeaseInLocalStorage = () => {
+  const leaseContent = editor.value?.innerHTML || leaseAgreementContent;
+  payload.value.body = leaseContent
+  // console.log(editor.value?.innerHTML, 'hee oooooo', leaseContent)
+  // const payload = {
+  //   body: leaseContent,
+  //   documentName: payload.value?.documentName || 'Lease Agreement',
+  // };
+
+  // localStorage.setItem('lease-template-payload', JSON.stringify(payload));
 };
 
-// Proceed to save and exit (ensure the latest content is saved and signature is included)
-const proceedSaveAndExit = () => {
-    // updateLocalStorage();  // Update local storage with the latest content and signature
-    const localStorageObj = JSON.parse(localStorage.getItem('lease-template-payload'));
 
-    if (localStorageObj) {
-      const payloadObj = {
-        leaseAgreement: localStorageObj.body
-      }
-        setSaveAndExitPayloadObj(payloadObj);
-        handleSaveAndExit(payload.value.tenantId, payload.value.propertyId);
-    } else {
-        showToast({
-            title: "Error",
-            message: 'No content found to save and exit.',
-            toastType: "error",
-            duration: 3000
-        });
-    }
+// Example function to handle submission by retrieving data from local storage
+// const proceedSaveAndSend = () => {
+//     const localStorageObj = JSON.parse(localStorage.getItem('lease-template-payload'));
+//     if (localStorageObj) {
+//       console.log(localStorageObj, 'caught it')
+//       const payloadObj = {
+//         leaseAgreement: localStorageObj.body
+//       }
+//         setSaveAndSendPayloadObj(payloadObj);
+//         handleSaveAndSend(payload.value.tenantId, payload.value.propertyId);
+//     } else {
+//         showToast({
+//             title: "Error",
+//             message: 'No content found to submit.',
+//             toastType: "error",
+//             duration: 3000
+//         });
+//     }
+// };
+
+// // Proceed to save and exit (ensure the latest content is saved and signature is included)
+// const proceedSaveAndExit = () => {
+//     // updateLocalStorage();  // Update local storage with the latest content and signature
+//     const localStorageObj = JSON.parse(localStorage.getItem('lease-template-payload'));
+
+//     if (localStorageObj) {
+//       const payloadObj = {
+//         leaseAgreement: localStorageObj.body
+//       }
+//         setSaveAndExitPayloadObj(payloadObj);
+//         handleSaveAndExit(payload.value.tenantId, payload.value.propertyId);
+//     } else {
+//         showToast({
+//             title: "Error",
+//             message: 'No content found to save and exit.',
+//             toastType: "error",
+//             duration: 3000
+//         });
+//     }
+// };
+
+// Save and exit or send functionalities
+const proceedSaveAndExit = async () => {
+  const signatureUrl = emittedAgreementData?.value?.signatureObj?.secure_url || leaseSignatureUrl.value;
+  const reqPayload = {
+    leaseAgreement: `<html>${editor.value?.innerHTML}</html>` || `<html>${leaseAgreementContent}</html>`,
+    isPublished: false,
+    houseOwnerSigneeName: `${user?.value?.firstName} ${user?.value?.lastName}` || "",
+    houseOwnerSignatureUrl: signatureUrl,
+  };
+  setSaveAndExitPayloadObj(reqPayload);
+  await handleSaveAndExit(payload.value.tenantId, payload.value.propertyId);
+};
+
+const proceedSaveAndSend = async () => {
+  const signatureUrl = leaseSignatureUrl.value || emittedAgreementData?.value?.signatureObj?.secure_url
+
+  if (!signatureUrl) {
+    showToast({
+      title: "Error",
+      message: 'You need to sign before you can send the lease agreement.',
+      toastType: "error",
+      duration: 3000,
+    });
+    return;
+  }
+
+  const reqPayload = {
+    leaseAgreement:`<html>${editor.value?.innerHTML}</html>` || `<html>${leaseAgreementContent}</html>`,
+    isPublished: true,
+    houseOwnerSigneeName: `${user?.value?.firstName} ${user?.value?.lastName}` || "",
+    houseOwnerSignatureUrl: signatureUrl,
+  };
+
+  setSaveAndSendPayloadObj(reqPayload);
+  await handleSaveAndSend(payload.value.tenantId, payload.value.propertyId);
 };
 
 

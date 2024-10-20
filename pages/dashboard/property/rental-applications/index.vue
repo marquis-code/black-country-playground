@@ -196,6 +196,11 @@
           status: 'Declined'
         }
       ]
+
+      definePageMeta({
+     middleware: 'auth'
+});
+
       </script>
       
       <style scoped>

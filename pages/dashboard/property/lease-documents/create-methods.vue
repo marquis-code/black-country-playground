@@ -109,6 +109,11 @@ onMounted(() => {
   initials.value = getInitials.value;
 });
 
+definePageMeta({
+     middleware: 'auth'
+});
+
+
 </script>
 
 <style scoped>

@@ -16,38 +16,6 @@
       <p class="text-gray-800 mb-2">Rent: {{ formatCurrency(room?.rentAmount, room?.currencyCode) }} per {{ room?.rentFrequency }}</p>
       <p class="text-gray-600 mb-2">Furnished: {{ room?.isFurnished ? 'Yes' : 'No' }}</p>
 
-      <!-- Room Images Carousel -->
-      <!-- <div class="relative rounded-lg overflow-hidden shadow-md bg-white border mb-4">
-        <div class="relative w-full h-64 flex items-center justify-center overflow-hidden">
-          <img
-            v-if="room?.images?.length > 1"
-            :src="room?.images[currentRoomImage[index]]"
-            alt="room image"
-            class="w-full h-full object-cover transition-opacity"
-          />
-          <button
-            v-if="room?.images?.length > 1"
-            @click="prevRoomImage(index)"
-            class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-1 shadow hover:bg-gray-200"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          
-          <button
-            v-if="room?.images?.length > 1"
-            @click="nextRoomImage(index)"
-            class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-1 shadow hover:bg-gray-200"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-      </div> -->
-
-
       <div class="mt-4">
         <h3 class="text-gray-500 font-medium mb-2">Interior Area</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

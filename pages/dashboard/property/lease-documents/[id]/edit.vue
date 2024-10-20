@@ -306,6 +306,11 @@
     const { showToast } = useCustomToast();
 
     const router = useRouter()
+
+    definePageMeta({
+     middleware: 'auth'
+});
+
     
     const editor = ref<HTMLElement | null>(null);
     const selectedFont = ref('Arial');

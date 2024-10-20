@@ -201,4 +201,9 @@ import { dynamicIcons } from '@/utils/assets';
 const router = useRouter();
 import Layout from "@/layouts/dashboard.vue";
 const generateLeaseDocument = ref(false);
+
+definePageMeta({
+     middleware: 'auth'
+});
+
 </script>

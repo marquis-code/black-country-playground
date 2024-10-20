@@ -21,13 +21,6 @@
               <button type="button" :disabled="processingSaveAndSend" @click="proceedSaveAndSend" class="bg-black disabled:cursor-not-allowed disabled:opacity-25 text-sm text-white px-4 py-3 rounded-md">
                  {{ processingSaveAndSend ? 'processing...' : 'Save & Send'}}
               </button>
-              <!-- More options button -->
-              <!-- <button
-                class="text-gray-600 hover:bg-gray-100 p-2 rounded-full"
-                @click="toggleDropdown"
-              >
-                &#8942;
-              </button> -->
             </div>
     
             <!-- Dropdown modal -->
@@ -70,7 +63,7 @@
           <!-- Left Side: Text Editor -->
           <div class="flex-1 lg:w-6/12 lg:p-10 bg-gray-25">
             <div contenteditable="true" class="border border-gray-300 lg:px-10 bg-white p-4 outline-none border-none rounded-lg shadow-sm min-h-[500px]" ref="editor">
-              Start editing your text here...
+              Start editing your text here...sadsddsadsadasdsadasdsa
             </div>
             <div contenteditable="true" class="border border-gray-300 lg:px-10 bg-white pb-4 px-4 outline-none border-none rounded-lg shadow-sm min-h-[500px]" ref="signatureSection">
               <h2 class="text-sm font-medium mb-2">Signature</h2>
@@ -81,7 +74,7 @@
               <div class="mb-4">
                 <h3 class="text-sm font-medium mb-2">Landlord/Property Manager:</h3>
                 <label class="block text-sm text-gray-500 mb-1">Signature</label>
-                <img :src="emittedAgreementData?.signatureObj?.secure_url" alt="Signature" class="w-full border-b-2 border-dotted py-2 mb-4 bg-transparent outline-none placeholder-gray-400" />
+                <img :src="emittedAgreementData?.signatureObj?.secure_url || leaseSignatureUrl" alt="Signature" class="w-full border-b-2 border-dotted py-2 mb-4 bg-transparent outline-none placeholder-gray-400" />
                 <label class="block text-sm text-gray-500 mb-1">Full Name</label>
                 <div class="border-b-2 border-dotted text-gray-800 py-2 mb-4">
                   {{user.firstName}}  {{user.lastName}}
@@ -355,13 +348,13 @@
         </div>
       </LayoutWithoutSidebar>
     
-      <CoreModal :isOpen="isModalOpen" @close="isModalOpen = false">
+      <CoreModal  title="Sign Lease Agreement" :isOpen="isModalOpen" @close="isModalOpen = false">
         <SignatureComponent  @agreementData="handleAgreement" @close="closeModal" class="w-full" />
       </CoreModal>
     </main>
     </template>
     
-    <script setup lang="ts">
+    <!-- <script setup lang="ts">
     import { useSaveAndSend } from '@/composables/modules/lease/saveAndSend'
     import { useSaveAndExit } from '@/composables/modules/lease/saveAndExit'
     // import { useAssignLeaseToProperty } from '@/composables/modules/lease/assignLeaseToProperty'
@@ -374,6 +367,8 @@
     import { useUser } from "@/composables/auth/user";
     const { user } = useUser();
     const router = useRouter()
+
+    const leaseSignatureUrl = ref(localStorage.getItem('lease-signature-url'))
     
     const { setSaveAndSendPayloadObj, handleSaveAndSend, processingSaveAndSend  } = useSaveAndSend()
     const { handleSaveAndExit, setSaveAndExitPayloadObj, processingSaveAndExit } = useSaveAndExit()
@@ -463,6 +458,7 @@
     `;
     
     const handleAgreement = (data: any) => {
+      console.log(data, 'emited dadata')
       showToast({
               title: "Success",
               message: 'Signature was saved successfully.',
@@ -472,20 +468,49 @@
       emittedAgreementData.value = data
     }
     
+    // onMounted(() => {
+    //     const localStorageObj = JSON.parse(localStorage.getItem('lease-template-payload'))
+    //     localData.value = localStorageObj
+    
+    //     if(Object.keys(localStorageObj).length){
+    //       editor.value.innerHTML = localStorageObj.body;
+    //     } else {
+    //       editor.value.innerHTML = leaseAgreementContent;
+    //     }
+    
+    //   // if (editor.value) {
+    //   //   editor.value.innerHTML = leaseAgreementContent;
+    //   // }
+    // });
+
     onMounted(() => {
-        const localStorageObj = JSON.parse(localStorage.getItem('lease-template-payload'))
-        localData.value = localStorageObj
-    
-        if(Object.keys(localStorageObj).length){
-          editor.value.innerHTML = localStorageObj.body;
-        } else {
-          editor.value.innerHTML = leaseAgreementContent;
-        }
-    
-      // if (editor.value) {
-      //   editor.value.innerHTML = leaseAgreementContent;
-      // }
-    });
+  // Load existing lease agreement content from localStorage
+  const localStorageObj = JSON.parse(localStorage.getItem('lease-template-payload'));
+  localData.value = localStorageObj;
+
+  if (Object.keys(localStorageObj).length) {
+    editor.value.innerHTML = localStorageObj.body;
+  } else {
+    editor.value.innerHTML = leaseAgreementContent;
+  }
+
+  // Listen for input changes in the contenteditable div and update local storage
+  editor.value.addEventListener('input', () => {
+    updateLeaseInLocalStorage();
+  });
+});
+
+// Function to update the lease content in localStorage
+const updateLeaseInLocalStorage = () => {
+  const leaseContent = editor.value?.innerHTML || leaseAgreementContent;
+  const payload = {
+    body: leaseContent,
+    documentName: payload.value?.documentName || 'Lease Agreement',
+  };
+
+  localStorage.setItem('lease-template-payload', JSON.stringify(payload));
+};
+
     
     const deleteTemplate = () => {
       if (editor.value) {
@@ -514,23 +539,64 @@
       }
     };
     
+    // const setBold = () => {
+    //   if (editor.value) {
+    //     document.execCommand('bold', false, '');
+    //   }
+    // };
+    
+    // const setUnderline = () => {
+    //   if (editor.value) {
+    //     document.execCommand('underline', false, '');
+    //   }
+    // };
+    
+    // const setItalic = () => {
+    //   if (editor.value) {
+    //     document.execCommand('italic', false, '');
+    //   }
+    // };
+
     const setBold = () => {
-      if (editor.value) {
-        document.execCommand('bold', false, '');
-      }
-    };
-    
-    const setUnderline = () => {
-      if (editor.value) {
-        document.execCommand('underline', false, '');
-      }
-    };
-    
-    const setItalic = () => {
-      if (editor.value) {
-        document.execCommand('italic', false, '');
-      }
-    };
+  if (editor.value) {
+    document.execCommand('bold', false, '');
+    wrapSelectedTextWithSpan('font-weight: bold');
+  }
+};
+
+const setItalic = () => {
+  if (editor.value) {
+    document.execCommand('italic', false, '');
+    wrapSelectedTextWithSpan('font-style: italic');
+  }
+};
+
+const setUnderline = () => {
+  if (editor.value) {
+    document.execCommand('underline', false, '');
+    wrapSelectedTextWithSpan('text-decoration: underline');
+  }
+};
+
+const wrapSelectedTextWithSpan = (style) => {
+  const selection = window.getSelection();
+  if (!selection.rangeCount) return;
+
+  const range = selection.getRangeAt(0);
+  const span = document.createElement('span');
+  span.style.cssText = style;
+  range.surroundContents(span);
+};
+
+const applyStyle = (styleName, styleValue) => {
+  const selection = window.getSelection();
+  if (!selection.rangeCount) return;
+
+  const range = selection.getRangeAt(0);
+  const span = document.createElement('span');
+  span.style[styleName] = styleValue;
+  range.surroundContents(span);
+};
     
     const setHeading = (tag: string) => {
       if (editor.value) {
@@ -576,51 +642,82 @@
       }
     };
     
-    const proceedSaveAndExit = () => {
+    const proceedSaveAndExit = async () => {
+      const signatureUrl = emittedAgreementData?.value?.signatureObj?.secure_url || leaseSignatureUrl.value;
       const reqPayload = {
-          leaseAgreement: Object.keys(localData?.value).length ? localData?.value?.body : leaseAgreementContent,
-          isPublished: false
-        }
+        // leaseAgreement: Object.keys(localData?.value).length ? localData?.value?.body : leaseAgreementContent,
+        leaseAgreement: editor.value?.innerHTML || leaseAgreementContent, // Ensure editor HTML with styles is saved
+        isPublished: false,
+        houseOwnerSigneeName: `${user?.value?.firstName} ${user?.value?.lastName}` || "",
+        houseOwnerSignatureUrl: signatureUrl
+      };
         setSaveAndExitPayloadObj(reqPayload)
-        handleSaveAndExit(payload.value.tenantId, payload.value.propertyId)
+        await handleSaveAndExit(payload.value.tenantId, payload.value.propertyId)
     }
     
-    const proceedSaveAndSend = () => {
-      if(!!!emittedAgreementData.value.signature){
+    const proceedSaveAndSend = async () => {
+     const signatureUrl = emittedAgreementData?.value?.signatureObj?.secure_url || leaseSignatureUrl.value;
+
+      if (!signatureUrl) {
         showToast({
-              title: "Error",
-              message: 'You need to sign before you can send the lease agreement.',
-              toastType: "error",
-              duration: 3000
-            });  
-      } else {
-        const reqPayload = {
-          leaseAgreement: Object.keys(localData?.value).length ? localData?.value?.body : leaseAgreementContent,
-          isPublished: true
-        }
-        setSaveAndSendPayloadObj(reqPayload)
-        handleSaveAndSend(payload.value.tenantId, payload.value.propertyId)
+          title: "Error",
+          message: 'You need to sign before you can send the lease agreement.',
+          toastType: "error",
+          duration: 3000
+        });
+        return;
       }
-    }
+
+      const reqPayload = {
+        // leaseAgreement: Object.keys(localData?.value).length ? localData?.value?.body : leaseAgreementContent,
+        leaseAgreement: editor.value?.innerHTML || leaseAgreementContent, // Ensure editor HTML with styles is saved
+        isPublished: true,
+        houseOwnerSigneeName: `${user?.value?.firstName} ${user?.value?.lastName}` || "",
+        houseOwnerSignatureUrl: signatureUrl
+      };
+
+  setSaveAndSendPayloadObj(reqPayload);
+  await handleSaveAndSend(payload.value.tenantId, payload.value.propertyId);
+};
+
     
     // Watch font style and size changes
+    // watch(selectedFont, (newFont) => {
+    //   if (editor.value) {
+    //     editor.value.style.fontFamily = newFont;
+    //   }
+    // });
+    
+    // watch(fontSize, (newSize) => {
+    //   if (editor.value) {
+    //     editor.value.style.fontSize = newSize + 'px';
+    //   }
+    // });
+    
+    // watch(fontColor, (newColor) => {
+    //   if (editor.value) {
+    //     document.execCommand('foreColor', false, newColor);
+    //   }
+    // });
+
     watch(selectedFont, (newFont) => {
-      if (editor.value) {
-        editor.value.style.fontFamily = newFont;
-      }
-    });
-    
-    watch(fontSize, (newSize) => {
-      if (editor.value) {
-        editor.value.style.fontSize = newSize + 'px';
-      }
-    });
-    
-    watch(fontColor, (newColor) => {
-      if (editor.value) {
-        document.execCommand('foreColor', false, newColor);
-      }
-    });
+  if (editor.value) {
+    editor.value.style.fontFamily = newFont;
+  }
+});
+
+watch(fontSize, (newSize) => {
+  if (editor.value) {
+    editor.value.style.fontSize = newSize + 'px';
+  }
+});
+
+watch(fontColor, (newColor) => {
+  if (editor.value) {
+    document.execCommand('foreColor', false, newColor);
+    wrapSelectedTextWithSpan(`color: ${newColor}`);
+  }
+});
       
       const toggleDropdown = () => {
         dropdownVisible.value = !dropdownVisible.value;
@@ -656,4 +753,218 @@
     <style scoped>
     /* Custom styles as needed */
     </style>
+     -->
+
+     <script setup lang="ts">
+import { useSaveAndSend } from '@/composables/modules/lease/saveAndSend';
+import { useSaveAndExit } from '@/composables/modules/lease/saveAndExit';
+import LayoutWithoutSidebar from '@/layouts/dashboardWithoutSidebar.vue';
+import { useCustomToast } from '@/composables/core/useCustomToast';
+import { useCreateLeaseTemplate } from '@/composables/modules/lease/create';
+import { useUser } from "@/composables/auth/user";
+
+const { createLeaseTemplate, loading, payload, setPayloadObj } = useCreateLeaseTemplate();
+const { showToast } = useCustomToast();
+const { user } = useUser();
+const router = useRouter();
+
+const leaseSignatureUrl = ref(localStorage.getItem('lease-signature-url'));
+
+const { setSaveAndSendPayloadObj, handleSaveAndSend, processingSaveAndSend } = useSaveAndSend();
+const { handleSaveAndExit, setSaveAndExitPayloadObj, processingSaveAndExit } = useSaveAndExit();
+
+const editor = ref<HTMLElement | null>();
+const signatureSection = ref<HTMLElement | null>(null);
+const selectedFont = ref('Arial');
+const fontSize = ref(14);
+const fontColor = ref('#000000'); // Fixed incorrect hex value
+const showPreview = ref(false);
+const previewContent = ref('');
+const alignmentPosition = ref('justify');
+const listingPosition = ref('ordered');
+const paragraphPosition = ref('p');
+const localData = ref({});
+
+const isModalOpen = ref(false);
+const signedSignature = ref<string | null>(null);
+const emittedAgreementData = ref({}) as any;
+
+const openModal = () => {
+  isModalOpen.value = true;
+};
+
+definePageMeta({
+     middleware: 'auth'
+});
+
+
+const closeModal = () => {
+  isModalOpen.value = false;
+};
+
+const handleAgreement = (data: any) => {
+  showToast({
+    title: "Success",
+    message: 'Signature was saved successfully.',
+    toastType: "success",
+    duration: 3000,
+  });
+  emittedAgreementData.value = data;
+};
+
+onMounted(() => {
+  const localStorageObj = JSON.parse(localStorage.getItem('lease-template-payload') || '{}');
+  localData.value = localStorageObj;
+
+  if (Object.keys(localStorageObj).length) {
+    // editor.value.innerHTML = localStorageObj.body; 
+    editor.value.innerHTML = payload.value.body
+  } else {
+    editor.value.innerHTML = leaseAgreementContent;
+  }
+
+  editor.value.addEventListener('input', () => {
+    updateLeaseInLocalStorage();
+  });
+});
+
+// Function to update the lease content in localStorage
+const updateLeaseInLocalStorage = () => {
+  const leaseContent = editor.value?.innerHTML || leaseAgreementContent;
+  payload.value.body = leaseContent
+  // console.log(editor.value?.innerHTML, 'hee oooooo', leaseContent)
+  // const payload = {
+  //   body: leaseContent,
+  //   documentName: payload.value?.documentName || 'Lease Agreement',
+  // };
+
+  // localStorage.setItem('lease-template-payload', JSON.stringify(payload));
+};
+
+const setAlignment = (alignment: string) => {
+      if (editor.value) {
+        alignmentPosition.value = alignment
+        document.execCommand('justify' + alignment, false, '');
+      }
+    };
     
+    const setList = (listType: string) => {
+      if (editor.value) {
+        listingPosition.value = listType
+        document.execCommand(listType === 'ordered' ? 'insertOrderedList' : 'insertUnorderedList', false, '');
+      }
+    };
+
+// Text formatting functions
+const setBold = () => {
+  applyStyle('fontWeight', 'bold');
+};
+
+const setItalic = () => {
+  applyStyle('fontStyle', 'italic');
+};
+
+const setUnderline = () => {
+  applyStyle('textDecoration', 'underline');
+};
+
+const wrapSelectedTextWithSpan = (style: string) => {
+  const selection = window.getSelection();
+  if (!selection.rangeCount) return;
+
+  const range = selection.getRangeAt(0);
+  const span = document.createElement('span');
+  span.style.cssText = style;
+  range.surroundContents(span);
+};
+
+// Function to apply styles dynamically
+const applyStyle = (styleName: string, styleValue: string) => {
+  const selection = window.getSelection();
+  if (!selection.rangeCount) return;
+
+  const range = selection.getRangeAt(0);
+  const span = document.createElement('span');
+  span.style[styleName] = styleValue;
+  range.surroundContents(span);
+};
+
+const setHeading = (tag: string) => {
+  if (editor.value) {
+    paragraphPosition.value = tag;
+    document.execCommand('formatBlock', false, tag);
+  }
+};
+
+const insertImage = () => {
+  const url = prompt('Enter image URL');
+  if (url && editor.value) {
+    document.execCommand('insertImage', false, url);
+  }
+};
+
+const insertLine = () => {
+  if (editor.value) {
+    document.execCommand('insertHorizontalRule', false, '');
+  }
+};
+
+// Handle font and color changes
+watch(selectedFont, (newFont) => {
+  applyStyle('fontFamily', newFont);
+});
+
+watch(fontSize, (newSize) => {
+  applyStyle('fontSize', `${newSize}px`);
+});
+
+watch(fontColor, (newColor) => {
+  applyStyle('color', newColor);
+});
+
+// Save and exit or send functionalities
+const proceedSaveAndExit = async () => {
+  const signatureUrl = emittedAgreementData?.value?.signatureObj?.secure_url || leaseSignatureUrl.value;
+  const reqPayload = {
+    leaseAgreement: editor.value?.innerHTML || leaseAgreementContent,
+    isPublished: false,
+    houseOwnerSigneeName: `${user?.value?.firstName} ${user?.value?.lastName}` || "",
+    houseOwnerSignatureUrl: signatureUrl,
+  };
+  setSaveAndExitPayloadObj(reqPayload);
+  await handleSaveAndExit(payload.value.tenantId, payload.value.propertyId);
+};
+
+const proceedSaveAndSend = async () => {
+  const signatureUrl = leaseSignatureUrl.value || emittedAgreementData?.value?.signatureObj?.secure_url
+
+  if (!signatureUrl) {
+    showToast({
+      title: "Error",
+      message: 'You need to sign before you can send the lease agreement.',
+      toastType: "error",
+      duration: 3000,
+    });
+    return;
+  }
+
+  const reqPayload = {
+    leaseAgreement: editor.value?.innerHTML || leaseAgreementContent,
+    isPublished: true,
+    houseOwnerSigneeName: `${user?.value?.firstName} ${user?.value?.lastName}` || "",
+    houseOwnerSignatureUrl: signatureUrl,
+  };
+
+  setSaveAndSendPayloadObj(reqPayload);
+  await handleSaveAndSend(payload.value.tenantId, payload.value.propertyId);
+};
+
+// Preview functionality
+const previewDocument = () => {
+  if (editor.value) {
+    previewContent.value = editor.value.innerHTML + signatureSection.value.innerHTML;
+    showPreview.value = true;
+  }
+};
+
+</script>

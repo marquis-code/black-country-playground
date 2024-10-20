@@ -8,7 +8,6 @@ export const useSignLease = () => {
 		loading.value = true;
 		try {
 			const res = await lease_api.$_sign_lease_agreement(id, payload) as any;
-			console.log(res, 'res here')
 			if (res.type !== 'ERROR') {
 				showToast({
 					title: "Success",
@@ -24,6 +23,7 @@ export const useSignLease = () => {
 					toastType: "error",
 					duration: 3000
 				});
+				return res;
 			}
 		} catch (error) {
 			// Catch and handle any unexpected errors
@@ -33,6 +33,7 @@ export const useSignLease = () => {
 				toastType: "error",
 				duration: 3000
 			});
+			return error
 		} finally {
 			loading.value = false;  // Ensure loading is set to false after the operation
 		}

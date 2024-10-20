@@ -11,7 +11,7 @@
                 
                 
         </div>
-        <h2 class="text-lg text-[#1D2739] font-medium mb-2">Lease created successfully</h2>
+        <h2 class="text-lg text-[#1D2739] font-medium mb-2">Lease agreement was signed and sent to tenant successfully</h2>
         <p class="text-gray-500 mb-6 text-sm">You've successfully created a new lease </p>
             <div class="space-y-4 w-full">
                 <button @click="router.push('/dashboard/property/')"

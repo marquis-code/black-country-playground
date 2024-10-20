@@ -6,29 +6,6 @@
           <label :for="'question-' + index" class="block text-gray-700 text-sm font-medium mb-2">
             {{ questionObj.question }}
           </label>
-          <!-- <input
-            v-if="questionObj.widgetType === 'input'"
-            v-model="answers[index]"
-            :type="questionObj.metadata?.responseType === 'long-response' ? 'text' : 'text'"
-            :placeholder="questionObj.question"
-            :id="'question-' + index"
-            class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:border-blue-300"
-          />
-          <select
-            v-else-if="questionObj.widgetType === 'select'"
-            v-model="answers[index]"
-            :id="'question-' + index"
-            class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:border-blue-300"
-          >
-            <option value="" disabled>Select an option</option>
-            <option
-              v-for="(option, optIndex) in questionObj.widgetOptions"
-              :key="optIndex"
-              :value="option"
-            >
-              {{ option }}
-            </option>
-          </select> -->
         </div>
       </form>
     </div>

@@ -157,6 +157,11 @@ const handleDisapproval = async () => {
   showReasonModal.value = true
    declineModal.value = false
 };
+
+definePageMeta({
+     middleware: 'auth'
+});
+
 </script>
 
 <style scoped>

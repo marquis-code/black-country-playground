@@ -22,17 +22,28 @@
         </div>
         <div v-if="loadingTenants" class="h-14 animate-pulse w-full bg-slate-200 rounded col-span-2"></div>
        </section>
-
-        <section class="flex justify-between items-center gap-x-6 w-full mt-6">
-          <div class="w-full">
-            <label class="block text-sm pb-1 font-medium text-[#6E717C]">Start Date</label>
-            <input v-model="payload.startDate" type="date" placeholder="select start date" class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none" />
-          </div>
-          <div class="w-full">
-            <label class="block text-sm pb-1 font-medium text-[#6E717C]">End date</label>
-            <input v-model="payload.endDate" type="date" placeholder="select end date" class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none" />
-          </div>
-        </section>
+        <div class="w-full">
+          <label class="block text-sm pb-1 font-medium text-[#6E717C]">Start Date</label>
+          <input 
+            v-model="payload.startDate" 
+            type="date" 
+            :min="currentDate" 
+            placeholder="Select start date" 
+            class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none" 
+          />
+        </div>
+      
+        <div class="w-full">
+          <label class="block text-sm pb-1 font-medium text-[#6E717C]">End Date</label>
+          <input 
+            v-model="payload.endDate" 
+            type="date" 
+            :min="minEndDate" 
+            placeholder="Select end date" 
+            class="w-full px-4 py-3.5 border-[0.5px] text-sm bg-[#F0F2F5] rounded-lg outline-none" 
+            :disabled="!payload.startDate"
+          />
+        </div>
         <div v-if="startDate && endDate && diffInDays < 365" class="text-red-500 text-sm">
           The lease duration must be at least one year.
         </div>
@@ -61,6 +72,7 @@ const { showToast } = useCustomToast();
 const { getTenantsWithActiveRentals, tenantsList, houseId, loadingTenants } = useGetTenantsWithActiveRentals()
 const { payload } = useCreateLeaseTemplate()
 const router = useRouter()
+const localStorageData = JSON.parse(localStorage.getItem('lease-template-payload'))
 
 // Check if the form is empty
 const isFormEmpty = computed(() => {
@@ -78,22 +90,63 @@ const isFormEmpty = computed(() => {
   )
 })
 
-watch([() => payload.value.startDate, () => payload.value.endDate], ([newStartDate, newEndDate]) => {
-  if (newStartDate && newEndDate) {
-    const startDate = new Date(newStartDate)
-    const endDate = new Date(newEndDate)
-    const diffInDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24))
+// Get today's date to set as the minimum start date
+const currentDate = new Date().toISOString().split('T')[0];
 
-    if (diffInDays < 365) {
-      showToast({
-          title: "Error",
-          message: "The lease duration must be at least one year.",
-          toastType: "error",
-          duration: 3000
-        });
-    }
+// A reactive variable to hold the minimum end date (1 year from start date)
+const minEndDate = ref('');
+
+// Watcher for when the start date is selected or updated
+watch(() => payload.value.startDate, (newStartDate) => {
+  if (newStartDate) {
+    const startDate = new Date(newStartDate);
+    // Add one year to the selected start date
+    const nextYear = new Date(startDate.setFullYear(startDate.getFullYear() + 1));
+    // Format the date to 'YYYY-MM-DD' and set it as the minimum for end date
+    minEndDate.value = nextYear.toISOString().split('T')[0];
+  } else {
+    // Reset minEndDate if no start date is selected
+    minEndDate.value = '';
   }
+});
+
+
+watch(() =>  payload.value.startDate, (newEndDate) => {
+  localStorageData.endDate = newEndDate
 })
+
+watch(() =>  payload.value.documentName, (document) => {
+  localStorageData.documentName = document
+})
+
+// Watcher to update the minEndDate whenever the startDate changes
+watch(() => payload.value.startDate, (newStartDate) => {
+  if (newStartDate) {
+    const startDate = new Date(newStartDate);
+    // Add one year to the selected start date
+    const nextYear = new Date(startDate.setFullYear(startDate.getFullYear() + 1));
+    // Format the date to 'YYYY-MM-DD' and set it as the minimum end date
+    minEndDate.value = nextYear.toISOString().split('T')[0];
+  } else {
+    // Reset the minimum end date if no start date is selected
+    minEndDate.value = '';
+  }
+});
+
+// Watcher to update the minEndDate whenever the startDate changes
+watch(() => payload.value.startDate, (newStartDate) => {
+  localStorageData.startDate = newStartDate
+  if (newStartDate) {
+    const startDate = new Date(newStartDate);
+    // Add one year to the selected start date
+    const nextYear = new Date(startDate.setFullYear(startDate.getFullYear() + 1));
+    // Format the date to 'YYYY-MM-DD' and set it as the minimum end date
+    minEndDate.value = nextYear.toISOString().split('T')[0];
+  } else {
+    // Reset the minimum end date if no start date is selected
+    minEndDate.value = '';
+  }
+});
 
 const selectedProperty = ref(null)
 const selectedItem = ref({})
@@ -105,6 +158,7 @@ onMounted(() => {
 })
 
 const handleSelectedProperty = (data: any) => {
+  localStorage.setItem('selected-property', JSON.stringify(data))
   payload.value.propertyId = data.id
 }
 

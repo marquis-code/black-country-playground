@@ -1,7 +1,6 @@
 <template>
     <main>
         <div class="relative w-full h-44">
-      {{selected}}
             <label class="block text-sm font-medium text-gray-700">Assign property</label>
             <div class="mt-1 relative">
                 <input type="text" readonly placeholder="Single agent/property manager" v-model="selectedUser"

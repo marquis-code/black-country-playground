@@ -177,6 +177,9 @@ const dropdownVisible = ref<null | number>(null); // To track the visible dropdo
 
 const initials = ref('');
 
+definePageMeta({
+     middleware: 'auth'
+});
 
 onMounted(() => {
   const { getInitials } = useUserInitials(user.value);

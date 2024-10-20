@@ -20,7 +20,7 @@
         <section class="mb-6">
           <h3 class="text-base font-medium text-[#1D2739] mb-4 border-[0.5px] flex justify-between items-center py-3 px-3 rounded-lg bg-white">
             <span>Employment Information</span>
-            <a href="#" class="text-blue-500">Edit</a>
+            <!-- <a href="#" class="text-blue-500">Edit</a> -->
           </h3>
 
           <div class="border-[0.5px] py-6 px-3 rounded-lg bg-white">

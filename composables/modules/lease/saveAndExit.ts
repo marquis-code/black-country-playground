@@ -1,10 +1,16 @@
 import { lease_api } from "@/api_factory/modules/lease";
 import { useCustomToast } from '@/composables/core/useCustomToast'
 const { showToast } = useCustomToast();
+import { useUser } from "@/composables/auth/user";
+const { user } = useUser();
+
+const leaseSignatureUrl = localStorage.getItem('lease-signature-url')
 const processingSaveAndExit = ref(false)
 const assignPayload = ref({
     leaseAgreement: "<html></html>",
-    isPublished: false
+    isPublished: false,
+    houseOwnerSigneeName: "",
+    houseOwnerSignatureUrl: "",
 })
 const router = useRouter()
 
@@ -12,8 +18,10 @@ export const useSaveAndExit = () => {
 	const handleSaveAndExit = async (tenantId: string | number, houseId: string | number) => {
 		processingSaveAndExit.value = true
 		const res = await  lease_api.$_assign_lease_to_property(tenantId, houseId, {
-            leaseAgreement: `<html>${assignPayload.value.leaseAgreement}</html>`,
-            isPublished: false
+            leaseAgreement: assignPayload.value.leaseAgreement,
+            isPublished: false,
+            houseOwnerSigneeName: assignPayload.value.houseOwnerSigneeName || `${user?.value?.firstName} ${user?.value?.lastName}`,
+            houseOwnerSignatureUrl: leaseSignatureUrl
         }) as any
 
         if (res.type !== 'ERROR') {

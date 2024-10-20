@@ -20,6 +20,7 @@
   "dependencies": {
     "@fawmi/vue-google-maps": "^0.9.79",
     "@googlemaps/google-maps-services-js": "^3.4.0",
+    "@vueup/vue-quill": "^1.0.0-beta.11",
     "@googlemaps/js-api-loader": "^1.16.8",
     "@googlemaps/places": "^1.6.0",
     "@heroicons/vue": "v1",
@@ -33,7 +34,6 @@
     "@tiptap/starter-kit": "^2.8.0",
     "@tiptap/vue-3": "^2.8.0",
     "@vuepic/vue-datepicker": "^9.0.2",
-    "@vueup/vue-quill": "^1.2.0",
     "@vueuse/core": "^11.1.0",
     "apexcharts": "^3.49.0",
     "axios": "^1.7.7",
