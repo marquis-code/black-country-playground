@@ -32,10 +32,11 @@
         />
 
         <!-- 'View all' overlay for the last image if there are more than 5 images -->
+        <!-- @click="navigateToAllImages" -->
         <div
+          @click="openCarousel"
           v-if="remainingImagesCount > 0"
           class="relative cursor-pointer"
-          @click="navigateToAllImages"
         >
           <CoreImageZoom
             :src="allImages[4]"
@@ -51,17 +52,33 @@
         </div>
       </div>
     </div>
+    <div>
+      <!-- <button class="bg-blue-500 text-white px-4 py-2 rounded-md" @click="openCarousel">
+        View All Images
+      </button> -->
+      
+      <!-- {{propertyObj}} -->
+      <CoreCarouselModal v-if="isCarouselOpen" :property="propertyObj" />
+    </div>
+    <!-- <CoreCarouselModal v-if="isCarouselOpen" :property="propertyObj" /> -->
   </main>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
 import { useRouter } from "nuxt/app";
 import { useImageExtractor } from "@/composables/core/useExtractImages";
 const { extractImages } = useImageExtractor();
 const allImages = computed(() => extractImages(props.propertyObj));
 
 const props = defineProps<Props>();
+
+const isCarouselOpen = ref(false);
+const property = { /* your property data */ };
+
+// Function to open the carousel modal
+const openCarousel = () => {
+  isCarouselOpen.value = true;
+};
 
 // Accept the images as a prop
 interface Props {

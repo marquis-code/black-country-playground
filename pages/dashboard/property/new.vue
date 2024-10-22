@@ -749,26 +749,6 @@ const steps = ref([
   { id: 4, title: "Finalize listing and publish", completed: false },
 ]);
 
-// State to manage if we are in preview mode
-// const isPreviewMode = ref(false);
-
-// Toggle Preview Mode
-// function togglePreviewMode(isPreview: boolean) {
-//   isPreviewMode.value = isPreview;
-
-//   // Update query parameter based on preview mode
-//   if (isPreview) {
-//     router.push({
-//       query: { ...route.query, preview: 'true' }
-//     });
-//   } else {
-//     const query = { ...route.query };
-//     delete query.preview; // Remove the preview query parameter
-//     router.push({ query });
-//   }
-// }
-
-
 //Preview section code
 
 const floorObj = computed(() => {
@@ -861,34 +841,6 @@ const prevImage = (index: number) => {
     currentImageIndex.value[index] = (currentImageIndex.value[index] - 1 + totalImages) % totalImages;
   }
 };
-
-// const currentImageIndex = ref<number[]>(Array(payload?.commonAreas?.value?.length).fill(0));
-
-// // Watch for changes to `commonAreas` to keep `currentImageIndex` in sync
-// watch(
-//   () => payload.commonAreas.value,
-//   (newAreas) => {
-//     currentImageIndex.value = Array(newAreas?.length).fill(0);
-//   },
-//   { immediate: true }
-// );
-
-// // Function to show the next image
-// const nextImage = (index: number) => {
-//   const totalImages = payload.commonAreas.value[index]?.images?.length;
-//   if (totalImages) {
-//     currentImageIndex.value[index] = (currentImageIndex.value[index] + 1) % totalImages;
-//   }
-// };
-
-// // Function to show the previous image
-// const prevImage = (index: number) => {
-//   const totalImages = payload.commonAreas.value[index]?.images?.length;
-//   if (totalImages) {
-//     currentImageIndex.value[index] = (currentImageIndex.value[index] - 1 + totalImages) % totalImages;
-//   }
-// };
-
 
 // Current selected room
 const currentRoom = ref(payload.rooms.value[0] || {}); // Set the first room as the default selected room
@@ -985,65 +937,6 @@ function handlePreviousParentStep() {
   }
 }
 
-// function handleNextStep() {
-//   if (activeParentStep.value === 1) {
-//     if (basicPropertyInformationStep.value < 2) {
-//       basicPropertyInformationStep.value += 1;
-//     } else {
-//       handleNextParentStep();
-//     }
-//   } else if (activeParentStep.value === 2) {
-//     if (propertyDetailsStep.value < 2) {
-//       propertyDetailsStep.value += 1;
-//     } else {
-//       handleNextParentStep();
-//     }
-//   } else if (activeParentStep.value === 3) {
-//     if (visualsStep.value < 2) {
-//       visualsStep.value += 1;
-//     } else {
-//       handleNextParentStep();
-//     }
-//   } else if (activeParentStep.value === 4) {
-//     if (finalizeStep.value < 3) {
-//       finalizeStep.value += 1;
-//     }
-//   }
-//   updateQueryParams();
-// }
-
-// function handleNextStep() {
-//   if (activeParentStep.value === 1) {
-//     if (basicPropertyInformationStep.value < 2) {
-//       basicPropertyInformationStep.value += 1;
-//     } else {
-//       handleNextParentStep();
-//     }
-//   } else if (activeParentStep.value === 2) {
-//     if (propertyDetailsStep.value < 2) {
-//       propertyDetailsStep.value += 1;
-//     } else {
-//       handleNextParentStep();
-//     }
-//   } else if (activeParentStep.value === 3) {
-//     if (visualsStep.value < 3) { // Ensure this is correctly checking for up to step 3
-//       visualsStep.value += 1;
-//     } else {
-//       handleNextParentStep();
-//     }
-//   } else if (activeParentStep.value === 4) {
-//     if (finalizeStep.value < 3) {
-//       finalizeStep.value += 1;
-//     } else {
-//       // This means we've reached the last step of the final stage
-//       router.push('/dashboard/property/preview'); // Adjust the route name/path as needed
-//       return;
-//     }
-//   }
-
-//   updateQueryParams();
-// }
-
 function togglePreviewMode(isPreview: boolean) {
   isPreviewMode.value = isPreview;
 
@@ -1091,34 +984,6 @@ function handleNextStep() {
   updateQueryParams();
 }
 
-
-// function handleNextStep() {
-//   if (activeParentStep.value === 1) {
-//     if (basicPropertyInformationStep.value < 2) {
-//       basicPropertyInformationStep.value += 1;
-//     } else {
-//       handleNextParentStep();
-//     }
-//   } else if (activeParentStep.value === 2) {
-//     if (propertyDetailsStep.value < 2) {
-//       propertyDetailsStep.value += 1;
-//     } else {
-//       handleNextParentStep();
-//     }
-//   } else if (activeParentStep.value === 3) {
-//     if (visualsStep.value < 3) { // Ensure this is correctly checking for up to step 3
-//       visualsStep.value += 1;
-//     } else {
-//       handleNextParentStep();
-//     }
-//   } else if (activeParentStep.value === 4) {
-//     if (finalizeStep.value < 3) {
-//       finalizeStep.value += 1;
-//     }
-//   }
-//   updateQueryParams();
-// }
-
 function handlePreviousStep() {
   if (activeParentStep.value === 1 && basicPropertyInformationStep.value > 1) {
     basicPropertyInformationStep.value -= 1;
@@ -1148,22 +1013,6 @@ function handlePreviousStep() {
   updateQueryParams();
 }
 
-// function handlePreviousStep() {
-//   if (activeParentStep.value === 1 && basicPropertyInformationStep.value > 1) {
-//     basicPropertyInformationStep.value -= 1;
-//   } else if (
-//     activeParentStep.value === 2 &&
-//     propertyDetailsStep.value > 1
-//   ) {
-//     propertyDetailsStep.value -= 1;
-//   } else if (activeParentStep.value === 3 && visualsStep.value > 1) {
-//     visualsStep.value -= 1;
-//   } else if (activeParentStep.value === 4 && finalizeStep.value > 1) {
-//     finalizeStep.value -= 1;
-//   }
-//   updateQueryParams();
-// }
-
 function handleNextParentStep() {
   if (activeParentStep.value < steps.value.length) {
     steps.value[activeParentStep.value - 1].completed = true;
@@ -1172,16 +1021,6 @@ function handleNextParentStep() {
     updateQueryParams();
   }
 }
-
-
-
-// function handlePreviousParentStep() {
-//   if (activeParentStep.value > 1) {
-//     activeParentStep.value -= 1;
-//     updateQueryParams();
-//   }
-// }
-
 
 const router = useRouter();
 const openCancelModal = ref(false)
@@ -1202,66 +1041,6 @@ const basicPropertyInformationStep = ref(1);
 const propertyDetailsStep = ref(1);
 const visualsStep = ref(1);
 const finalizeStep = ref(1);
-
-// function handleNextStep() {
-//   if (activeParentStep.value === 1) {
-//     if (basicPropertyInformationStep.value < 2) {
-//       basicPropertyInformationStep.value += 1;
-//     } else {
-//       handleNextParentStep();
-//     }
-//   } else if (activeParentStep.value === 2) {
-//     if (propertyDetailsStep.value < 2) {
-//       propertyDetailsStep.value += 1;
-//     } else {
-//       handleNextParentStep();
-//     }
-//   } else if (activeParentStep.value === 3) {
-//     if (visualsStep.value < 2) {
-//       visualsStep.value += 1;
-//     } else {
-//       handleNextParentStep();
-//     }
-//   } else if (activeParentStep.value === 4) {
-//     if (finalizeStep.value < 3) {
-//       finalizeStep.value += 1;
-//     }
-//   }
-// }
-
-// function handlePreviousStep() {
-//   if (activeParentStep.value === 1) {
-//     if (basicPropertyInformationStep.value > 1) {
-//       basicPropertyInformationStep.value -= 1;
-//     }
-//   } else if (activeParentStep.value === 2) {
-//     if (propertyDetailsStep.value > 1) {
-//       propertyDetailsStep.value -= 1;
-//     }
-//   } else if (activeParentStep.value === 3) {
-//     if (visualsStep.value > 1) {
-//       visualsStep.value -= 1;
-//     }
-//   } else if (activeParentStep.value === 4) {
-//     if (finalizeStep.value > 1) {
-//       finalizeStep.value -= 1;
-//     }
-//   }
-// }
-
-// function handleNextParentStep() {
-//   if (activeParentStep.value < steps.value.length) {
-//     steps.value[activeParentStep.value - 1].completed = true;
-//     activeParentStep.value += 1;
-//     resetSubSteps();
-//   }
-// }
-
-// function handlePreviousParentStep() {
-//   if (activeParentStep.value > 1) {
-//     activeParentStep.value -= 1;
-//   }
-// }
 
 function handleStepClick(stepId: any) {
   // Only allow navigation to previous steps or the current step
@@ -1296,19 +1075,6 @@ function handleBasicPropertyInformationFormData(data: any) {
   sessionStorage.setItem('property', JSON.stringify(incomingData.value))
 }
 
-// const neighbouringLandmarksArray = ref([]) as any
-// const handleSelectedAmenity = (item: any) => {
-//   const result  = neighbouringLandmarksArray.value.push({
-//         name: item.name,
-//         type: item.type,
-//         description: item.display_name,
-//         longitude: item.lat,
-//         latitude: item.lon,
-//         address: item.display_name,
-//   })
-//   console.log()
-//   payload.neighbouringLandmarks.value = result
-// }
 
 const neighbouringLandmarksArray = ref([]) as any;
 
@@ -1336,15 +1102,7 @@ const handleLocationSearch = (data: any) => {
 }
 
 const handleCommonAreas = (data: any) => {
-// console.log(data, 'sara')
-// const storedData = sessionStorage.getItem('property')
-// let propertyData = storedData ? JSON.parse(storedData) : {}
 
-// Update the session storage with new location data
-// propertyData = {
-//   ...propertyData, // merge with existing data
-//   commonAreas: data
-// }
 
 payload.commonAreas.value = data
 
@@ -1352,19 +1110,6 @@ payload.commonAreas.value = data
 // sessionStorage.setItem('property', JSON.stringify(propertyData))
 }
 const handlePropertyFurnished = (data: any) => {
-
-// Retrieve existing session data from sessionStorage (if any)
-// const storedData = sessionStorage.getItem('property')
-// let propertyData = storedData ? JSON.parse(storedData) : {}
-
-// // Update the session storage with new location data
-// propertyData = {
-//   ...propertyData, // merge with existing data
-//   isFurnishedCommonArea: data
-// }
-
-// // Store the updated data back to session storage
-// sessionStorage.setItem('property', JSON.stringify(propertyData))
 payload.isFurnishedCommonArea.value = data
 
 }
@@ -1509,87 +1254,6 @@ watch(
   },
   { deep: true }
 );
-
-// const validateRooms = (rooms: any[]): string[] => {
-//   const validationErrors: string[] = [];
-
-//   rooms.forEach((room, index) => {
-//     const roomName = room.name || `Room ${index + 1}`;
-
-//     if (room.availability === 'available_now') {
-//       if (!room.rentFrequency) {
-//         validationErrors.push(`${roomName}: Rent frequency must be set when the room is available now.`);
-//       }
-//       if (!room.rentAmount) {
-//         validationErrors.push(`${roomName}: Rent amount must be set when the room is available now.`);
-//       }
-//     }
-
-//     if (room.availability === 'unavailable') {
-//       if (!room.rentFrequency) {
-//         validationErrors.push(`${roomName}: Rent frequency must be set when the room is unavailable.`);
-//       }
-//       if (!room.occupantName) {
-//         validationErrors.push(`${roomName}: Occupant name must be set when the room is unavailable.`);
-//       }
-//     }
-
-//     if (room.availability === 'available_from_date') {
-//       if (!room.rentFrequency) {
-//         validationErrors.push(`${roomName}: Rent frequency must be set when the room is available from a specific date.`);
-//       }
-//       if (!room.occupantName) {
-//         validationErrors.push(`${roomName}: Occupant name must be set when the room is available from a specific date.`);
-//       }
-//       if (!room.rentAmount) {
-//         validationErrors.push(`${roomName}: Rent amount must be set when the room is available from a specific date.`);
-//       }
-//       if (!room.availableFrom) {
-//         validationErrors.push(`${roomName}: Availability date must be set when the room is available from a specific date.`);
-//       }
-//     }
-//   });
-
-//   return validationErrors;
-// };
-
-// const validateDetailedPropertyInformationStep = () => {
-//   if (propertyDetailsStep.value === 1) {
-//     // Validate "Details about Common areas"
-//     return payload.commonAreas.value.length > 0;
-//   } else if (propertyDetailsStep.value === 2) {
-//     // Validate "Details about the private rooms"
-//     if (payload.rooms.value.length > 0) {
-//       // Perform detailed room validation
-//       const roomValidationErrors = validateRooms(payload.rooms.value);
-//       console.log(roomValidationErrors, 'here ooooo')
-      
-//       if (roomValidationErrors.length > 0) {
-//         // Handle or display the validation errors (you can adjust this to show in your UI)
-//         roomValidationErrors.forEach(error => {
-//           console.error(error); // For now, we'll log it to the console
-//         });
-//         return false; // Return false if validation fails
-//       }
-      
-//       return true; // Return true if validation passes
-//     }
-//   }
-//   return true; // If not in any specific step, return true by default
-// };
-
-
-
-// const validateDetailedPropertyInformationStep = () => {
-//   if (propertyDetailsStep.value === 1) {
-//     // Validate "Details about Common areas"
-//     return payload.commonAreas.value.length > 0;
-//   } else if (propertyDetailsStep.value === 2) {
-//     // Validate "Details about the private rooms"
-//     return payload.rooms.value.length > 0;
-//   }
-//   return true;
-// };
 
 const validateAddVisualsStep = () => {
   if (visualsStep.value === 1) {
