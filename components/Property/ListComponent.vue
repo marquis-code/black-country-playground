@@ -546,7 +546,7 @@ const handleNewProperty = () => {
 }
 
 .custom-scrollbar-container {
-  max-height: 600px;
+  max-height: 700px;
   overflow-y: auto;
   overflow-x: auto;
   scrollbar-width: thin; /* For Firefox */

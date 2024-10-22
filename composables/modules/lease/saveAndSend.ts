@@ -24,7 +24,7 @@ export const useSaveAndSend = () => {
       leaseAgreement: assignPayload.value.leaseAgreement,
       isPublished: true,
       houseOwnerSigneeName: assignPayload.value.houseOwnerSigneeName || `${user?.value?.firstName} ${user?.value?.lastName}`,
-      houseOwnerSignatureUrl: leaseSignatureUrl
+      houseOwnerSignatureUrl: leaseSignatureUrl || assignPayload.value.houseOwnerSignatureUrl
     })) as any;
 
     if (res.type !== "ERROR") {
@@ -37,7 +37,7 @@ export const useSaveAndSend = () => {
       localStorage.removeItem('lease-signature-url')
       localStorage.removeItem('lease-template-payload')
       localStorage.removeItem('selected-property')
-      router.push("/dashboard/property/lease-documents/lease-document-success");
+      window.location.href = '/dashboard/property/lease-documents/lease-document-success'
     } else {
       showToast({
         title: "Error",
@@ -51,6 +51,8 @@ export const useSaveAndSend = () => {
 
   const setSaveAndSendPayloadObj = (data: any) => {
     assignPayload.value.leaseAgreement = data.leaseAgreement;
+    assignPayload.value.houseOwnerSigneeName = data.houseOwnerSigneeName;
+    assignPayload.value.houseOwnerSignatureUrl = data.houseOwnerSignatureUrl;
   };
 
   return {

@@ -353,408 +353,6 @@
       </CoreModal>
     </main>
     </template>
-    
-    <!-- <script setup lang="ts">
-    import { useSaveAndSend } from '@/composables/modules/lease/saveAndSend'
-    import { useSaveAndExit } from '@/composables/modules/lease/saveAndExit'
-    // import { useAssignLeaseToProperty } from '@/composables/modules/lease/assignLeaseToProperty'
-    import LayoutWithoutSidebar from '@/layouts/dashboardWithoutSidebar.vue';
-    import { useCustomToast } from '@/composables/core/useCustomToast'
-    import { useCreateLeaseTemplate } from '@/composables/modules/lease/create'
-    const {  createLeaseTemplate, loading, payload, setPayloadObj } = useCreateLeaseTemplate()
-    // const { assignLeaseToProperty, assignPayload, loading: processing, setAssignPayloadObj } = useAssignLeaseToProperty()
-    const { showToast } = useCustomToast();
-    import { useUser } from "@/composables/auth/user";
-    const { user } = useUser();
-    const router = useRouter()
-
-    const leaseSignatureUrl = ref(localStorage.getItem('lease-signature-url'))
-    
-    const { setSaveAndSendPayloadObj, handleSaveAndSend, processingSaveAndSend  } = useSaveAndSend()
-    const { handleSaveAndExit, setSaveAndExitPayloadObj, processingSaveAndExit } = useSaveAndExit()
-    
-    const editor = ref<HTMLElement | null>(null);
-    const signatureSection = ref<HTMLElement | null>(null);
-    const selectedFont = ref('Arial');
-    const fontSize = ref(14);
-    const fontColor = ref('#z000000');
-    const showPreview = ref(false);
-    const previewContent = ref('');
-    const templateTitle = 'Lease Agreement';
-    const dropdownVisible = ref(false);
-    const alignmentPosition = ref('justify')
-    const listingPosition = ref('ordered')
-    const paragraphPosition = ref('p')
-    const localData = ref({})
-    
-    const isModalOpen = ref(false);
-      const signedSignature = ref<string | null>(null);
-    
-      const emittedAgreementData = ref({}) as any
-      
-      const openModal = () => {
-        isModalOpen.value = true;
-      };
-    
-      const closeModal = () => {
-        isModalOpen.value = false
-      }
-    
-    const leaseAgreementContent = `
-      <h2 style="font-size: 1.5rem; font-weight: 600; color: #2D3748; text-align: center; margin-bottom: 1rem;">Lease Agreement</h2>
-      <p style="text-align: center; color: #718096; margin-bottom: 1.5rem;">
-        This is a legally binding agreement. If not understood, consult an Attorney.
-      </p>
-      <ol style="list-style-type: decimal; margin-left: 1rem; margin-bottom: 1.5rem;">
-        <li style="margin-bottom: 1.5rem;">
-          <strong>Parties:</strong>
-          This Lease Agreement is entered into on [Date] between: [Homeowner's Name], hereinafter referred to as the "Landlord", and [Tenant's Name], hereinafter referred to as the "Tenant".
-        </li>
-        <li style="margin-bottom: 1.5rem;">
-          <strong>Property:</strong>
-          The Landlord agrees to lease to the Tenant, and the Tenant agrees to rent from the Landlord, located at [Property location].
-        </li>
-        <li style="margin-bottom: 1.5rem;">
-          <strong>Terms of Lease:</strong>
-          The lease shall commence on [Start Date] and continue until [End Date], unless terminated earlier as provided in this agreement.
-        </li>
-        <li style="margin-bottom: 1.5rem;">
-          <strong>Rent and Payments:</strong>
-          <ul style="list-style-type: disc; margin-left: 1rem;">
-            <li>The Tenant agrees to pay rent in the amount of [Monthly Rent] per month, due on the [Day of the Month] of each month.</li>
-            <li>Rent payments shall be made by [Accepted Payment Method], to be delivered to the Landlord or as directed by the Landlord.</li>
-          </ul>
-        </li>
-        <li style="margin-bottom: 1.5rem;">
-          <strong>Security Deposit:</strong>
-          <ul style="list-style-type: disc; margin-left: 1rem;">
-            <li>The Tenant shall provide a security deposit in the amount of [Security Deposit Amount] upon execution of this agreement.</li>
-            <li>The security deposit shall be held by the Landlord as security for the performance of the Tenant's obligations under this lease.</li>
-          </ul>
-        </li>
-        <li style="margin-bottom: 1.5rem;">
-          <strong>Use of Property:</strong>
-          <ul style="list-style-type: disc; margin-left: 1rem;">
-            <li>The Tenant shall use the property solely for residential purposes and shall not engage in any illegal activities on the premises.</li>
-            <li>The Tenant shall comply with all applicable laws, rules, and regulations governing the use of the property.</li>
-          </ul>
-        </li>
-        <li style="margin-bottom: 1.5rem;">
-          <strong>Maintenance and Repairs:</strong>
-          <ul style="list-style-type: disc; margin-left: 1rem;">
-            <li>The Landlord shall be responsible for maintaining the property in good repair, including repairs to the structure, plumbing, heating, and electrical systems.</li>
-            <li>The Tenant shall be responsible for maintaining the property in a clean and sanitary condition and promptly reporting any maintenance issues to the Landlord.</li>
-          </ul>
-        </li>
-        <li style="margin-bottom: 1.5rem;">
-          <strong>Termination:</strong>
-          <ul style="list-style-type: disc; margin-left: 1rem;">
-            <li>Either party may terminate this lease agreement by providing [Notice Period] written notice to the other party.</li>
-            <li>In the event of termination, the Tenant shall vacate the premises and return possession of the property to the Landlord in the same condition as at the commencement of the lease.</li>
-          </ul>
-        </li>
-      </ol>
-      </div>
-    `;
-    
-    const handleAgreement = (data: any) => {
-      console.log(data, 'emited dadata')
-      showToast({
-              title: "Success",
-              message: 'Signature was saved successfully.',
-              toastType: "success",
-              duration: 3000
-            });
-      emittedAgreementData.value = data
-    }
-    
-    // onMounted(() => {
-    //     const localStorageObj = JSON.parse(localStorage.getItem('lease-template-payload'))
-    //     localData.value = localStorageObj
-    
-    //     if(Object.keys(localStorageObj).length){
-    //       editor.value.innerHTML = localStorageObj.body;
-    //     } else {
-    //       editor.value.innerHTML = leaseAgreementContent;
-    //     }
-    
-    //   // if (editor.value) {
-    //   //   editor.value.innerHTML = leaseAgreementContent;
-    //   // }
-    // });
-
-    onMounted(() => {
-  // Load existing lease agreement content from localStorage
-  const localStorageObj = JSON.parse(localStorage.getItem('lease-template-payload'));
-  localData.value = localStorageObj;
-
-  if (Object.keys(localStorageObj).length) {
-    editor.value.innerHTML = localStorageObj.body;
-  } else {
-    editor.value.innerHTML = leaseAgreementContent;
-  }
-
-  // Listen for input changes in the contenteditable div and update local storage
-  editor.value.addEventListener('input', () => {
-    updateLeaseInLocalStorage();
-  });
-});
-
-// Function to update the lease content in localStorage
-const updateLeaseInLocalStorage = () => {
-  const leaseContent = editor.value?.innerHTML || leaseAgreementContent;
-  const payload = {
-    body: leaseContent,
-    documentName: payload.value?.documentName || 'Lease Agreement',
-  };
-
-  localStorage.setItem('lease-template-payload', JSON.stringify(payload));
-};
-
-    
-    const deleteTemplate = () => {
-      if (editor.value) {
-        editor.value.innerHTML = leaseAgreementContent;
-      }
-    
-      showToast({
-              title: "Success",
-              message: 'Lease Template was reset successfully',
-              toastType: "success",
-              duration: 3000
-            });
-    }
-    
-    const setAlignment = (alignment: string) => {
-      if (editor.value) {
-        alignmentPosition.value = alignment
-        document.execCommand('justify' + alignment, false, '');
-      }
-    };
-    
-    const setList = (listType: string) => {
-      if (editor.value) {
-        listingPosition.value = listType
-        document.execCommand(listType === 'ordered' ? 'insertOrderedList' : 'insertUnorderedList', false, '');
-      }
-    };
-    
-    // const setBold = () => {
-    //   if (editor.value) {
-    //     document.execCommand('bold', false, '');
-    //   }
-    // };
-    
-    // const setUnderline = () => {
-    //   if (editor.value) {
-    //     document.execCommand('underline', false, '');
-    //   }
-    // };
-    
-    // const setItalic = () => {
-    //   if (editor.value) {
-    //     document.execCommand('italic', false, '');
-    //   }
-    // };
-
-    const setBold = () => {
-  if (editor.value) {
-    document.execCommand('bold', false, '');
-    wrapSelectedTextWithSpan('font-weight: bold');
-  }
-};
-
-const setItalic = () => {
-  if (editor.value) {
-    document.execCommand('italic', false, '');
-    wrapSelectedTextWithSpan('font-style: italic');
-  }
-};
-
-const setUnderline = () => {
-  if (editor.value) {
-    document.execCommand('underline', false, '');
-    wrapSelectedTextWithSpan('text-decoration: underline');
-  }
-};
-
-const wrapSelectedTextWithSpan = (style) => {
-  const selection = window.getSelection();
-  if (!selection.rangeCount) return;
-
-  const range = selection.getRangeAt(0);
-  const span = document.createElement('span');
-  span.style.cssText = style;
-  range.surroundContents(span);
-};
-
-const applyStyle = (styleName, styleValue) => {
-  const selection = window.getSelection();
-  if (!selection.rangeCount) return;
-
-  const range = selection.getRangeAt(0);
-  const span = document.createElement('span');
-  span.style[styleName] = styleValue;
-  range.surroundContents(span);
-};
-    
-    const setHeading = (tag: string) => {
-      if (editor.value) {
-        paragraphPosition.value = tag
-        document.execCommand('formatBlock', false, tag);
-      }
-    };
-    
-    const insertImage = () => {
-      const url = prompt('Enter image URL');
-      if (url && editor.value) {
-        document.execCommand('insertImage', false, url);
-      }
-    };
-    
-    const insertLine = () => {
-      if (editor.value) {
-        document.execCommand('insertHorizontalRule', false, '');
-      }
-    };
-    
-    const insertTable = () => {
-      const rows = prompt('Enter number of rows');
-      const cols = prompt('Enter number of columns');
-      if (rows && cols && editor.value) {
-        let table = '<table border="1" style="width: 100%">';
-        for (let i = 0; i < parseInt(rows); i++) {
-          table += '<tr>';
-          for (let j = 0; j < parseInt(cols); j++) {
-            table += '<td>&nbsp;</td>';
-          }
-          table += '</tr>';
-        }
-        table += '</table>';
-        editor.value.innerHTML += table;
-      }
-    };
-    
-    const previewDocument = () => {
-      if (editor.value) {
-        previewContent.value = editor.value.innerHTML + signatureSection.value.innerHTML;
-        showPreview.value = true;
-      }
-    };
-    
-    const proceedSaveAndExit = async () => {
-      const signatureUrl = emittedAgreementData?.value?.signatureObj?.secure_url || leaseSignatureUrl.value;
-      const reqPayload = {
-        // leaseAgreement: Object.keys(localData?.value).length ? localData?.value?.body : leaseAgreementContent,
-        leaseAgreement: editor.value?.innerHTML || leaseAgreementContent, // Ensure editor HTML with styles is saved
-        isPublished: false,
-        houseOwnerSigneeName: `${user?.value?.firstName} ${user?.value?.lastName}` || "",
-        houseOwnerSignatureUrl: signatureUrl
-      };
-        setSaveAndExitPayloadObj(reqPayload)
-        await handleSaveAndExit(payload.value.tenantId, payload.value.propertyId)
-    }
-    
-    const proceedSaveAndSend = async () => {
-     const signatureUrl = emittedAgreementData?.value?.signatureObj?.secure_url || leaseSignatureUrl.value;
-
-      if (!signatureUrl) {
-        showToast({
-          title: "Error",
-          message: 'You need to sign before you can send the lease agreement.',
-          toastType: "error",
-          duration: 3000
-        });
-        return;
-      }
-
-      const reqPayload = {
-        // leaseAgreement: Object.keys(localData?.value).length ? localData?.value?.body : leaseAgreementContent,
-        leaseAgreement: editor.value?.innerHTML || leaseAgreementContent, // Ensure editor HTML with styles is saved
-        isPublished: true,
-        houseOwnerSigneeName: `${user?.value?.firstName} ${user?.value?.lastName}` || "",
-        houseOwnerSignatureUrl: signatureUrl
-      };
-
-  setSaveAndSendPayloadObj(reqPayload);
-  await handleSaveAndSend(payload.value.tenantId, payload.value.propertyId);
-};
-
-    
-    // Watch font style and size changes
-    // watch(selectedFont, (newFont) => {
-    //   if (editor.value) {
-    //     editor.value.style.fontFamily = newFont;
-    //   }
-    // });
-    
-    // watch(fontSize, (newSize) => {
-    //   if (editor.value) {
-    //     editor.value.style.fontSize = newSize + 'px';
-    //   }
-    // });
-    
-    // watch(fontColor, (newColor) => {
-    //   if (editor.value) {
-    //     document.execCommand('foreColor', false, newColor);
-    //   }
-    // });
-
-    watch(selectedFont, (newFont) => {
-  if (editor.value) {
-    editor.value.style.fontFamily = newFont;
-  }
-});
-
-watch(fontSize, (newSize) => {
-  if (editor.value) {
-    editor.value.style.fontSize = newSize + 'px';
-  }
-});
-
-watch(fontColor, (newColor) => {
-  if (editor.value) {
-    document.execCommand('foreColor', false, newColor);
-    wrapSelectedTextWithSpan(`color: ${newColor}`);
-  }
-});
-      
-      const toggleDropdown = () => {
-        dropdownVisible.value = !dropdownVisible.value;
-      };
-      
-      const sendNow = async () => {
-        const payload = {
-          body: previewContent.value || leaseAgreementContent,
-          documentName: 'TEST'
-        }
-        setPayloadObj(payload)
-        await createLeaseTemplate()
-        localStorage.removeItem('lease-template-payload')
-        router.push('dashboard/property?activeTab=lease-documents')
-      };
-      
-      const saveAndExit = async () => {
-        const payload = {
-          body: previewContent.value || leaseAgreementContent,
-          documentName: 'TEST'
-        }
-        setPayloadObj(payload)
-        await createLeaseTemplate()
-        localStorage.removeItem('lease-template-payload')
-        router.push('dashboard/property?activeTab=lease-documents')
-      };
-      
-      const duplicateTemplate = () => {
-        // Logic to handle duplicating the template
-      };
-    </script>
-    
-    <style scoped>
-    /* Custom styles as needed */
-    </style>
-     -->
-
      <script setup lang="ts">
 import { useSaveAndSend } from '@/composables/modules/lease/saveAndSend';
 import { useSaveAndExit } from '@/composables/modules/lease/saveAndExit';
@@ -768,7 +366,7 @@ const { showToast } = useCustomToast();
 const { user } = useUser();
 const router = useRouter();
 
-const leaseSignatureUrl = ref(localStorage.getItem('lease-signature-url'));
+const leaseSignatureUrl = localStorage.getItem('lease-signature-url')
 
 const { setSaveAndSendPayloadObj, handleSaveAndSend, processingSaveAndSend } = useSaveAndSend();
 const { handleSaveAndExit, setSaveAndExitPayloadObj, processingSaveAndExit } = useSaveAndExit();
@@ -819,8 +417,6 @@ onMounted(() => {
   if (Object.keys(localStorageObj).length) {
     // editor.value.innerHTML = localStorageObj.body; 
     editor.value.innerHTML = payload.value.body
-  } else {
-    editor.value.innerHTML = leaseAgreementContent;
   }
 
   editor.value.addEventListener('input', () => {
@@ -830,7 +426,7 @@ onMounted(() => {
 
 // Function to update the lease content in localStorage
 const updateLeaseInLocalStorage = () => {
-  const leaseContent = editor.value?.innerHTML || leaseAgreementContent;
+  const leaseContent = editor.value?.innerHTML;
   payload.value.body = leaseContent
   // console.log(editor.value?.innerHTML, 'hee oooooo', leaseContent)
   // const payload = {
@@ -924,21 +520,23 @@ watch(fontColor, (newColor) => {
 
 // Save and exit or send functionalities
 const proceedSaveAndExit = async () => {
-  const signatureUrl = emittedAgreementData?.value?.signatureObj?.secure_url || leaseSignatureUrl.value;
+  // const signatureUrl = emittedAgreementData?.value?.signatureObj?.secure_url || leaseSignatureUrl.value;
   const reqPayload = {
-    leaseAgreement: editor.value?.innerHTML || leaseAgreementContent,
+    leaseAgreement: editor.value?.innerHTML,
     isPublished: false,
     houseOwnerSigneeName: `${user?.value?.firstName} ${user?.value?.lastName}` || "",
-    houseOwnerSignatureUrl: signatureUrl,
+    houseOwnerSignatureUrl: leaseSignatureUrl
   };
   setSaveAndExitPayloadObj(reqPayload);
   await handleSaveAndExit(payload.value.tenantId, payload.value.propertyId);
 };
 
 const proceedSaveAndSend = async () => {
-  const signatureUrl = leaseSignatureUrl.value || emittedAgreementData?.value?.signatureObj?.secure_url
+  // const signatureUrl = leaseSignatureUrl.value || emittedAgreementData?.value?.signatureObj?.secure_url
 
-  if (!signatureUrl) {
+  // const signatureUrl = leaseSignatureUrl.value
+
+  if (!leaseSignatureUrl) {
     showToast({
       title: "Error",
       message: 'You need to sign before you can send the lease agreement.',
@@ -949,10 +547,10 @@ const proceedSaveAndSend = async () => {
   }
 
   const reqPayload = {
-    leaseAgreement: editor.value?.innerHTML || leaseAgreementContent,
+    leaseAgreement: editor.value?.innerHTML,
     isPublished: true,
     houseOwnerSigneeName: `${user?.value?.firstName} ${user?.value?.lastName}` || "",
-    houseOwnerSignatureUrl: signatureUrl,
+    houseOwnerSignatureUrl: leaseSignatureUrl
   };
 
   setSaveAndSendPayloadObj(reqPayload);

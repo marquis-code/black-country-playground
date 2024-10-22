@@ -199,9 +199,9 @@ const applyFilters = () => {
   }
 
   router.push('/dashboard/property/lease-documents/create-methods')
-  payload.value.documentName = ""
-  payload.value.startDate = ""
-  payload.value.endDate = ""
+  // payload.value.documentName = ""
+  // payload.value.startDate = ""
+  // payload.value.endDate = ""
   closeModal()
 }
 

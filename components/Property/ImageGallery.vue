@@ -58,11 +58,10 @@
 import { computed } from "vue";
 import { useRouter } from "nuxt/app";
 import { useImageExtractor } from "@/composables/core/useExtractImages";
-
-const props = defineProps<Props>();
-
 const { extractImages } = useImageExtractor();
 const allImages = computed(() => extractImages(props.propertyObj));
+
+const props = defineProps<Props>();
 
 // Accept the images as a prop
 interface Props {

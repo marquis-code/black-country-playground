@@ -17,13 +17,13 @@
                 <button @click="router.push('/dashboard/property/')"
                 class="bg-[#292929] w-full  text-white py-3.5 text-sm px-4 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50"
             >
-            Send lease agreement  now
+            Continue
             </button>
-            <button @click="router.push('/dashboard/property/')"
+            <!-- <button @click="router.push('/dashboard/property/')"
             class="w-full bg-[#EBE5E0] py-3.5 text-[#292929] text-sm px-4 rounded-md  "
             >
             I’ll do it later
-            </button>
+            </button> -->
             </div>
       </div>
     </div>

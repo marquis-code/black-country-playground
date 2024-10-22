@@ -28,6 +28,7 @@ export const useEditProperty = () => {
     agentId: useStorage('property_agentId', null),
     rules: useStorage('property_rules', []),
     questions: useStorage('property_questions', []),
+    status: ref(null), // Add status field to payload for dynamic setting
   };
 
   const { propertyObj, getProperty, loading: fetchingProperty } = useFetchProperty();
@@ -100,7 +101,8 @@ export const useEditProperty = () => {
       });
   };
 
-  const finalPayload = () => {
+  const finalPayload = (status: string) => {
+    console.log(status, 'her from composale')
     const filteredRooms = filterRooms(payload.rooms.value); // Apply room filtering
 
     return {
@@ -125,13 +127,14 @@ export const useEditProperty = () => {
       agentId: payload.agentId.value,
       rules: payload.rules.value,
       questions: payload.questions.value,
+      status, // Adding the status to the payload
     };
   };
 
   // Edit Property function
   const editProperty = async () => {
     loading.value = true;
-    const res = await $_update_property(queryId.value, finalPayload());
+    const res = await $_update_property(queryId.value, finalPayload("published"));
     if (res.type !== "ERROR") {
       router.push("/dashboard/property/edit-success");
     }
@@ -140,7 +143,7 @@ export const useEditProperty = () => {
 
   const savingProperty = async () => {
     saving.value = true;
-    const res = await $_update_property(queryId.value, finalPayload());
+    const res = await $_update_property(queryId.value, finalPayload("draft"));
     if (res.type !== "ERROR") {
       router.push("/dashboard/property/edit-success");
     }
