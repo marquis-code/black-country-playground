@@ -1252,7 +1252,7 @@ watch(
     console.log('Rooms data changed:', newRooms);
     validateDetailedPropertyInformationStep(); // Automatically validate when rooms change
   },
-  { deep: true }
+  { deep: false }
 );
 
 const validateAddVisualsStep = () => {
