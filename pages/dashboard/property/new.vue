@@ -216,26 +216,25 @@
               <CoreProgressStepper
                 v-if="activeParentStep === 3"
                 :titles="[
-                  'Upload Property Exterior and Street View Images',
                   'Upload images of the common area',
                   'Upload images of the private rooms',
                 ]"
                 :totalSteps="3"
                 :currentStep="visualsStep"
               />
-              <UploadPropertyExterior
+              <!-- <UploadPropertyExterior
               :payload="payload"
               v-if="activeParentStep === 3 && visualsStep === 1"
               >
-              </UploadPropertyExterior>
+              </UploadPropertyExterior> -->
               <UploadPhotos
                 :payload="payload"
-                v-if="activeParentStep === 3 && visualsStep === 2"
+                v-if="activeParentStep === 3 && visualsStep === 1"
               >
               </UploadPhotos>
               <AddVideoTours
               :payload="payload"
-              v-if="activeParentStep === 3 && visualsStep === 3"
+              v-if="activeParentStep === 3 && visualsStep === 2"
             >
             </AddVideoTours>
               <CoreProgressStepper
@@ -1045,6 +1044,38 @@ function togglePreviewMode(isPreview: boolean) {
 //   updateQueryParams();
 // }
 
+// function handleNextStep() {
+//   if (activeParentStep.value === 1) {
+//     if (basicPropertyInformationStep.value < 2) {
+//       basicPropertyInformationStep.value += 1;
+//     } else {
+//       handleNextParentStep();
+//     }
+//   } else if (activeParentStep.value === 2) {
+//     if (propertyDetailsStep.value < 2) {
+//       propertyDetailsStep.value += 1;
+//     } else {
+//       handleNextParentStep();
+//     }
+//   } else if (activeParentStep.value === 3) {
+//     if (visualsStep.value < 3) { // Allow for three sub-steps in visualsStep
+//       visualsStep.value += 1;
+//     } else {
+//       handleNextParentStep();
+//     }
+//   } else if (activeParentStep.value === 4) {
+//     if (finalizeStep.value < 3) {
+//       finalizeStep.value += 1;
+//     } else {
+//       // This means we've reached the last step of the final stage, switch to preview mode
+//       togglePreviewMode(true); // Instead of navigating to a new route, switch to preview mode
+//       return;
+//     }
+//   }
+
+//   updateQueryParams();
+// }
+
 function handleNextStep() {
   if (activeParentStep.value === 1) {
     if (basicPropertyInformationStep.value < 2) {
@@ -1059,7 +1090,7 @@ function handleNextStep() {
       handleNextParentStep();
     }
   } else if (activeParentStep.value === 3) {
-    if (visualsStep.value < 3) { // Allow for three sub-steps in visualsStep
+    if (visualsStep.value < 2) { // Allow for two sub-steps in visualsStep
       visualsStep.value += 1;
     } else {
       handleNextParentStep();
@@ -1076,6 +1107,7 @@ function handleNextStep() {
 
   updateQueryParams();
 }
+
 
 
 
