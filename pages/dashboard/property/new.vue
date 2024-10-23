@@ -1099,8 +1099,7 @@ function handleNextStep() {
     if (finalizeStep.value < 3) {
       finalizeStep.value += 1;
     } else {
-      // This means we've reached the last step of the final stage, switch to preview mode
-      togglePreviewMode(true); // Instead of navigating to a new route, switch to preview mode
+      togglePreviewMode(true); 
       return;
     }
   }
