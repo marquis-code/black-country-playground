@@ -7,14 +7,14 @@
         </div>
         <section class="mt-3">
           <div class="grid  lg:grid-cols-2 gap-4">
-            <!-- <ImageUpload
+            <ImageUpload
               @update:images="handleImages"
               v-for="item in commonAreas"
               :key="item.name"
               :label="item.name"
               :payload="payload"
               location="common-areas"
-            /> -->
+            />
           </div>
         </section>
       </div>
@@ -42,6 +42,59 @@
       commonAreas.value = props?.payload?.commonAreas?.value // Assign the array directly
     }
   })
+  
+  // ImageUpload Component Logic
+  const fileInput = ref<HTMLInputElement | null>(null)
+  const images = reactive<{ [key: string]: string[] }>({
+    'Bedroom': [],
+    'Bathroom/Restroom': [],
+    // Add more sections as needed
+  })
+  const currentImageIndex = ref<{ [key: string]: number }>({
+    'Bedroom': 0,
+    'Bathroom/Restroom': 0,
+    // Add more sections as needed
+  })
+  
+  function triggerFileUpload(section: string) {
+    if (fileInput.value) {
+      fileInput.value.click()
+    }
+  }
+  
+  function handleFileUpload(event: Event, section: string) {
+    const target = event.target as HTMLInputElement
+    if (target.files) {
+      for (const file of Array.from(target.files)) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          if (e.target?.result) {
+            images[section].push(e.target.result as string)
+          }
+        }
+        reader.readAsDataURL(file)
+      }
+    }
+  }
+  
+  function prevImage(section: string) {
+    if (currentImageIndex.value[section] > 0) {
+      currentImageIndex.value[section]--
+    }
+  }
+  
+  function nextImage(section: string) {
+    if (currentImageIndex.value[section] < images[section].length - 1) {
+      currentImageIndex.value[section]++
+    }
+  }
+  
+  function removeImage(section: string) {
+    images[section].splice(currentImageIndex.value[section], 1)
+    if (currentImageIndex.value[section] >= images[section].length) {
+      currentImageIndex.value[section] = images[section].length - 1
+    }
+  }
   </script>
   
   <style scoped>

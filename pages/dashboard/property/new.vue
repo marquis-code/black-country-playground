@@ -1219,10 +1219,13 @@ const validateRooms = (rooms: any[]): string[] => {
   return validationErrors;
 };
 
+// Function to validate the detailed property information step without image validation
 const validateDetailedPropertyInformationStep = () => {
   if (propertyDetailsStep.value === 1) {
+    // Ensure there are common areas, but skip image validation
     return payload.commonAreas.value.length > 0;
   } else if (propertyDetailsStep.value === 2) {
+    // Skip validation for images, only validate the required fields in rooms
     if (payload.rooms.value.length > 0) {
       const roomValidationErrors = validateRooms(payload.rooms.value);
       
@@ -1244,6 +1247,33 @@ const validateDetailedPropertyInformationStep = () => {
   }
   return true;
 };
+
+
+// const validateDetailedPropertyInformationStep = () => {
+//   if (propertyDetailsStep.value === 1) {
+//     return payload.commonAreas.value.length > 0;
+//   } else if (propertyDetailsStep.value === 2) {
+//     if (payload.rooms.value.length > 0) {
+//       const roomValidationErrors = validateRooms(payload.rooms.value);
+      
+//       if (roomValidationErrors.length > 0) {
+//         // Display all validation errors using the showToast composable
+//         roomValidationErrors.forEach(error => {
+//           showToast({
+//             title: "Error",
+//             message: error,  // Dynamically set the error message
+//             toastType: "error",
+//             duration: 4000 // Adjust duration if needed
+//           });
+//         });
+//         return false;
+//       }
+      
+//       return true;
+//     }
+//   }
+//   return true;
+// };
 
 // Watcher to automatically trigger validation when `rooms` change
 // watch(
@@ -1278,11 +1308,17 @@ const validateDetailedPropertyInformationStep = () => {
 //   { immediate: true }  // Ensure the validation runs when the page loads
 // );
 
+// const validateAddVisualsStep = () => {
+//   if (visualsStep.value === 1) {
+//     // Validate "Upload images of the common area"
+//     return payload.images.value.length > 0;
+//   }
+//   return true;
+// };
+
+// Function to skip visuals validation
 const validateAddVisualsStep = () => {
-  if (visualsStep.value === 1) {
-    // Validate "Upload images of the common area"
-    return payload.images.value.length > 0;
-  }
+  // Skip image validation and just return true
   return true;
 };
 
@@ -1308,13 +1344,28 @@ const validateFinalizeListingStep = () => {
 //   return false;
 // });
 
+// const isNextButtonDisabled = computed(() => {
+//   if (activeParentStep.value === 1) {
+//     return !validateBasicPropertyInformationStep();
+//   } else if (activeParentStep.value === 2) {
+//     return !validateDetailedPropertyInformationStep();  // Validate the current step and room
+//   } else if (activeParentStep.value === 3) {
+//     return !validateAddVisualsStep();
+//   } else if (activeParentStep.value === 4) {
+//     return !validateFinalizeListingStep();
+//   }
+//   return false;
+// });
+
+
+// Computed property to determine if the Next button should be disabled
 const isNextButtonDisabled = computed(() => {
   if (activeParentStep.value === 1) {
     return !validateBasicPropertyInformationStep();
   } else if (activeParentStep.value === 2) {
-    return !validateDetailedPropertyInformationStep();  // Validate the current step and room
+    return !validateDetailedPropertyInformationStep();
   } else if (activeParentStep.value === 3) {
-    return !validateAddVisualsStep();
+    return !validateAddVisualsStep(); // Now returns true by default
   } else if (activeParentStep.value === 4) {
     return !validateFinalizeListingStep();
   }
