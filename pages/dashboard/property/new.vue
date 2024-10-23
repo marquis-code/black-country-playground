@@ -1229,12 +1229,12 @@ const validateDetailedPropertyInformationStep = () => {
       if (roomValidationErrors.length > 0) {
         // Display all validation errors using the showToast composable
         roomValidationErrors.forEach(error => {
-          // showToast({
-          //   title: "Error",
-          //   message: error,  // Dynamically set the error message
-          //   toastType: "error",
-          //   duration: 4000 // Adjust duration if needed
-          // });
+          showToast({
+            title: "Error",
+            message: error,  // Dynamically set the error message
+            toastType: "error",
+            duration: 4000 // Adjust duration if needed
+          });
         });
         return false;
       }
@@ -1255,16 +1255,28 @@ const validateDetailedPropertyInformationStep = () => {
 //   { deep: false }
 // );
 
-watch(
-  () => currentRoom.value,
-  (newRoom, oldRoom) => {
-    if (newRoom !== oldRoom) {
-      // Validate rooms only when a new room is selected
-      validateDetailedPropertyInformationStep();
-    }
-  },
-  { immediate: false } // Ensure the validation does not run on page load
-);
+// watch(
+//   () => currentRoom.value,
+//   (newRoom, oldRoom) => {
+//     if (newRoom !== oldRoom) {
+//       // Validate rooms only when a new room is selected
+//       validateDetailedPropertyInformationStep();
+//     }
+//   },
+//   { immediate: false } // Ensure the validation does not run on page load
+// );
+
+// watch(
+//   () => currentRoom.value,
+//   (newRoom, oldRoom) => {
+//     if (newRoom !== oldRoom) {
+//       // Validate rooms only when a new room is selected
+//       const isValid = validateDetailedPropertyInformationStep();
+//       isNextButtonDisabled.value = !isValid; // Set the button state based on validation
+//     }
+//   },
+//   { immediate: true }  // Ensure the validation runs when the page loads
+// );
 
 const validateAddVisualsStep = () => {
   if (visualsStep.value === 1) {
@@ -1283,11 +1295,24 @@ const validateFinalizeListingStep = () => {
 };
 
 // Computed property to determine if the Next button should be disabled
+// const isNextButtonDisabled = computed(() => {
+//   if (activeParentStep.value === 1) {
+//     return !validateBasicPropertyInformationStep();
+// } else if (activeParentStep.value === 2) {
+//     return !validateDetailedPropertyInformationStep();
+//   } else if (activeParentStep.value === 3) {
+//     return !validateAddVisualsStep();
+//   } else if (activeParentStep.value === 4) {
+//     return !validateFinalizeListingStep();
+//   }
+//   return false;
+// });
+
 const isNextButtonDisabled = computed(() => {
   if (activeParentStep.value === 1) {
     return !validateBasicPropertyInformationStep();
-} else if (activeParentStep.value === 2) {
-    return !validateDetailedPropertyInformationStep();
+  } else if (activeParentStep.value === 2) {
+    return !validateDetailedPropertyInformationStep();  // Validate the current step and room
   } else if (activeParentStep.value === 3) {
     return !validateAddVisualsStep();
   } else if (activeParentStep.value === 4) {
@@ -1295,6 +1320,18 @@ const isNextButtonDisabled = computed(() => {
   }
   return false;
 });
+
+watch(
+  () => currentRoom.value,
+  (newRoom, oldRoom) => {
+    if (newRoom !== oldRoom) {
+      // Validate rooms only when a new room is selected
+      const isValid = validateDetailedPropertyInformationStep();
+      isNextButtonDisabled.value = !isValid; // Set the button state based on validation
+    }
+  },
+  { immediate: true }  // Ensure the validation runs when the page loads
+);
 
 
 watch(
