@@ -59,7 +59,7 @@
  
         <div ref="mapContainer" class="w-full h-full rounded-xl border-2 border-gray-200"></div>
       </div>
-      <slot name="action-buttons"></slot>
+      <!-- <slot name="action-buttons"></slot> -->
     </main>
     </template>
     

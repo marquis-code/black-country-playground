@@ -3,7 +3,7 @@
     <section>
       <AmenityMap @locationSelected="handleSelectedLocation" @searchResult="handleSearchResult" @amenityObj="handleSelectedAmenity" />
     </section>
-     <slot name="action-buttons"></slot>
+     <!-- <slot name="action-buttons"></slot> -->
    </main>
   </template>
 

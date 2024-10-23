@@ -283,7 +283,7 @@
           />
         </div>
       </div>
-      <slot name="action-buttons"></slot>
+      <!-- <slot name="action-buttons"></slot> -->
     </div>
   </main>
 </template>

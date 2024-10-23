@@ -162,7 +162,7 @@
           </div>
         </div>
 
-      <slot name="action-buttons" />
+      <!-- <slot name="action-buttons" /> -->
       </form>
 </template>
 

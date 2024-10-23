@@ -65,7 +65,7 @@
   
         <input type="file" accept="image/png, image/jpeg" multiple ref="fileInput" @change="handleFileUpload" class="hidden" />
       </div>
-      <slot name="action-buttons"></slot>
+      <!-- <slot name="action-buttons"></slot> -->
     </main>
   </template>
   
