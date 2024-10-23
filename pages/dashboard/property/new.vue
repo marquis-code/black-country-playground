@@ -1246,13 +1246,24 @@ const validateDetailedPropertyInformationStep = () => {
 };
 
 // Watcher to automatically trigger validation when `rooms` change
+// watch(
+//   () => payload.rooms.value, 
+//   (newRooms) => {
+//     console.log('Rooms data changed:', newRooms);
+//     validateDetailedPropertyInformationStep(); // Automatically validate when rooms change
+//   },
+//   { deep: false }
+// );
+
 watch(
-  () => payload.rooms.value, 
-  (newRooms) => {
-    console.log('Rooms data changed:', newRooms);
-    validateDetailedPropertyInformationStep(); // Automatically validate when rooms change
+  () => currentRoom.value,
+  (newRoom, oldRoom) => {
+    if (newRoom !== oldRoom) {
+      // Validate rooms only when a new room is selected
+      validateDetailedPropertyInformationStep();
+    }
   },
-  { deep: false }
+  { immediate: false } // Ensure the validation does not run on page load
 );
 
 const validateAddVisualsStep = () => {
