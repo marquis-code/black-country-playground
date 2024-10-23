@@ -1229,12 +1229,12 @@ const validateDetailedPropertyInformationStep = () => {
       if (roomValidationErrors.length > 0) {
         // Display all validation errors using the showToast composable
         roomValidationErrors.forEach(error => {
-          showToast({
-            title: "Error",
-            message: error,  // Dynamically set the error message
-            toastType: "error",
-            duration: 4000 // Adjust duration if needed
-          });
+          // showToast({
+          //   title: "Error",
+          //   message: error,  // Dynamically set the error message
+          //   toastType: "error",
+          //   duration: 4000 // Adjust duration if needed
+          // });
         });
         return false;
       }
