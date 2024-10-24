@@ -217,6 +217,7 @@
                 v-if="activeParentStep === 3"
                 :titles="[
                   'Upload Property Exterior and Street View Images',
+                  'Upload images of the common area',
                   'Upload images of the private rooms',
                 ]"
                 :totalSteps="3"

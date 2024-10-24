@@ -232,37 +232,6 @@ const activeImageIndex = ref<number[]>([]); // Keeps track of the active image i
 const activeRoomIndex = ref(0);
 const currentRoom = computed(() => rooms.value[activeRoomIndex.value]);
 // Load rooms from local storage on mount
-// onMounted(() => {
-//   const savedRooms = localStorage.getItem('property_rooms');
-//   if (savedRooms) {
-//     rooms.value = JSON.parse(savedRooms);
-//   } else {
-//     // Fallback if local storage is empty (or you can handle this otherwise)
-//     rooms.value = [];
-//   }
-// });
-
-// onMounted(() => {
-//   const savedRooms = localStorage.getItem('property_rooms');
-//   if (savedRooms) {
-//     rooms.value = JSON.parse(savedRooms);
-//     // Initialize activeImageIndex for each feature
-//     rooms.value.forEach((room) => {
-//       room.features.forEach((_, featureIndex) => {
-//         activeImageIndex.value[featureIndex] = 0;
-//       });
-//     });
-//   } else {
-//     rooms.value = [];
-//   }
-// });
-
-
-// // Watch rooms and payload.rooms.value and persist to local storage when changes occur
-// watch([rooms, payload.rooms], ([newRooms]) => {
-//   localStorage.setItem('property_rooms', JSON.stringify(newRooms));
-//   payload.rooms.value = newRooms; // Sync payload.rooms.value with rooms
-// }, { deep: true });
 
 onMounted(() => {
   const savedRooms = localStorage.getItem('property_rooms');
