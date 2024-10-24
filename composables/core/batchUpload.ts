@@ -20,6 +20,7 @@ export const useBatchUploadFile = () => {
       const res = await $_batch_upload(formData) as any
 
       if (res.type !== 'ERROR') {
+        console.log(res.data, 'herer')
         uploadResponse.value = res.data ?? []
       } else {
         throw new Error('Error in API response')

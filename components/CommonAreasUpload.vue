@@ -17,7 +17,7 @@
           </template>
           <template v-else>
             <img
-              v-if="commonArea.images.length"
+              v-if="commonArea.images?.length"
               :src="commonArea.images[activeImageIndexCommonAreas[featureIndex]]"
               alt="Image"
               class="w-full h-full object-cover rounded-lg"
@@ -34,7 +34,7 @@
 
           <!-- Previous and Next buttons if multiple images -->
           <button
-            v-if="commonArea.images.length > 1"
+            v-if="commonArea.images?.length > 1"
             @click="prevImage(featureIndex)"
             class="absolute left-2 top-1/2 transform -translate-y-1/2 z-10"
           >
@@ -45,7 +45,7 @@
             
           </button>
           <button
-            v-if="commonArea.images.length > 1"
+            v-if="commonArea.images?.length > 1"
             @click="nextImage(featureIndex)"
             class="absolute right-2 top-1/2 transform -translate-y-1/2  z-10"
           >
@@ -73,9 +73,9 @@
           <!-- Overlay for buttons and info -->
           <div class="absolute inset-0 flex flex-col justify-between p-4 bg-gradient-to-t from-black/50 to-transparent">
             <!-- Common Area Info -->
-            <div class="text-white text-sm">
+            <div class="text-gray-800 text-sm font-semibold">
               <span>{{ commonArea.name }}</span>
-              <span class="text-gray-200"> | {{ commonArea.images.length }} images</span>
+              <span class="text-gray-900"> | {{ commonArea.images?.length }} images</span>
             </div>
 
             <!-- Add Photo Button -->
@@ -152,7 +152,7 @@ watch(commonAreas, (newCommonAreas) => {
 
 // Validate file size before uploading
 const validateFileSize = (files: FileList): boolean => {
-  for (let i = 0; i < files.length; i++) {
+  for (let i = 0; i < files?.length; i++) {
     if (files[i].size > MAX_FILE_SIZE) {
       showToast({
         title: 'File too large',
@@ -167,9 +167,55 @@ const validateFileSize = (files: FileList): boolean => {
 };
 
 // Handle batch file input and upload for common areas
+// const uploadImagesCommonArea = async (event: Event, featureIndex: number) => {
+//   const files = (event.target as HTMLInputElement).files;
+//   if (files && files?.length > 0) {
+//     if (!validateFileSize(files)) {
+//       return; // Stop if file validation fails
+//     }
+
+//     loadingStateCommonAreas.value[featureIndex] = true; // Show loading spinner
+
+//     try {
+//       const formData = new FormData();
+//       for (const file of files) {
+//         formData.append('files[]', file);
+//       }
+
+//       // Upload files and ensure await is used to properly wait for the upload to finish
+//       await uploadFiles(formData);
+
+//       // Handle the upload response and add the images to the appropriate common area's images array
+//       if (uploadResponse.value && uploadResponse.value?.length) {
+//         uploadResponse.value.forEach((uploadedFile: any) => {
+//           commonAreas.value[featureIndex].images.push(uploadedFile.secure_url); // Group images by commonArea
+//         });
+//         activeImageIndexCommonAreas.value[featureIndex] =
+//           commonAreas.value[featureIndex].images?.length - 1;
+//         showToast({
+//           title: 'Success',
+//           message: 'Batch upload successful!',
+//           toastType: 'success',
+//           duration: 3000,
+//         });
+//       }
+//     } catch (error) {
+//       console.log(error, 'error here')
+//       showToast({
+//         title: 'Error',
+//         message: 'Batch upload failed. Please try again.',
+//         toastType: 'error',
+//         duration: 3000,
+//       });
+//     } finally {
+//       loadingStateCommonAreas.value[featureIndex] = false; // Hide loading spinner
+//     }
+//   }
+// };
+
 const uploadImagesCommonArea = async (event: Event, featureIndex: number) => {
   const files = (event.target as HTMLInputElement).files;
-  if (files && files.length > 0) {
+  if (files && files?.length > 0) {
     if (!validateFileSize(files)) {
       return; // Stop if file validation fails
     }
@@ -183,15 +229,24 @@ const uploadImagesCommonArea = async (event: Event, featureIndex: number) => {
       }
 
       // Upload files and ensure await is used to properly wait for the upload to finish
-      const response = await uploadFiles(formData);
+      await uploadFiles(formData);
 
-      // Handle the upload response and add the images to the appropriate common area's images array
-      if (uploadResponse.value && uploadResponse.value.length) {
+      // Check if uploadResponse contains files
+      if (uploadResponse.value && uploadResponse.value?.length) {
+        // Ensure the commonArea has an `images` array initialized
+        if (!commonAreas.value[featureIndex].images) {
+          commonAreas.value[featureIndex].images = []; // Initialize the images array if it doesn't exist
+        }
+
+        // Add the uploaded images to the appropriate commonArea's images array
         uploadResponse.value.forEach((uploadedFile: any) => {
           commonAreas.value[featureIndex].images.push(uploadedFile.secure_url); // Group images by commonArea
         });
+
+        // Update the active image index to the last uploaded image
         activeImageIndexCommonAreas.value[featureIndex] =
-          commonAreas.value[featureIndex].images.length - 1;
+          commonAreas.value[featureIndex].images?.length - 1;
+
         showToast({
           title: 'Success',
           message: 'Batch upload successful!',
@@ -211,6 +266,7 @@ const uploadImagesCommonArea = async (event: Event, featureIndex: number) => {
     }
   }
 };
+
 
 // Trigger file input for common areas
 const triggerFileInputCommonArea = (featureIndex: number) => {

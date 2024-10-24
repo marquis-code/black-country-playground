@@ -217,6 +217,7 @@
                 v-if="activeParentStep === 3"
                 :titles="[
                   'Upload Property Exterior and Street View Images',
+                  'Upload images of the common area',
                   'Upload images of the private rooms',
                 ]"
                 :totalSteps="2"
@@ -227,10 +228,10 @@
               v-if="activeParentStep === 3 && visualsStep === 1"
               >
               </UploadPropertyExterior>
-              <!-- <CommonAreasUpload v-if="activeParentStep === 3 && visualsStep === 2" :payload="payload" /> -->
+              <CommonAreasUpload v-if="activeParentStep === 3 && visualsStep === 2" :payload="payload" />
               <AddVideoTours
               :payload="payload"
-              v-if="activeParentStep === 3 && visualsStep === 2"
+              v-if="activeParentStep === 3 && visualsStep === 3"
             >
             </AddVideoTours>
               <CoreProgressStepper
@@ -797,7 +798,6 @@ const formatCurrency = (amount: number, currencyCode: string | undefined) => {
       currency: validCurrencyCode,
     }).format(amount);
   } catch (error) {
-    console.error(`Invalid currency code: ${currencyCode}. Defaulting to 'NGN'.`);
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'NGN',
@@ -806,13 +806,22 @@ const formatCurrency = (amount: number, currencyCode: string | undefined) => {
 };
 
 const currentImageIndex = ref<number[]>(Array(payload.commonAreas.value.length).fill(0));
+// watch(
+//   () => payload.commonAreas.value,
+//   (newAreas) => {
+//     if (newAreas && newAreas.length > 0) {
+//       currentImageIndex.value = Array(newAreas.length).fill(0); // Reset index array based on new data
+//     } else {
+//       currentImageIndex.value = [];
+//     }
+//   },
+//   { immediate: true }
+// );
 watch(
   () => payload.commonAreas.value,
   (newAreas) => {
-    if (newAreas && newAreas.length > 0) {
-      currentImageIndex.value = Array(newAreas.length).fill(0); // Reset index array based on new data
-    } else {
-      currentImageIndex.value = [];
+    if (newAreas && newAreas.length > 0 && currentImageIndex.value.length !== newAreas.length) {
+      currentImageIndex.value = Array(newAreas.length).fill(0);
     }
   },
   { immediate: true }
@@ -872,7 +881,6 @@ const addManually = () => {
   // Function to handle form submission
   const submitAnswers = () => {
     // You can handle the submission logic here
-    console.log("User Answers:", answers.value);
   };
 
 
@@ -1005,38 +1013,6 @@ function togglePreviewMode(isPreview: boolean) {
 //   updateQueryParams();
 // }
 
-function handleNextStep() {
-  if (activeParentStep.value === 1) {
-    if (basicPropertyInformationStep.value < 2) {
-      basicPropertyInformationStep.value += 1;
-    } else {
-      handleNextParentStep();
-    }
-  } else if (activeParentStep.value === 2) {
-    if (propertyDetailsStep.value < 2) {
-      propertyDetailsStep.value += 1;
-    } else {
-      handleNextParentStep();
-    }
-  } else if (activeParentStep.value === 3) {
-    if (visualsStep.value < 2) { // Allow for two sub-steps in visualsStep
-      visualsStep.value += 1;
-    } else {
-      handleNextParentStep();
-    }
-  } else if (activeParentStep.value === 4) {
-    if (finalizeStep.value < 3) {
-      finalizeStep.value += 1;
-    } else {
-      // This means we've reached the last step of the final stage, switch to preview mode
-      togglePreviewMode(true); // Instead of navigating to a new route, switch to preview mode
-      return;
-    }
-  }
-
-  updateQueryParams();
-}
-
 // function handleNextStep() {
 //   if (activeParentStep.value === 1) {
 //     if (basicPropertyInformationStep.value < 2) {
@@ -1051,7 +1027,7 @@ function handleNextStep() {
 //       handleNextParentStep();
 //     }
 //   } else if (activeParentStep.value === 3) {
-//     if (visualsStep.value < 3) { // Allow for three sub-steps in visualsStep
+//     if (visualsStep.value < 2) { // Allow for two sub-steps in visualsStep
 //       visualsStep.value += 1;
 //     } else {
 //       handleNextParentStep();
@@ -1068,6 +1044,38 @@ function handleNextStep() {
 
 //   updateQueryParams();
 // }
+
+function handleNextStep() {
+  if (activeParentStep.value === 1) {
+    if (basicPropertyInformationStep.value < 2) {
+      basicPropertyInformationStep.value += 1;
+    } else {
+      handleNextParentStep();
+    }
+  } else if (activeParentStep.value === 2) {
+    if (propertyDetailsStep.value < 2) {
+      propertyDetailsStep.value += 1;
+    } else {
+      handleNextParentStep();
+    }
+  } else if (activeParentStep.value === 3) {
+    if (visualsStep.value < 3) { // Allow for three sub-steps in visualsStep
+      visualsStep.value += 1;
+    } else {
+      handleNextParentStep();
+    }
+  } else if (activeParentStep.value === 4) {
+    if (finalizeStep.value < 3) {
+      finalizeStep.value += 1;
+    } else {
+      // This means we've reached the last step of the final stage, switch to preview mode
+      togglePreviewMode(true); // Instead of navigating to a new route, switch to preview mode
+      return;
+    }
+  }
+
+  updateQueryParams();
+}
 
 // function handleNextStep() {
 //   if (activeParentStep.value === 1) {
@@ -1190,7 +1198,6 @@ const incomingData = ref({})
 
 function handleBasicPropertyInformationFormData(data: any) {
   // handle the data emitted from the child component here
-  // console.log('Data received from child component:', data)
   incomingData.value = data
   sessionStorage.setItem('property', JSON.stringify(incomingData.value))
 }
@@ -1211,8 +1218,6 @@ const handleSelectedAmenity = (item: any) => {
 
   // Update payload with the current array
   payload.neighbouringLandmarks.value = neighbouringLandmarksArray.value;
-
-  console.log(payload.neighbouringLandmarks.value); // To check the updated value
 };
 
 const handleLocationSearch = (data: any) => {
@@ -1236,22 +1241,35 @@ payload.isFurnishedCommonArea.value = data
 
 const roomsArray = ref([]) as any
 
+// const handleRoomData = (room: any) => {
+//   // Push or update the received room data in the array
+//   payload.rooms.value = room
+//   const roomIndex = roomsArray.value.findIndex(r => r?.name === room?.name);
+//   if (roomIndex !== -1) {
+//     roomsArray.value[roomIndex] = room;
+//   } else {
+//     roomsArray.value.push(room);
+//   }
+
+// payload.rooms.value = roomsArray.value
+// };
+
 const handleRoomData = (room: any) => {
-  console.log("Room data received:", room);
-  // Push or update the received room data in the array
-  payload.rooms.value = room
   const roomIndex = roomsArray.value.findIndex(r => r?.name === room?.name);
   if (roomIndex !== -1) {
-    roomsArray.value[roomIndex] = room;
+    roomsArray.value[roomIndex] = { ...roomsArray.value[roomIndex], ...room };
   } else {
     roomsArray.value.push(room);
   }
 
-payload.rooms.value = roomsArray.value
+  // Only assign the updated rooms array if necessary
+  if (payload.rooms.value !== roomsArray.value) {
+    payload.rooms.value = roomsArray.value;
+  }
 };
 
+
 const goToNextStep = () => {
-  console.log("Moving to the next step...");
   // Add logic here for moving to the next step in the property creation flow
 };
 
@@ -1501,7 +1519,7 @@ watch(
       isNextButtonDisabled.value = !isValid; // Set the button state based on validation
     }
   },
-  { immediate: true }  // Ensure the validation runs when the page loads
+  { immediate: true, flush: 'post' }  // Ensure the validation runs when the page loads
 );
 
 
@@ -1524,7 +1542,7 @@ watch(
       }
     }
   },
-  { immediate: true }
+  { immediate: true, flush: 'post' }
 );
 </script>
 
