@@ -1,0 +1,236 @@
+<template>
+    <div class="w-full h-full bg-[#EBE5E0] border rounded-lg flex flex-col items-center justify-center relative overflow-hidden">
+      <!-- Progress bar for image upload -->
+      <div v-if="loading" class="w-full h-4 rounded-lg bg-gray-200 mb-6">
+        <div
+          :class="{
+            'bg-red-500': uploadFailed,
+            'bg-green-500': uploadSuccess,
+            'bg-[#292929]': !uploadFailed && !uploadSuccess
+          }"
+          :style="{ width: `${progress}%` }"
+          class="h-full transition-all duration-300 ease-in-out rounded-lg"
+        ></div>
+      </div>
+  
+      <!-- Image Upload Placeholder or Image Display -->
+      <div v-if="images.length === 0" class="relative flex flex-col h-64 bg-[#EBE5E0] rounded-lg p-3 w-full">
+        <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 rounded-lg">
+          <div class="loader"></div>
+        </div>
+        <div v-if="!loading" class="flex justify-center items-center flex-grow">
+          <img src="@/assets/img/image-02.png" alt="Placeholder" class="w-full h-full object-cover" />
+        </div>
+      </div>
+  
+      <!-- Uploaded Image Display -->
+      <div v-else class="relative w-full h-64">
+        <!-- Image navigation -->
+        <div v-if="images.length > 1" class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10">
+          <button @click="prevImage" class="bg-gray-300 p-1 rounded-full">&larr;</button>
+        </div>
+        <img :src="images[currentImageIndex]" alt="Uploaded Image" class="w-full h-full object-cover" />
+        <div v-if="images.length > 1" class="absolute right-0 top-1/2 transform -translate-y-1/2 z-10">
+          <button @click="nextImage" class="bg-gray-300 p-1 rounded-full">&rarr;</button>
+        </div>
+  
+        <!-- Remove image button -->
+        <div class="absolute top-2 right-2">
+          <button @click="removeImage" class="p-1 rounded-full">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="28" height="28" rx="14" fill="black" fill-opacity="0.5" />
+              <path
+                d="M17.5 10.5L10.5 17.5M10.5 10.5L17.5 17.5"
+                stroke="white"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+  
+      <!-- Text Overlay and "Add Photo" Button -->
+      <div class="absolute inset-0 flex flex-col justify-between p-4 bg-gradient-to-t from-black/50 to-transparent">
+        <div class="text-white text-sm">{{ label }} | {{ images.length }} {{ images.length === 1 ? 'image' : 'images' }}</div>
+        <div class="flex justify-end">
+          <button @click="triggerFileUpload" :disabled="loading" class="bg-gray-700 text-white py-1 px-3 rounded-md text-sm">
+            + Add photo
+          </button>
+        </div>
+      </div>
+  
+      <!-- Hidden File Input -->
+      <input type="file" accept="image/png, image/jpeg" multiple ref="fileInput" @change="handleFileUpload" class="hidden" />
+    </div>
+  </template>
+  
+  <script setup lang="ts">
+  import debounce from 'lodash-es/debounce';
+  import { useBatchUploadFile } from '@/composables/core/batchUpload';
+  const { uploadFiles, uploadResponse, loading } = useBatchUploadFile();
+  import { useCustomToast } from '@/composables/core/useCustomToast';
+  const { showToast } = useCustomToast();
+  
+  const progress = ref(1);  // Initial progress set to 1%
+  const uploadFailed = ref(false);
+  const uploadSuccess = ref(false);
+  
+  const props = defineProps({
+    label: {
+      type: String,
+      required: true
+    },
+    location: {
+      type: String,
+      required: false
+    },
+    payload: {
+      type: Object,
+      default: () => ({})
+    }
+  });
+  
+  const emit = defineEmits(['update:images']);
+  
+  const fileInput = ref<HTMLInputElement | null>(null);
+  const images = reactive<string[]>([]);
+  const currentImageIndex = ref(0);
+  
+  watch(images, debounce((newImages) => {
+    emit('update:images', newImages);
+  }, 300));  // 300ms debounce
+  
+  onMounted(() => {
+    if (props.location === 'common-areas') {
+      const propertyData = props.payload;
+      if (propertyData) {
+        const commonArea = propertyData.commonAreas.value?.find((area: any) => area.name === props.label);
+        if (commonArea && commonArea.images) {
+          images.push(...commonArea.images); // Populate images with existing images for the common area
+        }
+      }
+    }
+  });
+  
+  function triggerFileUpload() {
+    if (fileInput.value) {
+      fileInput.value.click();
+    }
+  }
+  
+  async function handleFileUpload(event: Event) {
+    const target = event.target as HTMLInputElement;
+    if (target && target.files && target.files.length > 0) {
+      const files = Array.from(target.files);
+  
+      // Filter out files larger than 2MB
+      const validFiles = files.filter(file => file.size <= 2 * 1024 * 1024);
+  
+      if (validFiles.length === 0) {
+        showToast({
+          title: "Error",
+          message: "All selected files exceed the 2MB size limit",
+          toastType: "error",
+          duration: 3000
+        });
+        return;
+      }
+  
+      try {
+        progress.value = 1;
+        uploadFailed.value = false;
+        uploadSuccess.value = false;
+  
+        // Simulate upload progress
+        const interval = setInterval(() => {
+          if (progress.value < 100) {
+            progress.value += 10;
+          }
+        }, 300);
+  
+        await uploadFiles(validFiles);
+  
+        clearInterval(interval);
+        progress.value = 100;
+        uploadSuccess.value = true;
+  
+        if (uploadResponse.value.length > 0) {
+          const uploadedUrls = uploadResponse.value.map(response => response.secure_url);
+          images.push(...uploadedUrls);
+  
+          // Update session storage
+          updateSessionStorage();
+        }
+      } catch (error) {
+        progress.value = 100;
+        uploadFailed.value = true;
+        showToast({
+          title: "Error",
+          message: "Error uploading files",
+          toastType: "error",
+          duration: 5000
+        });
+      }
+    } else {
+      showToast({
+        title: "Error",
+        message: "No files selected for upload",
+        toastType: "error",
+        duration: 5000
+      });
+    }
+  }
+  
+  function prevImage() {
+    if (currentImageIndex.value > 0) {
+      currentImageIndex.value--;
+    }
+  }
+  
+  function nextImage() {
+    if (currentImageIndex.value < images.length - 1) {
+      currentImageIndex.value++;
+    }
+  }
+  
+  function removeImage() {
+    if (images.length > 0 && currentImageIndex.value >= 0) {
+      images.splice(currentImageIndex.value, 1);
+  
+      if (currentImageIndex.value >= images.length) {
+        currentImageIndex.value = images.length - 1;
+      }
+  
+      updateSessionStorage();
+    }
+  }
+  
+  function updateSessionStorage() {
+    const propertyData = props.payload;
+    const commonArea = propertyData?.commonAreas?.value?.find((area: any) => area.name === props.label);
+    if (commonArea) {
+      commonArea.images = images;
+      sessionStorage.setItem('property', JSON.stringify(propertyData));
+    }
+  }
+  </script>
+  
+  <style scoped>
+  .loader {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #333;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  </style>
+  

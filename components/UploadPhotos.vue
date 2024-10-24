@@ -7,7 +7,7 @@
         </div>
         <section class="mt-3">
           <div class="grid  lg:grid-cols-2 gap-4">
-            <ImageUpload
+            <CommonImageUpload
               @update:images="handleImages"
               v-for="item in commonAreas"
               :key="item.name"
