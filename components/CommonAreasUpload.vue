@@ -24,7 +24,7 @@
               class="w-16 h-16 object-cover"
             />
             <div v-else class="text-gray-500">
-              <img src="@/assets/placeholder.png" alt="Placeholder" class="w-16 h-16 object-cover" />
+              <img src="@/assets/img/placeholder.png" alt="Placeholder" class="w-16 h-16 object-cover" />
             </div>
           </div>
   
