@@ -1,16 +1,13 @@
 <template>
   <div>
-    <!-- Common Areas Grid Layout -->
     <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div
         v-for="(commonArea, featureIndex) in commonAreas"
         :key="commonArea.name"
         class="relative border border-gray-25 rounded-lg bg-[#F7F6F3]"
       >
-        <!-- Image Preview -->
         <div class="relative w-full h-56 rounded-lg overflow-hidden bg-gray-25">
           <template v-if="loadingStateCommonAreas[featureIndex]">
-            <!-- Show spinner while uploading -->
             <div class="absolute inset-0 flex items-center justify-center bg-opacity-50 bg-gray-300">
               <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-gray-500"></div>
             </div>
@@ -23,7 +20,6 @@
               class="w-full h-full object-cover rounded-lg"
             />
             <div class="flex justify-center items-center h-full" v-else>
-              <!-- Placeholder image when no image is present -->
               <img
                 src="@/assets/img/image-02.png"
                 alt="Placeholder Image"
@@ -31,8 +27,6 @@
               />
             </div>
           </template>
-
-          <!-- Previous and Next buttons if multiple images -->
           <button
             v-if="commonArea.images?.length > 1"
             @click="prevImage(featureIndex)"
@@ -56,8 +50,6 @@
               </svg>
               
           </button>
-
-          <!-- Delete button -->
           <button
             @click="deleteImage(featureIndex)"
             class="absolute top-2 right-2"
@@ -69,8 +61,6 @@
               </svg>
               
           </button>
-
-          <!-- Overlay for buttons and info -->
           <div class="absolute inset-0 flex flex-col justify-between p-4 bg-gradient-to-t from-black/50 to-transparent">
             <!-- Common Area Info -->
             <div class="text-gray-800 text-sm font-semibold">
