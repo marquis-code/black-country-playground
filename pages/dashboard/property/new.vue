@@ -805,10 +805,7 @@ const formatCurrency = (amount: number, currencyCode: string | undefined) => {
   }
 };
 
-// Initialize currentImageIndex to track the image index for each common area
 const currentImageIndex = ref<number[]>(Array(payload.commonAreas.value.length).fill(0));
-
-// Watch for changes in `commonAreas` and reset `currentImageIndex` accordingly
 watch(
   () => payload.commonAreas.value,
   (newAreas) => {
